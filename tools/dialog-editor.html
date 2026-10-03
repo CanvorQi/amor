@@ -1,0 +1,1317 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amor · Diyalog editörü</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f4fb; --card: #fff; --ink: #231f33; --mute: #7a7590; --line: #e6e2f0;
+    --accent: #7b5cff; --accent-soft: #efeaff; --warn: #e5484d; --warn-soft: #fff0f0; --ok: #1f9d6a; --mod: #f5a524;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 Nunito, system-ui, sans-serif; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  header { position: sticky; top: 0; z-index: 5; background: var(--card); border-bottom: 1px solid var(--line); }
+  .bar { display: flex; align-items: center; gap: 12px; padding: 10px 18px; }
+  .logo { font-weight: 800; font-size: 18px; }
+  .logo span { color: var(--accent); }
+  .logo small { color: var(--mute); font-weight: 700; font-size: 13px; margin-left: 6px; }
+  .grow { flex: 1; }
+  #dirty { color: var(--mute); font-size: 13px; }
+  #dirty.on { color: var(--mod); font-weight: 700; }
+  .btn { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 7px 12px; font-weight: 700; }
+  .btn:hover { border-color: var(--accent); }
+  .btn.pri { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.pri:disabled { opacity: .45; cursor: default; }
+  .btn.danger { color: var(--warn); }
+  .btn.sm { padding: 4px 9px; font-size: 12.5px; border-radius: 8px; }
+
+  .test { display: flex; gap: 8px; padding: 0 18px 10px; align-items: center; flex-wrap: wrap; }
+  .test input { flex: 1; min-width: 260px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; background: var(--bg); }
+  .test select { border: 1px solid var(--line); border-radius: 10px; padding: 8px; background: var(--card); }
+  #tOut { padding: 0 18px 12px; }
+  #tOut:empty { display: none; }
+  .res { background: var(--accent-soft); border-radius: 12px; padding: 10px 14px; }
+  .res .top { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .res .top b { font-size: 16px; }
+  .res .ways { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-top: 8px; }
+  .res .way { background: var(--card); border-radius: 10px; padding: 7px 10px; }
+  .res .way small { color: var(--mute); display: block; }
+
+  .wrap { display: grid; grid-template-columns: 290px 1fr; gap: 16px; padding: 16px 18px 60px; align-items: start; }
+  aside { position: sticky; top: 132px; max-height: calc(100vh - 150px); overflow: auto; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
+  aside input { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; margin-bottom: 8px; }
+  aside h4 { margin: 12px 6px 4px; color: var(--mute); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; }
+  .it { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: none; border: 0; border-radius: 9px; padding: 6px 8px; }
+  .it:hover { background: var(--bg); }
+  .it.on { background: var(--accent-soft); font-weight: 800; }
+  .it .n { width: 20px; color: var(--mute); font-size: 11.5px; text-align: right; }
+  .it .lb { flex: 1; }
+  .it small { color: var(--mute); }
+  .new { background: var(--accent); color: #fff; font-size: 10.5px; border-radius: 6px; padding: 0 5px; font-weight: 800; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mod); }
+
+  main { min-width: 0; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; }
+  .card h3 { margin: 0 0 10px; font-size: 15px; }
+  .head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .head h2 { margin: 0; font-size: 21px; }
+  .head code { color: var(--mute); background: var(--bg); border-radius: 6px; padding: 1px 6px; }
+  .head input { border: 1px solid var(--line); border-radius: 8px; padding: 5px 8px; }
+  .desc { color: var(--mute); margin: 6px 0 0; }
+  .hint { color: var(--mute); font-size: 12.5px; margin: 8px 0 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; background: var(--bg); border: 1px solid var(--line); border-radius: 20px; padding: 3px 4px 3px 10px; }
+  .chip.warn { background: var(--warn-soft); border-color: #f3b4b6; }
+  .chip.warn::before { content: '⚠'; color: var(--warn); font-size: 12px; }
+  .chip.weak { border-style: dashed; font-style: italic; color: var(--mute); }
+  .chip.sel { outline: 2px solid var(--accent); background: var(--accent-soft); }
+  .chip small { color: var(--mute); margin-left: 1px; }
+  .chip .wl { font-size: 11px; font-weight: 700; color: var(--accent); }
+  [data-w] { cursor: pointer; }
+  .wlink { color: var(--accent); cursor: pointer; font-weight: 700; }
+  svg.flow { width: 100%; height: auto; display: block; font: 12.5px Nunito, system-ui, sans-serif; }
+  svg.flow .e { fill: none; stroke: #cfc8e6; stroke-width: 1.4; }
+  svg.flow .e.weak { stroke-dasharray: 4 4; }
+  svg.flow .e.wl { stroke: var(--accent); stroke-dasharray: 5 4; stroke-width: 1.6; }
+  svg.flow .e.off { stroke: #ece9f3; }
+  svg.flow .n { cursor: pointer; }
+  svg.flow .n rect { fill: var(--card); stroke: var(--line); }
+  svg.flow .n:hover rect { stroke: var(--accent); }
+  svg.flow .n text { fill: var(--ink); }
+  svg.flow .n .s, svg.flow tspan.s { fill: var(--mute); font-size: 11px; }
+  svg.flow .n .b { font-weight: 800; }
+  svg.flow .w.weak rect { stroke-dasharray: 4 3; }
+  svg.flow .w.weak text { fill: var(--mute); font-style: italic; }
+  svg.flow .w.sel rect, svg.flow .p.word rect { fill: var(--accent-soft); stroke: var(--accent); }
+  svg.flow .t { cursor: default; }
+  svg.flow .t rect { fill: var(--accent); stroke: var(--accent); }
+  svg.flow .t text { fill: #fff; }
+  svg.flow .t .s { fill: #e6defc; }
+  svg.flow .off rect { fill: var(--bg); stroke-dasharray: 3 3; }
+  svg.flow .off text { fill: var(--mute); }
+  .flowchart { display: flex; flex-direction: column; gap: 0; align-items: stretch; }
+  .flowchart .st2 { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; background: var(--card); }
+  .flowchart .st2 b { color: var(--accent); }
+  .flowchart .ar { text-align: center; color: var(--mute); font-size: 13px; line-height: 1.6; }
+  .flowchart .yes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .sim { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sim td, .sim th { border-bottom: 1px solid var(--line); padding: 6px 8px; vertical-align: top; text-align: left; }
+  .sim th { color: var(--mute); font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; }
+  .tag { display: inline-block; border-radius: 6px; padding: 0 6px; font-size: 11.5px; font-weight: 800; background: var(--bg); }
+  .tag.word { background: var(--accent); color: #fff; } .tag.cont { background: #ffe9c2; } .tag.tone { background: var(--accent-soft); }
+  .tag.love { background: #ffe0ef; } .tag.meh { background: #e8e8ee; } .tag.none { color: var(--mute); }
+  .chip button { border: 0; background: none; color: var(--mute); width: 20px; height: 20px; border-radius: 50%; line-height: 1; }
+  .chip button:hover { background: var(--line); color: var(--warn); }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .row input[type=text] { flex: 1; min-width: 200px; border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; }
+  .row select { border: 1px solid var(--line); border-radius: 10px; padding: 6px 8px; max-width: 100%; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .eff { display: grid; grid-template-columns: 130px 1fr 52px; gap: 6px 10px; align-items: center; }
+  .eff output { text-align: right; font-weight: 700; }
+
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tab { border: 1px solid var(--line); background: var(--card); border-radius: 20px; padding: 5px 12px; font-weight: 700; position: relative; }
+  .tab.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tab .dot { position: absolute; top: -2px; right: -2px; }
+  .path { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; }
+  .path.mod { border-color: var(--mod); }
+  .ph { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; margin-bottom: 6px; }
+  .ph small { color: var(--mute); }
+  .st { font-size: 12px; font-weight: 700; color: var(--mute); }
+  .st.mod { color: var(--mod); }
+  .st.empty { color: var(--warn); }
+  .acts { margin-left: auto; display: flex; gap: 6px; }
+  .acts a { color: var(--accent); cursor: pointer; font-size: 12.5px; font-weight: 700; }
+  .acts a[hidden] { display: none; }
+  textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; resize: vertical; min-height: 64px; background: var(--bg); line-height: 1.6; }
+  textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+  .bubbles { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-top: 6px; }
+  .bubbles:empty { display: none; }
+  .bub { background: var(--accent-soft); border-radius: 14px 14px 14px 4px; padding: 5px 11px; max-width: 80%; }
+  details { margin-top: 10px; }
+  summary { cursor: pointer; color: var(--accent); font-weight: 700; font-size: 13px; }
+  .legend { display: grid; grid-template-columns: max-content 1fr; gap: 3px 12px; font-size: 12.5px; margin-top: 6px; }
+  .legend code { background: var(--bg); border-radius: 5px; padding: 0 5px; }
+  #toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 9px 16px; border-radius: 12px; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; }
+  #toast.on { opacity: 1; }
+  .fatal { max-width: 560px; margin: 60px auto; background: var(--card); border-radius: 14px; padding: 20px 24px; border: 1px solid var(--line); }
+  @media (max-width: 860px) { .wrap { grid-template-columns: 1fr; } aside { position: static; max-height: 300px; } .grid2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="logo">am<span>o</span>r <small>Diyalog editörü</small></div>
+    <div class="grow"></div>
+    <span id="dirty">Değişiklik yok</span>
+    <button class="btn pri" id="save" disabled>Kaydet</button>
+  </div>
+  <div class="test">
+    <input id="tIn" placeholder="Test: bir mesaj yaz, hangi niyete düştüğünü ve cevap yollarını gör…" autocomplete="off">
+    <select id="tArch" title="Cevapları hangi kişilikle göstereyim?"></select>
+  </div>
+  <div id="tOut"></div>
+</header>
+
+<div class="wrap">
+  <aside id="side"></aside>
+  <main id="main"></main>
+</div>
+<div id="toast"></div>
+
+<script>window.Amor = { Store: { state: { recent: {} }, save() {} } }; // motorun cümle seçimi için sahte kayıt</script>
+<script src="../js/data/intents.js"></script>
+<script src="../js/data/topics.js"></script>
+<script src="../js/data/traits.js"></script>
+<script src="../js/data/archetypes.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(() => {
+  const A = Amor, E = Amor.Engine;
+  const $ = s => document.querySelector(s);
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const same = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  const pickRaw = arr => arr[Math.floor(Math.random() * arr.length)];
+
+  /* Değiştirilmemiş hali (karşılaştırma ve "varsayılana dön" için) */
+  const P = {
+    intents: clone(A.INTENTS), effects: clone(A.INTENT_EFFECTS), arch: clone(A.ARCHETYPES),
+    topics: clone(A.TOPICS), tones: clone(A.TOPIC_TONES), tshared: clone(A.TOPIC_SHARED), tset: clone(A.TOPIC_SETTINGS),
+    traits: clone(A.TRAITS), trset: clone(A.TRAIT_SETTINGS)
+  };
+  const BUILTIN = P.intents.map(r => r[0]);
+
+  const LABELS = {
+    insult: 'Hakaret', night: 'İyi geceler', morning: 'Günaydın', bye: 'Vedalaşma', kiss: 'Öpücük', hug: 'Sarılma', flirt: 'Flört',
+    miss: 'Özlem', ask_age: 'Yaş sorusu', ask_memory: 'Beni hatırlıyor musun', ask_name: 'İsim sorusu', ask_city: 'Şehir sorusu',
+    ask_job: 'Meslek sorusu', ask_hobby: 'Hobi sorusu', how_are_you: 'Nasılsın', wyd: 'Ne yapıyorsun', meet: 'Buluşma / iletişim',
+    photo: 'Fotoğraf isteği', compliment: 'İltifat', answer_bad: 'Kötüyüm', sorry: 'Özür', thanks: 'Teşekkür', laugh: 'Gülme',
+    greet: 'Selamlaşma', answer_good: 'İyiyim', agree: 'Onaylama', disagree: 'Reddetme',
+    question: 'Soru', fallback: 'Anlaşılmayan mesaj', tell_name: 'Adını söyleme', opener: 'Karakterin ilk mesajı', any: 'Genel ruh hali cümleleri'
+  };
+  const SPECIAL = {
+    question: 'Hiçbir kelime tutmazsa ama mesaj "?" ile bitiyor ya da "mı/mi" içeriyorsa.',
+    fallback: 'Hiçbir kelime tutmazsa. Diğer yolların boş kalınca düştüğü yer de burası.',
+    tell_name: 'Kullanıcı "adım Deniz", "bana Can de" gibi adını söyleyince. {name} = söylenen ad.',
+    opener: 'Karakter sohbeti kendisi başlatınca. Ruh hali yolu yoktur.',
+    any: 'Gergin / üzgün / yorgunken, niyete özel cümle yoksa kullanılır.'
+  };
+  const NOTES = {
+    ask_memory: 'Bu niyetin cevabı karakterin hafızasından (adın, şehrin, anlattıkların) otomatik kurulur; cümle yolları kullanılmaz.'
+  };
+  const PATHS = [
+    { id: 'normal', name: 'Normal', key: i => i, hint: 'iyi ya da sakin ruh halinde' },
+    { id: 'close', name: 'Yakın (Lv.3+)', key: i => i + '_close', hint: 'yakınlık Lv.3 ve üstünde, %75 olasılıkla (flört, öpücük, sarılma, buluşmada her zaman)' },
+    { id: 'neg', name: 'Gergin', key: i => 'neg:' + i, hint: 'karakter gerginken' },
+    { id: 'sad', name: 'Üzgün', key: i => 'sad:' + i, hint: 'karakter üzgünken' },
+    { id: 'low', name: 'Yorgun', key: i => 'low:' + i, hint: 'karakter yorgunken' }
+  ];
+  const MOOD_NAME = { neg: 'gergin', sad: 'üzgün', low: 'yorgun' };
+  const KEEP = ['fallback', 'greet', 'opener'];
+
+  /* Konu cevap yolları (js/data/topics.js) */
+  const TSLOTS = [
+    { id: 'good', name: 'İyi haber', hint: 'mesajda "güzel, harika, kazandık, geçtim…" gibi ton kelimeleri varsa', empty: 'normal cevabını verir' },
+    { id: 'bad', name: 'Kötü haber', hint: '"kötü, berbat, kaybettik, hasta…" gibi kelimeler varsa ya da mesaj «Kötüyüm» niyetindeyse', empty: 'normal cevabını verir' },
+    { id: 'ask', name: 'Soru', hint: 'kullanıcı bu konuda soru soruyorsa ("kahve sever misin?")', empty: 'Genel cümleleri kullanılır' },
+    { id: 'any', name: 'Genel', hint: 'ne iyi/kötü haber ne soru', empty: 'normal cevabını verir' },
+    { id: 'love', name: 'Karakter seviyorsa', hint: 'soru ve genel mesajlarda, %65 olasılıkla', empty: 'ortak "bayılırım" cümleleri kullanılır' },
+    { id: 'meh', name: 'Karakter sevmiyorsa', hint: 'soru ve genel mesajlarda, %65 olasılıkla', empty: 'ortak "pek ilgimi çekmez" cümleleri kullanılır' },
+    { id: 'cont', name: 'Konu devam ediyorsa', hint: 'konu 2+ mesajdır sürüyorsa (ihtimalle) ya da konu kelimesi geçmeyen bir mesaj süren konuya bağlanınca', empty: 'devam cümlesi kullanılmaz' }
+  ];
+  const TONE_NAME = { good: 'İyi haber', bad: 'Kötü haber', ask: 'Soru', any: 'Genel' };
+  const KIND_NAME = { word: 'Kelimeye özel', cont: 'Konu devam ediyor', tone: 'Ton cümlesi', love: 'Seviyor', meh: 'Sevmiyor' };
+  const SETTINGS = [
+    { k: 'wordChance', name: 'Kelimeye özel cevap', min: 0, max: 1, step: 0.05, pct: true, hint: 'kelimenin kendi cevabı varsa bu ihtimalle kullanılır; aynı kelimeye üst üste verilmez' },
+    { k: 'contChance', name: '"Devam" cümlesi', min: 0, max: 1, step: 0.05, pct: true, hint: 'konu 2+ mesajdır sürerken bu ihtimalle "bugün kafan hep derslerde" gibi bir cümle' },
+    { k: 'skipChance', name: 'Konuya değinmeme', min: 0, max: 0.6, step: 0.05, pct: true, hint: 'aynı konu sürerken ara sıra normal cevap verip konuyu sadece akılda tutar' },
+    { k: 'tasteChance', name: 'Seviyor / sevmiyor', min: 0, max: 1, step: 0.05, pct: true, hint: 'karakterin zevkine uyan konularda bu ihtimalle zevk cümlesi' },
+    { k: 'keep', name: 'Konu hafızası (mesaj)', min: 0, max: 6, step: 1, pct: false, hint: 'konu kelimesi geçmeyen kaç mesaj boyunca konu akılda kalır' }
+  ];
+  const pctTxt = v => '%' + Math.round(v * 100);
+
+  /* Huylar (js/data/traits.js): her huyun cümle yuvaları */
+  const TR_SLOTS = {
+    ters: [
+      ['any', 'Genel', 'aşağıdakilerden özel cümlesi olmayan mesajlarda (anlaşılmayan mesaj, onaylama, iyiyim, hobi…)'],
+      ['greet', 'Selama'], ['how_are_you', '"Nasılsın"a'], ['wyd', '"Ne yapıyorsun"a'], ['compliment', 'İltifata'], ['question', 'Soruya'], ['laugh', 'Gülmeye']],
+    trip: [
+      ['late', 'Geç cevap verince', 'trip başlar · karakterin mesajından «geç» süre sonra yazınca, Lv.2+'],
+      ['dry', 'Kuru mesaja', 'trip başlar · "ok, hmm, tamam" gibi tek kelimelik mesajlarda, Lv.2+'],
+      ['bye', 'Vedaya', 'trip başlar · "görüşürüz, gidiyorum" deyince, Lv.2+'],
+      ['insult', 'Hakarete', 'trip başlar · %85'],
+      ['sulk', 'Trip sürerken', 'her mesaja bunlardan biri; kısa ve emojisiz'],
+      ['why', '"Ne oldu, kızdın mı?" deyince', 'trip sürerken sebebi sorarsan'],
+      ['end', 'Barışınca', 'özür (her zaman), iltifat / özlem / sarılma / öpücük / flört (%50) ya da hediye'],
+      ['fade', 'Trip kendiliğinden bitince', 'trip süresi dolunca; 45 dk sessizlikte de söylemeden geçer'],
+      ['wake', 'Zorla uyandırılınca', 'trip başlar · uyurken zorla çevrimiçi yapılınca %50']],
+    red: [
+      ['meet', 'Buluşma isteğine'], ['photo', 'Fotoğraf isteğine'], ['kiss', 'Öpücüğe'], ['hug', 'Sarılmaya'], ['flirt', 'Flörte'],
+      ['ask', 'Kişisel soruya', 'yaş, şehir, meslek, isim sorusu'],
+      ['any', 'Diğer isteklere', '"atar mısın, gelsene, söylesene…" ve yukarıda cümlesi olmayanlar']],
+    ilgi: [
+      ['unread', 'Mesajına bakmadıysan', 'sohbeti açmadın · son mesajından «ilk dürtme» süre sonra'],
+      ['seen', 'Görüp cevap vermediysen', 'sohbeti açtın ama yazmadın'],
+      ['again', 'İkinci dürtme', '«ikinci dürtme» süre sonra hâlâ cevap yoksa; sonra bir daha yazmaz'],
+      ['late', 'Geç cevaba sitem', 'geç yazınca normal cevabın başına eklenir'],
+      ['forgot', 'Uzun süre yazmayınca', 'son mesajının üstünden 12 saat geçtiyse açılış mesajı olarak (%60)']],
+    sayko: [
+      ['opener', 'Açılış mesajları', 'sohbeti kendisi başlatınca «garip açılış» ihtimaliyle'],
+      ['odd', 'Arada tuhaf cümle', 'normal cevabın sonuna «tuhaf cümle» ihtimaliyle']]
+  };
+  const TR_SET = [
+    { k: 'tersChance', name: 'Terslenme', min: 0, max: 1, step: 0.01, pct: true, hint: 'Ters huylu karakterin uygun mesajlarda terslenme ihtimali (gerginken x2, sıkılmışken x1.5, Lv.4+ yarısı)' },
+    { k: 'redChance', name: 'Reddetme', min: 0, max: 1, step: 0.05, pct: true, hint: 'Nazlı karakterin isteği geri çevirme ihtimali; her yakınlık seviyesinde %12 azalır (en az %30\'u kalır)' },
+    { k: 'tripChance', name: 'Geç cevaba trip', min: 0, max: 1, step: 0.05, pct: true, hint: 'Tripçi karakterin geç cevaba trip atma ihtimali; kuru mesajda ve vedada bunun %40\'ı' },
+    { k: 'sulkTurns', name: 'Trip süresi (mesaj)', min: 1, max: 8, step: 1, pct: false, hint: 'Trip kaç mesaj sürer; özür, iltifat ya da hediye erken bitirir' },
+    { k: 'lateMin', name: '"Geç" sayılan (dk)', min: 2, max: 180, step: 1, pct: false, hint: 'Karakterin mesajından kaç dakika sonra gelen cevap geç sayılır (trip ve sitem için)' },
+    { k: 'nudgeMin', name: 'İlk dürtme (dk)', min: 1, max: 60, step: 1, pct: false, hint: 'Cevap gelmezse kaç dakika sonra "neden bakmıyorsun bana?" der' },
+    { k: 'nudge2Min', name: 'İkinci dürtme (dk)', min: 2, max: 120, step: 1, pct: false, hint: 'İlk dürtmeden kaç dakika sonra son kez yazar' },
+    { k: 'saykoChance', name: 'Garip açılış', min: 0, max: 1, step: 0.05, pct: true, hint: 'Sayko karakter sohbeti başlatınca garip mesaj seçme ihtimali' },
+    { k: 'oddChance', name: 'Tuhaf cümle', min: 0, max: 0.5, step: 0.01, pct: true, hint: 'Sayko karakterin normal cevabına tuhaf cümle ekleme ihtimali' }
+  ];
+  let traitTab = ''; // '' = ortak cümleler, yoksa arketip id
+
+  let D = { intents: {}, lines: {}, topics: {}, tones: {}, topicShared: {}, topicSettings: {}, traits: {}, traitSettings: {} };
+  let selWord = null; // konu sayfasında seçili kelime (kelimeye özel cevaplar için)
+  let saved = JSON.stringify(D);
+  let cur = 'greet';
+  let arch = P.arch[0].id;
+
+  /* ---------- Model ---------- */
+  function apply() {
+    A.INTENTS = clone(P.intents);
+    A.INTENT_EFFECTS = clone(P.effects);
+    A.ARCHETYPES = clone(P.arch);
+    A.TOPICS = clone(P.topics);
+    A.TOPIC_TONES = clone(P.tones);
+    A.TOPIC_SHARED = clone(P.tshared);
+    A.TOPIC_SETTINGS = clone(P.tset);
+    A.TRAITS = clone(P.traits);
+    A.TRAIT_SETTINGS = clone(P.trset);
+    E.applyDialog(D);
+  }
+  const order = () => A.INTENTS.map(r => r[0]);
+  const isTopic = id => id.startsWith('topic:');
+  const tid = id => id.slice(6);
+  const topicCur = id => A.TOPICS.find(t => t.id === id);
+  const topicOrig = id => P.topics.find(t => t.id === id);
+  const isSpecial = id => id in SPECIAL;
+  const isPage = id => id === 'tones' || id === 'traits'; // kelimesi olmayan ayar sayfaları
+  const isCustom = id => !BUILTIN.includes(id) && !isSpecial(id) && !isTopic(id) && !isPage(id);
+  const label = id => isTopic(id) ? (topicCur(tid(id)) || {}).label || tid(id)
+    : id === 'tones' ? 'Konu akışı, ton ve ayarlar'
+    : id === 'traits' ? 'Huylar: ters, tripçi, nazlı, ilgi bekler, sayko'
+    : (D.intents[id] && D.intents[id].label) || LABELS[id] || id;
+  const wordsOf = id => isTopic(id) ? (topicCur(tid(id)) || {}).words || [] : (A.INTENTS.find(r => r[0] === id) || [null, []])[1];
+  const origWords = id => (P.intents.find(r => r[0] === id) || [null, null])[1];
+  const keyIntent = k => k.replace(/^(neg|sad|low):/, '').replace(/_close$/, '');
+  const archOf = (src, aid) => src.find(a => a.id === aid);
+  function poolIn(src, aid, key) {
+    const a = archOf(src, aid);
+    const m = key.match(/^(neg|sad|low):(.+)$/);
+    return (m ? (a.mood[m[1]] || {})[m[2]] : a.lines[key]) || [];
+  }
+  const poolCur = (aid, key) => (D.lines[aid] && D.lines[aid][key]) || poolIn(A.ARCHETYPES, aid, key);
+  const poolOrig = (aid, key) => poolIn(P.arch, aid, key);
+  const isModKey = (aid, key) => !!(D.lines[aid] && key in D.lines[aid]);
+
+  function pathsFor(id) {
+    if (NOTES[id]) return [];
+    if (id === 'any') return PATHS.slice(2);
+    if (id === 'opener') return PATHS.slice(0, 2);
+    return PATHS;
+  }
+  function intentModified(id) {
+    if (isTopic(id)) return tid(id) in D.topics;
+    if (id === 'tones') return !!(Object.keys(D.tones).length || Object.keys(D.topicShared).length || Object.keys(D.topicSettings).length);
+    if (id === 'traits') return !!(Object.keys(D.traits).length || Object.keys(D.traitSettings).length);
+    if (D.intents[id] && (isCustom(id) || Object.keys(D.intents[id]).length)) return true;
+    return Object.values(D.lines).some(p => Object.keys(p).some(k => keyIntent(k) === id));
+  }
+  function archModified(aid, id) {
+    return Object.keys(D.lines[aid] || {}).some(k => keyIntent(k) === id);
+  }
+
+  function def(id) { return D.intents[id] = D.intents[id] || {}; }
+  function tidy(id) {
+    if (!isCustom(id) && D.intents[id] && !Object.keys(D.intents[id]).length) delete D.intents[id];
+  }
+  function setWords(id, words) {
+    if (isTopic(id)) return editTopic(tid(id), t => { t.words = words; });
+    const d = def(id);
+    if (!isCustom(id) && same(words, origWords(id))) delete d.words; else d.words = words;
+    tidy(id);
+  }
+  function setPool(aid, key, list) {
+    D.lines[aid] = D.lines[aid] || {};
+    if (same(list, poolOrig(aid, key))) delete D.lines[aid][key]; else D.lines[aid][key] = list;
+    if (!Object.keys(D.lines[aid]).length) delete D.lines[aid];
+  }
+
+  /* Konu düzenleme: değişen konu bütünüyle custom-dialog.js'e yazılır, varsayılanla aynıysa silinir */
+  const bareW = w => w.replace(/^~/, '').replace(/^\^/, '');
+  const canonTopic = t => JSON.stringify({
+    label: t.label, words: t.words || [], tastes: t.tastes || [],
+    lines: TSLOTS.map(s => (t.lines || {})[s.id] || []),
+    wordLines: Object.keys(t.wordLines || {}).sort().map(k => [k, t.wordLines[k]]).filter(x => x[1].length)
+  });
+  function editTopic(id, fn) {
+    const t = clone(topicCur(id));
+    delete t.id;
+    t.lines = t.lines || {};
+    t.tastes = t.tastes || [];
+    t.wordLines = t.wordLines || {};
+    fn(t);
+    Object.keys(t.lines).forEach(k => { if (!t.lines[k].length) delete t.lines[k]; });
+    // silinen kelimenin özel cevapları da gider
+    const live = t.words.map(bareW);
+    Object.keys(t.wordLines).forEach(k => { if (!t.wordLines[k].length || !live.includes(k)) delete t.wordLines[k]; });
+    const o = topicOrig(id);
+    if (o && canonTopic(t) === canonTopic(o)) delete D.topics[id]; else D.topics[id] = t;
+  }
+  function setList(bag, orig, k, list) {
+    if (same(list, orig[k] || [])) delete bag[k]; else bag[k] = list;
+  }
+  const splitWords = s => s.split(/[,\n]/).map(x => x.trim().replace(/\s+/g, ' ')).filter(Boolean);
+  const splitLines = s => s.split('\n').map(x => x.trim()).filter(Boolean);
+
+  /* Bu kişiliğin sevdikleri / sevmedikleri içinde konunun zevk kelimeleri */
+  function tasteHits(a, id) {
+    const one = l => E.topicTaste({ likes: [l] }, { id }) === 'love';
+    return { love: (a.likes || []).filter(one), meh: (a.dislikes || []).filter(one) };
+  }
+
+  /* Boş yol nereye düşer (engine.js'teki sırayla aynı) */
+  function resolve(aid, id, p) {
+    const own = poolCur(aid, p.key(id));
+    if (own.length) return { pool: own, via: null };
+    const a = archOf(A.ARCHETYPES, aid);
+    if (p.id === 'normal') return { pool: a.lines.fallback, via: 'Anlaşılmayan mesaj cümleleri' };
+    if (p.id === 'close') return { pool: resolve(aid, id, PATHS[0]).pool, via: 'Normal yol' };
+    if (id === 'insult' && a.lines.insult) return { pool: a.lines.insult, via: 'Normal hakaret cümleleri' };
+    const any = (a.mood[p.id] || {}).any;
+    if (any && any.length && id !== 'any') return { pool: any, via: `genel ${MOOD_NAME[p.id]} cümleleri` };
+    return { pool: [], via: 'uygulamanın ortak kısa cümleleri (hmm, tamam…)' };
+  }
+
+  /* Örnek değerlerle doldur (sadece önizleme) */
+  function demo(aid, s, x = 'Tarkan') {
+    const a = archOf(A.ARCHETYPES, aid);
+    const likes = [...(a.likes || [])].sort(() => Math.random() - 0.5);
+    const hit = (a.hitap || []).flat();
+    const laugh = { ahah: 'ahahah', keysmash: 'ASDJSKFH', hihi: 'hihi', hh: 'hh' }[a.style.laugh] || '😊';
+    return s.replace(/\{h\}/g, () => hit.length && Math.random() < 0.6 ? ' ' + pickRaw(hit) : '')
+      .replace(/\{name\}/g, 'Deniz').replace(/\{self\}/g, 'Ece').replace(/\{age\}/g, '24')
+      .replace(/\{city_at\}/g, "İzmir'deyim").replace(/\{city\}/g, 'İzmir').replace(/\{district\}/g, 'Karşıyaka')
+      .replace(/\{fav\}/g, 'Kordon').replace(/\{job_is\}/g, 'mimarım').replace(/\{doing\}/g, 'çizim yapıyorum')
+      .replace(/\{like\}/g, likes[0] || 'kahve').replace(/\{like2\}/g, likes[1] || 'müzik').replace(/\{laugh\}/g, laugh)
+      .replace(/\{x\} m[ıi](?=[\s?!.,]|$)/g, () => `${x} ${soru(x)}`)
+      .replace(/\{x\}/g, x).replace(/\{cause\}/g, 'işteki bir mesele').replace(/\{gift\}/g, 'gül')
+      .replace(/\s+([,.!?])/g, '$1').replace(/\s{2,}/g, ' ').trim();
+  }
+  // Soru eki (memory.js'teki ile aynı): Ankara -> mı, kedi -> mi, maç -> mı
+  const soru = w => ({ a: 'mı', ı: 'mı', e: 'mi', i: 'mi', o: 'mu', u: 'mu', ö: 'mü', ü: 'mü' }[(String(w).toLocaleLowerCase('tr').match(/[aeıioöuü]/g) || ['e']).pop()]);
+  const bubbles = (aid, line, x) => line ? demo(aid, line, x).split('|').filter(Boolean).map(b => `<div class="bub">${esc(b)}</div>`).join('') : '';
+
+  /* ---------- Kayıt durumu ---------- */
+  function changed(full = true) {
+    apply();
+    const dirty = JSON.stringify(D) !== saved;
+    $('#dirty').textContent = dirty ? '● Kaydedilmemiş değişiklik var' : 'Değişiklik yok';
+    $('#dirty').classList.toggle('on', dirty);
+    $('#save').disabled = !dirty;
+    renderSide();
+    if (full) renderMain(); else refreshStatus();
+    runTest();
+  }
+
+  async function save() {
+    const body = JSON.stringify(D, null, 1);
+    try {
+      const r = await fetch('/api/dialog', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || 'kaydedilemedi');
+      saved = JSON.stringify(D);
+      changed(false);
+      toast(j.changed ? `Kaydedildi (${j.sw}). Telefonda görmek için commit + push.` : 'Zaten kayıtlı.');
+    } catch (e) {
+      toast('Kaydedilemedi: ' + e.message + ' (sunucu penceresi açık mı?)');
+    }
+  }
+
+  let toastT;
+  function toast(msg) {
+    const t = $('#toast');
+    t.textContent = msg; t.classList.add('on');
+    clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 3800);
+  }
+
+  /* ---------- Kenar listesi ---------- */
+  const side = $('#side');
+  let search = '';
+  function renderSide() {
+    const q = search.toLocaleLowerCase('tr').trim();
+    const fq = E.norm(q);
+    const show = id => !q || label(id).toLocaleLowerCase('tr').includes(q) || id.includes(q) ||
+      (!isSpecial(id) && !isPage(id) && wordsOf(id).some(w => E.norm(w).includes(fq)));
+    const isNew = id => isCustom(id) || (isTopic(id) && !topicOrig(tid(id)));
+    const item = (id, n) => `<button class="it ${id === cur ? 'on' : ''}" data-id="${esc(id)}">
+        <span class="n">${n || ''}</span><span class="lb">${esc(label(id))}</span>
+        ${isNew(id) ? '<b class="new">yeni</b>' : ''}${intentModified(id) ? '<i class="dot" title="değiştirildi"></i>' : ''}
+        ${isSpecial(id) || isPage(id) ? '' : `<small>${wordsOf(id).length}</small>`}</button>`;
+    const keep = document.activeElement && document.activeElement.id === 'sq';
+    side.innerHTML = `<input id="sq" placeholder="Ara (isim ya da kelime)…" value="${esc(search)}">
+      <div class="row" style="margin-bottom:6px;flex-wrap:nowrap">
+        <button class="btn sm" id="newIntent" style="flex:1">+ Yeni niyet</button>
+        <button class="btn sm" id="newTopic" style="flex:1">+ Yeni konu</button></div>
+      <h4>Anahtar kelimeli niyetler · öncelik sırası</h4>
+      ${order().map((id, i) => show(id) ? item(id, i + 1) : '').join('')}
+      <h4>Özel durumlar</h4>
+      ${Object.keys(SPECIAL).filter(show).map(id => item(id)).join('')}
+      <h4>Kişilik özellikleri</h4>
+      ${show('traits') ? item('traits') : ''}
+      <h4>Konular · mesaj ne hakkında</h4>
+      ${show('tones') ? item('tones') : ''}
+      ${A.TOPICS.map(t => 'topic:' + t.id).filter(show).map(id => item(id)).join('')}`;
+    if (keep) { const s = $('#sq'); s.focus(); s.setSelectionRange(s.value.length, s.value.length); }
+  }
+  side.addEventListener('input', e => { if (e.target.id === 'sq') { search = e.target.value; renderSide(); } });
+  side.addEventListener('click', e => {
+    if (e.target.closest('#newIntent')) return newIntent();
+    if (e.target.closest('#newTopic')) return newTopic();
+    const b = e.target.closest('.it');
+    if (b) { cur = b.dataset.id; renderSide(); renderMain(); window.scrollTo({ top: 0 }); }
+  });
+
+  function newIntent() {
+    const name = prompt('Yeni niyetin adı (ör. "Müzik sorusu"):');
+    if (!name || !name.trim()) return;
+    const fold = { ç: 'c', ğ: 'g', ı: 'i', ö: 'o', ş: 's', ü: 'u', â: 'a', î: 'i', û: 'u' };
+    let id = 'x_' + name.toLocaleLowerCase('tr').replace(/[çğıöşüâîû]/g, c => fold[c]).replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').replace(/_close$/, '_');
+    if (id === 'x_') id = 'x_niyet';
+    let n = id, k = 2;
+    while (order().includes(n) || isSpecial(n)) n = id + '_' + k++;
+    D.intents[n] = { label: name.trim(), words: [], before: 'how_are_you' };
+    cur = n;
+    changed();
+    setTimeout(() => { const w = $('#wIn'); if (w) w.focus(); }, 0);
+  }
+
+  function newTopic() {
+    const name = prompt('Yeni konunun adı (ör. "Araba"):');
+    if (!name || !name.trim()) return;
+    const fold = { ç: 'c', ğ: 'g', ı: 'i', ö: 'o', ş: 's', ü: 'u', â: 'a', î: 'i', û: 'u' };
+    const id = 't_' + (name.toLocaleLowerCase('tr').replace(/[çğıöşüâîû]/g, c => fold[c]).replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'konu');
+    let n = id, k = 2;
+    while (topicCur(n)) n = id + '_' + k++;
+    D.topics[n] = { label: name.trim(), words: [], tastes: [], lines: {}, wordLines: {} };
+    cur = 'topic:' + n;
+    changed();
+    setTimeout(() => { const w = $('#wIn'); if (w) w.focus(); }, 0);
+  }
+
+  /* ---------- Ana panel ---------- */
+  const main = $('#main');
+  function renderMain() {
+    const id = cur;
+    if (isTopic(id) && topicCur(tid(id))) return renderTopic();
+    if (id === 'tones') return renderTones();
+    if (id === 'traits') return renderTraits();
+    if (!isSpecial(id) && !order().includes(id)) { cur = 'greet'; return renderMain(); }
+    const d = D.intents[id] || {};
+    let h = `<div class="card"><div class="head">
+        ${isCustom(id) ? `<input id="lblIn" value="${esc(label(id))}" title="Niyetin adı (sadece editörde görünür)">` : `<h2>${esc(label(id))}</h2>`}
+        <code>${esc(id)}</code>
+        ${isCustom(id) ? '<b class="new">yeni</b>' : ''}
+        <span class="grow"></span>
+        ${isCustom(id) ? '<button class="btn sm danger" id="delIntent">Niyeti sil</button>'
+          : intentModified(id) ? '<button class="btn sm" id="resetIntent">Bu niyetteki tüm değişiklikleri geri al</button>' : ''}
+      </div>
+      ${SPECIAL[id] ? `<p class="desc">${esc(SPECIAL[id])}</p>` : ''}
+      ${NOTES[id] ? `<p class="desc">${esc(NOTES[id])}</p>` : ''}</div>`;
+
+    if (!isSpecial(id)) {
+      const words = wordsOf(id);
+      h += `<div class="card"><h3>Anahtar kelimeler <small class="st">${words.length}</small>
+          ${d.words && !isCustom(id) ? '<a id="resetWords" style="color:var(--accent);cursor:pointer;font-size:12.5px;margin-left:8px">varsayılana dön</a>' : ''}</h3>
+        <div class="chips">${words.map((w, i) => {
+          const win = winner(w);
+          const warn = win !== id;
+          const tip = warn ? `Bu kelime yazılınca önce "${label(win)}" eşleşiyor. Önceliği değiştir ya da kelimeyi daralt.` : 'Çift tıkla: düzenle';
+          return `<span class="chip ${warn ? 'warn' : ''}" title="${esc(tip)}" data-i="${i}">${esc(w)}<button data-del="${i}" title="Sil">×</button></span>`;
+        }).join('') || '<span class="hint">Henüz kelime yok.</span>'}</div>
+        <div class="row">
+          <input type="text" id="wIn" placeholder="kelime ya da kalıp — virgülle birden fazla (ör. şarkı, müzik dinler misin)">
+          <label title="Sadece mesaj bu kelimeyle başlıyorsa ve kelime tam ise (^)"><input type="checkbox" id="wStart"> sadece mesaj başında</label>
+          <button class="btn" id="wAdd">Ekle</button>
+        </div>
+        <p class="hint">Kelimenin <b>başı</b> eşleşir: "özled" → özledim, özlemişim… Türkçe harfler, büyük/küçük harf ve tekrar eden harfler fark etmez (selaaam = selam).
+          Çok kelimeli kalıplar ("nasıl gidiyor") yan yana aranır. <b>^</b> ile başlayanlar sadece mesajın başında, tam kelime olarak eşleşir ("^ok" → "ok" tutar, "okul" tutmaz).
+          ⚠ işaretli kelimeler üstteki başka bir niyete takılıyor.</p></div>`;
+
+      const eff = effOf(id);
+      const pos = order().indexOf(id) + 1;
+      h += `<div class="grid2">
+        <div class="card"><h3>Öncelik</h3>
+          <div class="row"><select id="before">
+            <option value="">${isCustom(id) ? '(en sona)' : '(varsayılan yeri)'}</option>
+            ${order().filter(x => x !== id).map(x => `<option value="${esc(x)}" ${d.before === x ? 'selected' : ''}>«${esc(label(x))}» niyetinden önce</option>`).join('')}
+          </select></div>
+          <p class="hint">Şu an <b>${pos}.</b> sırada. Mesaj birden fazla niyete uyarsa listede üstte olan kazanır.
+            Sohbette birkaç mesaj birden gelirse yine en üstteki niyet cevaplanır. Soru ve anlaşılmayan mesaj her zaman en sondadır.</p>
+        </div>
+        <div class="card"><h3>Etkisi ${d.effect && !isCustom(id) ? '<a id="resetEff" style="color:var(--accent);cursor:pointer;font-size:12.5px;margin-left:8px">varsayılana dön</a>' : ''}</h3>
+          <div class="eff">
+            <label>Mutluluk</label><input type="range" id="effV" min="-0.4" max="0.4" step="0.01" value="${eff.valence}"><output>${fmt(eff.valence)}</output>
+            <label>Heyecan</label><input type="range" id="effA" min="-0.3" max="0.3" step="0.01" value="${eff.arousal}"><output>${fmt(eff.arousal)}</output>
+            <label>Yakınlık puanı</label><input type="range" id="effF" min="-10" max="10" step="1" value="${eff.aff}"><output>${fmt(eff.aff, 0)}</output>
+          </div>
+          <p class="hint">Bu niyetteki bir mesaj karakterin ruh halini ve yakınlığınızı bu kadar değiştirir. Yakınlık: Lv.2 için 8, Lv.3 için 20 puan gerekir.</p>
+        </div></div>`;
+    }
+
+    const paths = pathsFor(id);
+    if (paths.length) {
+      h += `<div class="card"><h3>Cevap yolları</h3>
+        <div class="tabs">${P.arch.map(a => `<button class="tab ${a.id === arch ? 'on' : ''}" data-arch="${a.id}">${a.icon} ${esc(a.label)}${archModified(a.id, id) ? '<i class="dot"></i>' : ''}</button>`).join('')}</div>
+        ${paths.map(p => {
+          const key = p.key(id);
+          return `<div class="path" data-key="${esc(key)}">
+            <div class="ph"><b>${p.name}</b><small>${p.hint}</small><span class="st"></span>
+              <span class="acts"><a data-act="sample">örnek</a><a data-act="copy">tüm kişiliklere kopyala</a><a data-act="reset">varsayılana dön</a></span></div>
+            <textarea rows="${Math.min(8, Math.max(3, poolCur(arch, key).length + 1))}" spellcheck="false" placeholder="Her satır bir cevap. | ile birden fazla balon: selam|nasılsın?">${esc(poolCur(arch, key).join('\n'))}</textarea>
+            <div class="bubbles"></div></div>`;
+        }).join('')}
+        <details><summary>Cümlelerde kullanılabilecek kısaltmalar</summary><div class="legend">
+          <code>a|b</code><span>iki ayrı mesaj balonu</span>
+          <code>{h}</code><span>yakınlığa göre hitap (" canım" ya da boş)</span>
+          <code>{name}</code><span>kullanıcının adı</span><code>{self}</code><span>karakterin adı</span>
+          <code>{age} {city} {district}</code><span>yaş, şehir, semt</span>
+          <code>{city_at}</code><span>"İzmir'deyim"</span><code>{fav}</code><span>şehirde sevdiği yer</span>
+          <code>{job_is}</code><span>"mimarım"</span><code>{doing}</code><span>mesleğine göre şu an ne yaptığı</span>
+          <code>{like} {like2}</code><span>sevdiği şeylerden</span><code>{laugh}</code><span>kişiliğe göre gülme (ahah, hh, ASDJK…)</span>
+        </div></details>
+        <p class="hint">Karakter son kullandığı ~14 cümleyi tekrar etmez, bu yüzden her yolda birkaç farklı cümle olması iyidir. Kullanıcıya ilgisi düşükse
+          (kuru cevaplar, tekrarlar) kısa sohbet niyetlerinde bu yollar yerine "hmm, tamam" gibi tek kelimelik cevaplar verir.</p></div>`;
+    }
+    main.innerHTML = h;
+    refreshStatus();
+  }
+
+  /* ---------- Konu paneli ---------- */
+  // Kelime yazılınca bu konu mu yakalanıyor, o niyette konu cevabı kullanılıyor mu
+  function topicWarn(w, id) {
+    const t = bareW(w);
+    const tp = E.topicOf(t, 'fallback', w.startsWith('~') ? id : null);
+    if (!tp || tp.id !== id) return tp ? `Bu kelime yazılınca «${label('topic:' + tp.id)}» konusu kazanıyor${w.startsWith('~') ? ' (bu konu açıkken bile)' : ''}.` : 'Bu kelime tek başına hiçbir konuyu yakalamıyor.';
+    const it = E.detect(t).intent;
+    if (!E.TOPIC_FULL.includes(it) && !E.TOPIC_AFTER.includes(it)) return `Bu kelime «${label(it)}» niyetine düşüyor; o niyette konu cevabı kullanılmaz.`;
+    return null;
+  }
+
+  function renderTopic() {
+    const id = tid(cur), t = topicCur(id), o = topicOrig(id);
+    const x = (t.words[0] || 'kahve').replace(/^\^/, '');
+    let h = `<div class="card"><div class="head">
+        <input id="tLbl" value="${esc(t.label)}" title="Konunun adı (sadece editörde görünür)">
+        <code>${esc(id)}</code>${o ? '' : '<b class="new">yeni</b>'}
+        <span class="grow"></span>
+        ${!o ? '<button class="btn sm danger" id="delTopic">Konuyu sil</button>'
+          : id in D.topics ? '<button class="btn sm" id="resetTopic">Bu konudaki tüm değişiklikleri geri al</button>' : ''}
+      </div>
+      <p class="desc">Mesajda bu kelimelerden biri geçerse karakter konuya uygun cevap verir. Konu cevabı şu niyetlerde kullanılır:
+        <b>${E.TOPIC_FULL.map(i => label(i)).join(', ')}</b> (normal cevabın yerine) ve <b>${E.TOPIC_AFTER.map(i => label(i)).join(', ')}</b> (cevabın ilk balonundan sonra).
+        Karakter gergin, üzgün ya da yorgunsa konuya değinmez.</p></div>`;
+
+    h += `<div class="card"><h3>Akış şeması <small class="st">bir kutuya tıkla: düzenle</small></h3>${topicDiagram(t, id)}
+      <p class="hint">Soldaki kelimeler konuyu yakalar (kesik çizgili olanlar <b>zayıf</b>: sadece konu zaten konuşuluyorsa sayılır).
+        Mor kesik oklar kelimeye özel cevaplara gider; o kelime yazılınca önce bu ihtimal denenir, tutmazsa konunun normal yolları kullanılır.</p></div>`;
+
+    const WL = t.wordLines || {};
+    h += `<div class="card"><h3>Anahtar kelimeler <small class="st">${t.words.length}</small></h3>
+      <div class="chips">${t.words.map((w, i) => {
+        const warn = topicWarn(w, id), b = bareW(w), n = (WL[b] || []).length;
+        const tip = warn || (w.startsWith('~') ? 'Zayıf kelime: konuyu kendisi açmaz, konu konuşulurken sayılır. ' : '') + 'Tıkla: kelimeye özel cevaplar · çift tıkla: düzenle';
+        return `<span class="chip ${warn ? 'warn' : ''} ${w.startsWith('~') ? 'weak' : ''} ${b === selWord ? 'sel' : ''}" title="${esc(tip)}" data-i="${i}" data-w="${esc(b)}">${esc(b)}${w.startsWith('^') ? '<small>^</small>' : ''}${n ? `<b class="wl">💬${n}</b>` : ''}<button data-del="${i}" title="Sil">×</button></span>`;
+      }).join('') || '<span class="hint">Henüz kelime yok.</span>'}</div>
+      <div class="row">
+        <input type="text" id="wIn" placeholder="kelime — virgülle birden fazla (ör. araba, ehliyet, trafik)">
+        <label title="Konuyu kendisi açmaz; sadece bu konu zaten konuşulurken sayılır (~)"><input type="checkbox" id="wWeak"> zayıf</label>
+        <label title="Sadece mesaj bu kelimeyle başlıyorsa ve kelime tam ise (^)"><input type="checkbox" id="wStart"> sadece mesaj başında</label>
+        <button class="btn" id="wAdd">Ekle</button>
+      </div>
+      <p class="hint">Kelimenin başı eşleşir ("sınav" → sınavım, sınavdan). Kısa kelimelere dikkat: "kar" yazarsan "kardeş", "karar" da tutar; "kar yağ" gibi daralt.
+        <b>Zayıf</b> kelimeler ("kalem", "konu" gibi tek başına bir şey anlatmayanlar) konuyu açmaz ama konu sürerken onu devam ettirir.
+        Birden fazla konu tutarsa en çok kelimesi eşleşen, eşitse en uzun kelimesi eşleşen kazanır; o an konuşulan konu öne geçer.
+        Cümlelerde <code>{x}</code> yakalanan kelimeyi buradaki yazılışıyla verir.</p></div>`;
+
+    // Kelimeye özel cevaplar
+    const live = t.words.map(bareW);
+    if (selWord && !live.includes(selWord)) selWord = null;
+    const withLines = live.filter(w => (WL[w] || []).length);
+    h += `<div class="card" id="wlCard"><h3>Kelimeye özel cevaplar <small class="st">${pctTxt(A.TOPIC_SETTINGS.wordChance)} ihtimalle · aynı kelimeye üst üste değil</small></h3>
+      ${selWord ? `<div class="path" data-wl="${esc(selWord)}">
+          <div class="ph"><b>«${esc(selWord)}»</b><small>bu kelime geçince (iyi/kötü haber değilse) önce bu cevaplardan biri denenir</small><span class="st"></span>
+            <span class="acts"><a data-tact="sample">örnek</a>${(WL[selWord] || []).length ? '<a data-tact="clearwl">temizle</a>' : ''}</span></div>
+          <textarea rows="${Math.min(6, Math.max(2, (WL[selWord] || []).length + 1))}" spellcheck="false" placeholder="Her satır bir cevap. Ör: hangi kitabı okuyorsun?">${esc((WL[selWord] || []).join('\n'))}</textarea>
+          <div class="bubbles"></div></div>`
+        : '<p class="hint" style="margin-top:0">Yukarıdan bir kelimeye tıkla.</p>'}
+      <p class="hint">Özel cevabı olan kelimeler: ${withLines.map(w => `<a class="wlink" data-w="${esc(w)}">${esc(w)} (${WL[w].length})</a>`).join(' · ') || 'yok'}.
+        Her kelimeye birkaç cevap yazmak iyi olur; karakter son kullandığı cümleleri tekrar etmez.</p></div>`;
+
+    const loves = [], mehs = [];
+    P.arch.forEach(a => {
+      const r = tasteHits(a, id);
+      if (r.love.length) loves.push(`${a.icon} ${esc(a.label)} <small>(${esc(r.love.join(', '))})</small>`);
+      if (r.meh.length) mehs.push(`${a.icon} ${esc(a.label)} <small>(${esc(r.meh.join(', '))})</small>`);
+    });
+    h += `<div class="card"><h3>Karakterin zevki</h3>
+      <div class="row"><input type="text" id="tTaste" value="${esc((t.tastes || []).join(', '))}" placeholder="boş bırakırsan karakterler bu konuya zevklerine göre tepki vermez"></div>
+      <p class="hint">Karakterin sevdikleri listesinde bu kelimelerden biri geçerse konuya <b>bayılır</b>, sevmediklerinde geçerse <b>ilgisiz</b> kalır.
+        Her karakter kişiliğinin listesinden rastgele 5 sevdiği şey alır, yani aşağıdakilerin hepsi her karakterde olmayabilir.</p>
+      <p class="hint">💜 Seven kişilikler: ${loves.join(' · ') || 'yok'}<br>✖ Sevmeyen kişilikler: ${mehs.join(' · ') || 'yok'}</p></div>`;
+
+    h += `<div class="card"><h3>Cevaplar</h3>
+      <p class="hint" style="margin-top:0">Konu cevapları bütün kişiliklerde ortaktır; yazım tarzı (küçük harf, emoji, gülme) karaktere göre otomatik uygulanır.
+        Örnekler üstteki seçili kişilikle gösterilir.</p>
+      ${TSLOTS.map(s => {
+        const list = (t.lines || {})[s.id] || [];
+        const mod = o && !same(list, (o.lines || {})[s.id] || []);
+        return `<div class="path ${mod ? 'mod' : ''}" data-slot="${s.id}">
+          <div class="ph"><b>${s.name}</b><small>${s.hint}</small>
+            <span class="st ${list.length ? (mod ? 'mod' : '') : 'empty'}">${list.length ? list.length + ' cümle' + (mod ? ' · değiştirildi' : '') : 'boş → ' + s.empty}</span>
+            <span class="acts"><a data-tact="sample">örnek</a>${mod ? '<a data-tact="reset">varsayılana dön</a>' : ''}</span></div>
+          <textarea rows="${Math.min(8, Math.max(2, list.length + 1))}" spellcheck="false" placeholder="Her satır bir cevap. | ile birden fazla balon">${esc(list.join('\n'))}</textarea>
+          <div class="bubbles"></div></div>`;
+      }).join('')}
+      <details><summary>Cümlelerde kullanılabilecek kısaltmalar</summary><div class="legend">
+        <code>{x}</code><span>yakalanan kelime (örnekte: "${esc(x)}"); <code>{x} mı?</code> yazarsan soru eki kelimeye uyar (maç mı, kedi mi)</span>
+        <code>a|b</code><span>iki ayrı mesaj balonu</span>
+        <code>{h}</code><span>yakınlığa göre hitap</span><code>{name}</code><span>kullanıcının adı</span>
+        <code>{laugh}</code><span>kişiliğe göre gülme</span><code>{like}</code><span>karakterin sevdiği bir şey</span>
+      </div></details></div>`;
+    main.innerHTML = h;
+    refreshTopicStatus();
+  }
+
+  /* Konu akış şeması (SVG): kelimeler → konu → yollar → örnek cevap; kelimeye özel cevaplar doğrudan */
+  function topicDiagram(t, id) {
+    const S = A.TOPIC_SETTINGS, L = t.lines || {}, WL = t.wordLines || {};
+    const words = t.words.map(w => ({ w, b: bareW(w), weak: w.startsWith('~') }));
+    const wordRows = words.filter(x => (WL[x.b] || []).length);
+    const cond = {
+      good: 'ton', bad: 'ton', ask: 'ton', any: 'ton',
+      cont: `2+ mesaj · ${pctTxt(S.contChance)}`, love: `zevk · ${pctTxt(S.tasteChance)}`, meh: `zevk · ${pctTxt(S.tasteChance)}`
+    };
+    const short = { love: 'Seviyorsa', meh: 'Sevmiyorsa', cont: 'Devam ediyor' };
+    const right = [
+      ...wordRows.map(x => ({ kind: 'word', key: x.b, name: `«${x.b}»`, sub: `kelimeye özel · ${pctTxt(S.wordChance)}`, list: WL[x.b] })),
+      ...TSLOTS.map(s => ({ kind: 'slot', key: s.id, name: short[s.id] || s.name, sub: cond[s.id], list: L[s.id] || [],
+        empty: s.id === 'love' || s.id === 'meh' ? 'ortak cümleler' : s.id === 'ask' ? '→ Genel' : 'normal cevap' }))
+    ];
+    const RH = 30, PAD = 14;
+    const H = Math.max(words.length, right.length) * RH + PAD * 2;
+    const off = (n) => (H - n * RH) / 2; // sütunu dikeyde ortala
+    const lo = off(words.length), ro = off(right.length);
+    const wy = i => lo + i * RH + RH / 2, ry = i => ro + i * RH + RH / 2;
+    const TX = 300, TW = 150, TY = H / 2;
+    const cut = (s, n) => s.length > n ? s.slice(0, n - 1) + '…' : s;
+    const curve = (x1, y1, x2, y2) => `M${x1},${y1} C${(x1 + x2) / 2},${y1} ${(x1 + x2) / 2},${y2} ${x2},${y2}`;
+    let g = '';
+    // kenarlar
+    words.forEach((x, i) => {
+      g += `<path d="${curve(176, wy(i), TX, TY)}" class="e ${x.weak ? 'weak' : ''}"/>`;
+      const r = right.findIndex(r => r.kind === 'word' && r.key === x.b);
+      if (r >= 0) g += `<path d="${curve(176, wy(i), 500, ry(r))}" class="e wl"/>`;
+    });
+    right.forEach((r, i) => {
+      if (r.kind === 'slot') g += `<path d="${curve(TX + TW, TY, 500, ry(i))}" class="e ${r.list.length ? '' : 'off'}"/>`;
+      g += `<path d="M690,${ry(i)} H712" class="e ${r.list.length ? '' : 'off'}"/>`;
+    });
+    // kelimeler
+    words.forEach((x, i) => {
+      g += `<g class="n w ${x.weak ? 'weak' : ''} ${x.b === selWord ? 'sel' : ''}" data-jump="word:${esc(x.b)}">
+        <rect x="6" y="${wy(i) - 11}" width="170" height="22" rx="11"/><text x="18" y="${wy(i) + 4}">${esc(cut(x.b, 22))}</text></g>`;
+    });
+    // konu
+    g += `<g class="n t"><rect x="${TX}" y="${TY - 26}" width="${TW}" height="52" rx="14"/>
+      <text x="${TX + TW / 2}" y="${TY - 3}" text-anchor="middle" class="b">${esc(cut(t.label, 18))}</text>
+      <text x="${TX + TW / 2}" y="${TY + 15}" text-anchor="middle" class="s">konu · hafıza ${S.keep} mesaj</text></g>`;
+    // yollar + örnek cevaplar
+    right.forEach((r, i) => {
+      const y = ry(i), has = r.list.length;
+      g += `<g class="n p ${r.kind} ${has ? '' : 'off'}" data-jump="${r.kind}:${esc(r.key)}">
+        <rect x="500" y="${y - 12}" width="190" height="24" rx="8"/>
+        <text x="510" y="${y + 4}" class="b">${esc(cut(r.name, 16))}</text><text x="682" y="${y + 4}" text-anchor="end" class="s">${esc(r.sub)}</text></g>
+        <g class="n r ${has ? '' : 'off'}" data-jump="${r.kind}:${esc(r.key)}"><rect x="712" y="${y - 12}" width="282" height="24" rx="8"/>
+        <text x="722" y="${y + 4}">${has ? esc(cut(r.list[0], 40)) + (r.list.length > 1 ? ` <tspan class="s">+${r.list.length - 1}</tspan>` : '') : `<tspan class="s">boş → ${esc(r.empty || '')}</tspan>`}</text></g>`;
+    });
+    return `<svg class="flow" viewBox="0 0 1000 ${H}" style="max-height:${Math.max(240, H)}px">${g}</svg>`;
+  }
+
+  function renderTones() {
+    const T = A.TOPIC_TONES, S = A.TOPIC_SHARED;
+    const box = (kind, k, title, hint, list, orig, words) => {
+      const mod = !same(list, orig);
+      return `<div class="path ${mod ? 'mod' : ''}" data-${kind}="${k}">
+        <div class="ph"><b>${title}</b><small>${hint}</small><span class="st ${mod ? 'mod' : ''}">${list.length} ${words ? 'kelime' : 'cümle'}${mod ? ' · değiştirildi' : ''}</span>
+          <span class="acts">${words ? '' : '<a data-tact="sample">örnek</a>'}${mod ? '<a data-tact="reset">varsayılana dön</a>' : ''}</span></div>
+        <textarea rows="${words ? 4 : Math.min(8, list.length + 1)}" spellcheck="false">${esc(words ? list.join(', ') : list.join('\n'))}</textarea>
+        <div class="bubbles"></div></div>`;
+    };
+    const ST = A.TOPIC_SETTINGS;
+    const v = k => SETTINGS.find(s => s.k === k).pct ? pctTxt(ST[k]) : ST[k];
+    main.innerHTML = `<div class="card"><div class="head"><h2>Konu akışı, ton ve ayarlar</h2></div>
+        <p class="desc">Karakter konuşulan konuyu birkaç mesaj boyunca hatırlar. Aynı konudan konuşmaya devam ettikçe bunu fark eder
+          ("bugün kafan hep derslerde galiba"), konu kelimesi geçmeyen mesajları ("çok zordu ya") da süren konuya bağlar.</p></div>
+
+      <div class="card"><h3>Sohbet simülasyonu</h3>
+        <p class="hint" style="margin-top:0">Her satıra bir mesaj yaz; karakter bunları sırayla alıyormuş gibi konunun nasıl takip edildiğini gösterir.
+          Kişilik üstteki test kutusunun yanından seçilir. Sonuçlar ihtimallere göre değişir, "tekrar" ile yeniden dene.</p>
+        <textarea id="simIn" rows="5" spellcheck="false">${esc(simText)}</textarea>
+        <div class="row" style="margin-top:8px"><button class="btn pri" id="simRun">Çalıştır</button><button class="btn" id="simAgain">tekrar</button></div>
+        <div id="simOut" style="margin-top:10px"></div></div>
+
+      <div class="card"><h3>Karar sırası</h3>
+        <div class="flowchart">
+          <div class="st2">Mesaj gelir → <b>niyet</b> bulunur (selam, soru, kötüyüm…)</div>
+          <div class="ar">↓</div>
+          <div class="st2">Mesajda bir <b>konu kelimesi</b> var mı? Şu an konuşulan konunun kelimeleri öne geçer, <b>zayıf</b> kelimeler sadece o konu açıkken sayılır.</div>
+          <div class="ar">↓ yoksa</div>
+          <div class="st2">Konu hâlâ akılda mı (son ${ST.keep} mesaj içinde) ve mesaj <b>${E.TOPIC_INHERIT.map(i => label(i)).join(' / ')}</b> mı? → mesaj süren konuya <b>bağlanır</b>.
+            "hmm, ok" gibi kuru mesajlar bağlanmaz; "neyse, boşver" gibi <b>konuyu kapatan</b> kelimeler konuyu hemen unutturur.
+            Değilse normal cevap verilir; konu ${ST.keep} mesaj sonra unutulur (yarım saat sessizlikte hemen).</div>
+          <div class="ar">↓ konu bulunduysa · ruh hali iyi ya da sakinse</div>
+          <div class="st2">Aynı konu sürüyorsa <b>${v('skipChance')}</b> ihtimalle konuya hiç değinmez (sadece akılda tutar).</div>
+          <div class="ar">↓</div>
+          <div class="st2">Kelimenin <b>kendine özel cevabı</b> varsa <b>${v('wordChance')}</b> ihtimalle onu söyler (aynı kelimeye üst üste değil; iyi/kötü haberde atlanır).</div>
+          <div class="ar">↓</div>
+          <div class="st2">Konu 2+ mesajdır sürüyorsa <b>${v('contChance')}</b> ihtimalle <b>devam cümlesi</b>; konu kelimesi geçmeyen nötr mesaj bağlandıysa her zaman.</div>
+          <div class="ar">↓</div>
+          <div class="st2">Karakter konuyu seviyor / sevmiyorsa (soru ve genelde) <b>${v('tasteChance')}</b> ihtimalle <b>zevk cümlesi</b>.</div>
+          <div class="ar">↓</div>
+          <div class="st2">Kalan: tona göre <b>İyi haber / Kötü haber / Soru / Genel</b> cümlesi. Yol boşsa karakter normal cevabını verir.</div>
+        </div></div>
+
+      <div class="card"><h3>Ayarlar ${Object.keys(D.topicSettings).length ? '<a id="resetSet" style="color:var(--accent);cursor:pointer;font-size:12.5px;margin-left:8px">varsayılana dön</a>' : ''}</h3>
+        <div class="eff" style="grid-template-columns:180px 1fr 52px">${SETTINGS.map(s => `
+          <label title="${esc(s.hint)}">${s.name}</label><input type="range" data-set="${s.k}" min="${s.min}" max="${s.max}" step="${s.step}" value="${ST[s.k]}"><output>${v(s.k)}</output>`).join('')}
+        </div>
+        <p class="hint">${SETTINGS.map(s => `<b>${s.name}:</b> ${esc(s.hint)}`).join('<br>')}</p></div>
+
+      <div class="card"><h3>Ton kelimeleri</h3>
+        <p class="hint" style="margin-top:0">Bir konu yakalanınca mesajın tonu bu kelimelerle belirlenir: önce kötü, sonra iyi kelimelere bakılır; ikisi de yoksa mesaj soruysa
+          <b>Soru</b>, değilse <b>Genel</b> sayılır. Kelimeler virgülle ayrılır; kelimenin başı eşleşir.</p>
+        ${box('tone', 'bad', 'Kötü haber', 'önce bunlara bakılır', T.bad || [], P.tones.bad || [], true)}
+        ${box('tone', 'good', 'İyi haber', '', T.good || [], P.tones.good || [], true)}
+        ${box('tone', 'close', 'Konuyu kapatan', 'konu kelimesi olmayan bir mesajda geçerse süren konu unutulur', T.close || [], P.tones.close || [], true)}</div>
+      <div class="card"><h3>Ortak zevk cümleleri</h3>
+        <p class="hint" style="margin-top:0">Bir konunun kendi "Karakter seviyorsa / sevmiyorsa" cümleleri yoksa bunlar kullanılır.</p>
+        ${box('shared', 'love', 'Karakter seviyorsa', '', S.love || [], P.tshared.love || [], false)}
+        ${box('shared', 'meh', 'Karakter sevmiyorsa', '', S.meh || [], P.tshared.meh || [], false)}</div>`;
+    if (simText.trim()) runSim();
+  }
+
+  /* ---------- Huylar ----------
+   * Değişen yuvalar ve ihtimaller D.traits[id] = { lines: {…}, chance: {…} } olarak, sadece farklar yazılır. */
+  const trCur = id => A.TRAITS.find(t => t.id === id);
+  const trOrig = id => P.traits.find(t => t.id === id) || { lines: {}, chance: {} };
+  const trKey = slot => traitTab ? slot + '@' + traitTab : slot;
+  const trList = (id, key) => (trCur(id).lines || {})[key] || [];
+  const trBag = id => D.traits[id] = D.traits[id] || {};
+  function trTidy(id) {
+    const d = D.traits[id];
+    if (!d) return;
+    ['lines', 'chance'].forEach(k => { if (d[k] && !Object.keys(d[k]).length) delete d[k]; });
+    if (!Object.keys(d).length) delete D.traits[id];
+  }
+  function setTraitLines(id, key, list) {
+    const d = trBag(id);
+    d.lines = d.lines || {};
+    if (same(list, (trOrig(id).lines || {})[key] || [])) delete d.lines[key]; else d.lines[key] = list;
+    trTidy(id);
+  }
+  function setTraitChance(id, aid, v) {
+    const d = trBag(id);
+    d.chance = d.chance || {};
+    if (v === ((trOrig(id).chance || {})[aid] || 0)) delete d.chance[aid]; else d.chance[aid] = v;
+    trTidy(id);
+  }
+  const trArchMod = aid => Object.values(D.traits).some(d => Object.keys(d.lines || {}).some(k => k.endsWith('@' + aid)));
+  // Boş yuva nereye düşer (engine.js traitTurn / nudge ile aynı)
+  const TR_FALL = { ters: 'any', red: 'any', 'ilgi:seen': 'unread', 'ilgi:again': 'seen', 'trip:why': 'sulk', 'trip:fade': 'sulk' };
+  function trStatus(id, slot) {
+    const key = trKey(slot), list = trList(id, key);
+    const mod = !same(list, (trOrig(id).lines || {})[key] || []);
+    if (list.length) return { cls: mod ? 'mod' : '', text: `${list.length} cümle${mod ? ' · değiştirildi' : ''}`, mod };
+    if (traitTab && trList(id, slot).length) return { cls: '', text: 'boş → ortak cümleler kullanılır', mod };
+    const fb = TR_FALL[id + ':' + slot] || (slot !== 'any' && TR_FALL[id]);
+    const fbName = fb && (TR_SLOTS[id].find(s => s[0] === fb) || [])[1];
+    return { cls: 'empty', text: fbName ? `boş → «${fbName}» cümleleri` : 'boş → huy bu durumda devreye girmez', mod };
+  }
+
+  function renderTraits() {
+    const ST = A.TRAIT_SETTINGS;
+    const v = s => s.pct ? pctTxt(ST[s.k]) : ST[s.k];
+    const tabName = traitTab ? (P.arch.find(a => a.id === traitTab) || {}).label : '';
+    let h = `<div class="card"><div class="head"><h2>Huylar</h2><code>traits</code></div>
+        <p class="desc">Kişiliğin üstüne eklenen huylar. Her karakterde her huy için sabit bir zar vardır; zar, kişiliğin aşağıdaki ihtimalinden küçükse
+          o karakter bu huya sahip olur. İhtimali değiştirince mevcut karakterler de ona göre değişir. Karakterin huyları profilinde «Huyları» başlığında görünür;
+          karakter-ekle.bat ile elle de seçilebilir.</p></div>
+
+      <div class="card"><h3>Ayarlar ${Object.keys(D.traitSettings).length ? '<a id="resetTraitSet" style="color:var(--accent);cursor:pointer;font-size:12.5px;margin-left:8px">varsayılana dön</a>' : ''}</h3>
+        <div class="eff" style="grid-template-columns:180px 1fr 52px">${TR_SET.map(s => `
+          <label title="${esc(s.hint)}">${s.name}</label><input type="range" data-trset="${s.k}" min="${s.min}" max="${s.max}" step="${s.step}" value="${ST[s.k]}"><output>${v(s)}</output>`).join('')}
+        </div>
+        <p class="hint">${TR_SET.map(s => `<b>${s.name}:</b> ${esc(s.hint)}`).join('<br>')}</p></div>
+
+      <div class="card"><h3>Cümleler kimin için</h3>
+        <div class="tabs" style="margin-bottom:0"><button class="tab ttab ${traitTab ? '' : 'on'}" data-ttab="">Ortak (tüm kişilikler)</button>
+          ${P.arch.map(a => `<button class="tab ttab ${a.id === traitTab ? 'on' : ''}" data-ttab="${a.id}">${a.icon} ${esc(a.label)}${trArchMod(a.id) ? '<i class="dot"></i>' : ''}</button>`).join('')}</div>
+        <p class="hint">${traitTab ? `Şu an <b>${esc(tabName)}</b> kişiliğine özel cümleleri düzenliyorsun. Boş bırakılan yuvada ortak cümleler kullanılır.`
+          : 'Ortak cümleler bütün kişiliklerde kullanılır. Bir kişiliğe özel ton istersen (ör. Dramatik büyük harfle yazsın) o kişiliği seç.'}
+          Cümleler yazılırken kişiliğin yazım tarzı (küçük harf, büyük harfle başlama) yine uygulanır; trip, terslik ve reddetmede emoji eklenmez.</p></div>`;
+
+    A.TRAITS.forEach(t => {
+      const o = trOrig(t.id);
+      h += `<div class="card" id="trait-${t.id}"><div class="head"><h2 style="font-size:18px">${t.icon} ${esc(t.label)}</h2><code>${esc(t.id)}</code>
+          <span class="grow"></span>${t.id in D.traits ? `<button class="btn sm" data-treset="${t.id}">Bu huydaki tüm değişiklikleri geri al</button>` : ''}</div>
+        <p class="desc">${esc(t.desc)}</p>
+        <h3 style="margin-top:12px">Hangi kişiliklerde, yüzde kaç</h3>
+        <div class="eff" style="grid-template-columns:130px 1fr 52px">${P.arch.map(a => {
+          const val = (t.chance || {})[a.id] || 0, def = (o.chance || {})[a.id] || 0;
+          return `<label>${a.icon} ${esc(a.label)}</label><input type="range" data-tchance="${t.id}:${a.id}" min="0" max="1" step="0.05" value="${val}">
+            <output title="varsayılan ${pctTxt(def)}" style="${val !== def ? 'color:var(--mod)' : ''}">${pctTxt(val)}</output>`;
+        }).join('')}</div>
+        <h3 style="margin-top:14px">Cümleler${traitTab ? ` · ${esc(tabName)}` : ''}</h3>
+        ${TR_SLOTS[t.id].map(([slot, name, hint]) => {
+          const list = trList(t.id, trKey(slot));
+          return `<div class="path" data-trait="${t.id}" data-tslot="${slot}">
+            <div class="ph"><b>${esc(name)}</b><small>${esc(hint || '')}</small><span class="st"></span>
+              <span class="acts"><a data-tract="sample">örnek</a><a data-tract="reset">varsayılana dön</a></span></div>
+            <textarea rows="${Math.min(8, Math.max(2, list.length + 1))}" spellcheck="false" placeholder="${traitTab ? 'boş → ortak cümleler kullanılır' : 'Her satır bir cümle. | ile birden fazla balon'}">${esc(list.join('\n'))}</textarea>
+            <div class="bubbles"></div></div>`;
+        }).join('')}</div>`;
+    });
+    main.innerHTML = h;
+    refreshTraitStatus();
+  }
+
+  function refreshTraitStatus() {
+    main.querySelectorAll('.path[data-tslot]').forEach(el => {
+      const s = trStatus(el.dataset.trait, el.dataset.tslot);
+      const st = el.querySelector('.st');
+      st.className = 'st ' + s.cls; st.textContent = s.text;
+      el.classList.toggle('mod', s.mod);
+      el.querySelector('[data-tract=reset]').hidden = !s.mod;
+    });
+  }
+
+  /* ---------- Sohbet simülasyonu ---------- */
+  let simText = 'bugün çok ders çalıştım\nkitaplar çok kalın ya\nkalemim bile bitti\nçok zordu ya\nkonu da çok karışık\nneyse boşver\nakşam maç var';
+  function runSim() {
+    const out = $('#simOut');
+    if (!out) return;
+    const a = archOf(A.ARCHETYPES, arch);
+    const c = { ...a, id: 'sim_' + a.id };
+    let ctx = null;
+    const rows = simText.split('\n').map(s => s.trim()).filter(Boolean).map((m, i) => {
+      const d = E.detect(m);
+      const r = E.topicTurn(c, ctx, m, d.intent);
+      ctx = r.ctx;
+      const tp = r.tp;
+      const topic = tp ? `<b>${esc(tp.topic.label)}</b> ${tp.inherited ? '<span class="tag">bağlandı</span>' : `· <i>${esc(tp.word)}</i>`}<br><small class="hint">${TONE_NAME[tp.tone]} · ${tp.streak}. mesaj</small>`
+        : r.closed ? '<span class="tag">konu kapandı</span>'
+        : `<span class="hint">—${ctx ? ` (akılda: ${esc(label('topic:' + ctx.id))}, ${ctx.idle}/${A.TOPIC_SETTINGS.keep})` : ''}</span>`;
+      let reply;
+      if (r.reply) {
+        const after = E.TOPIC_AFTER.includes(d.intent);
+        const first = after ? pickRaw(a.lines[d.intent] || a.lines.fallback).split('|')[0] + '|' : '';
+        reply = `<span class="tag ${r.reply.kind}">${KIND_NAME[r.reply.kind]}</span><div class="bubbles">${bubbles(arch, first + r.reply.line, tp.word)}</div>`;
+      } else {
+        const why = !tp ? 'konu yok' : tp.inherited ? 'bağlandı ama nötr mesaj, devam cümlesi yok' : 'konuya değinmedi (ihtimal) ya da yol boş';
+        reply = `<span class="tag none">normal cevap · ${why}</span><div class="bubbles">${bubbles(arch, pickRaw(a.lines[d.intent] || a.lines.fallback))}</div>`;
+      }
+      return `<tr><td>${i + 1}</td><td>${esc(m)}<br><small class="hint">${esc(label(d.intent))}</small></td><td>${topic}</td><td>${reply}</td></tr>`;
+    });
+    out.innerHTML = rows.length ? `<table class="sim"><tr><th>#</th><th>Mesaj</th><th>Konu</th><th>Cevap</th></tr>${rows.join('')}</table>` : '';
+  }
+
+  const fmt = (v, n = 2) => (v > 0 ? '+' : '') + Number(v).toFixed(n);
+  function effOf(id) {
+    const e = A.INTENT_EFFECTS[id] || {};
+    return { valence: e.valence || 0, arousal: e.arousal || 0, aff: e.aff ?? 1 };
+  }
+  function winner(w) {
+    const t = w.replace(/^\^/, '');
+    return E.detect(t).intent;
+  }
+  const warnOf = w => isTopic(cur) ? topicWarn(w, tid(cur))
+    : winner(w) !== cur ? `"${w}" yazılınca önce "${label(winner(w))}" eşleşiyor.` : null;
+
+  // Konu / ton panelinde yazarken sadece durum yazılarını güncelle (odak kaybolmasın)
+  function refreshTopicStatus() {
+    const svg = main.querySelector('svg.flow');
+    if (svg && isTopic(cur)) svg.outerHTML = topicDiagram(topicCur(tid(cur)), tid(cur));
+    main.querySelectorAll('.path').forEach(el => {
+      const st = el.querySelector('.st');
+      let list, orig, words = false, empty = '';
+      if (el.dataset.wl) {
+        const n = ((topicCur(tid(cur)).wordLines || {})[el.dataset.wl] || []).length;
+        st.className = 'st' + (n ? '' : ' empty');
+        st.textContent = n ? n + ' cümle' : 'boş → konunun normal yolları';
+        return;
+      }
+      if (el.dataset.slot) {
+        const s = TSLOTS.find(x => x.id === el.dataset.slot), o = topicOrig(tid(cur));
+        list = (topicCur(tid(cur)).lines || {})[s.id] || [];
+        orig = o ? (o.lines || {})[s.id] || [] : list;
+        empty = s.empty;
+      } else if (el.dataset.tone) {
+        list = A.TOPIC_TONES[el.dataset.tone] || []; orig = P.tones[el.dataset.tone] || []; words = true;
+      } else {
+        list = A.TOPIC_SHARED[el.dataset.shared] || []; orig = P.tshared[el.dataset.shared] || [];
+      }
+      const mod = !same(list, orig);
+      el.classList.toggle('mod', mod);
+      st.className = 'st' + (!list.length && empty ? ' empty' : mod ? ' mod' : '');
+      st.textContent = !list.length && empty ? 'boş → ' + empty : `${list.length} ${words ? 'kelime' : 'cümle'}${mod ? ' · değiştirildi' : ''}`;
+    });
+  }
+
+  function refreshStatus() {
+    if (cur === 'traits') return refreshTraitStatus();
+    if (isTopic(cur) || cur === 'tones') return refreshTopicStatus();
+    main.querySelectorAll('.path').forEach(el => {
+      const key = el.dataset.key;
+      const p = PATHS.find(x => x.key(keyIntent(key)) === key);
+      const own = poolCur(arch, key);
+      const st = el.querySelector('.st');
+      const mod = isModKey(arch, key);
+      el.classList.toggle('mod', mod);
+      el.querySelector('[data-act=reset]').hidden = !mod;
+      if (!own.length) {
+        if (p.id === 'normal' && KEEP.includes(keyIntent(key))) { st.className = 'st empty'; st.textContent = 'boş bırakılamaz, varsayılan cümleler kullanılır'; return; }
+        const r = resolve(arch, keyIntent(key), p);
+        st.className = 'st empty'; st.textContent = 'boş → ' + r.via + ' kullanılır';
+      } else {
+        st.className = 'st' + (mod ? ' mod' : '');
+        st.textContent = own.length + ' cümle' + (mod ? ' · değiştirildi' : '');
+      }
+    });
+    main.querySelectorAll('.tab').forEach(t => {
+      const has = archModified(t.dataset.arch, cur);
+      const dot = t.querySelector('.dot');
+      if (has && !dot) t.insertAdjacentHTML('beforeend', '<i class="dot"></i>');
+      if (!has && dot) dot.remove();
+    });
+  }
+
+  function addWords() {
+    const inp = $('#wIn');
+    const start = $('#wStart').checked, weak = !!($('#wWeak') && $('#wWeak').checked);
+    const items = inp.value.split(',').map(s => s.trim().replace(/\s+/g, ' ')).filter(Boolean).map(s => {
+      const isWeak = isTopic(cur) && (weak || s.startsWith('~'));
+      const isStart = start || /^~?\^/.test(s);
+      return (isWeak ? '~' : '') + (isStart ? '^' : '') + s.replace(/^[~^]+/, '');
+    });
+    if (!items.length) return;
+    const words = [...wordsOf(cur)];
+    const known = words.map(w => w.startsWith('^') + E.norm(w));
+    const added = [];
+    items.forEach(w => {
+      const k = w.startsWith('^') + E.norm(w);
+      if (!E.norm(w) && !/\p{Extended_Pictographic}/u.test(w)) return;
+      if (!known.includes(k)) { words.push(w); known.push(k); added.push(w); }
+    });
+    if (!added.length) return toast('Bu kelime zaten var.');
+    setWords(cur, words);
+    changed();
+    const shadow = added.map(warnOf).filter(Boolean);
+    if (shadow.length) toast('⚠ ' + shadow[0]);
+    const w = $('#wIn'); w.focus();
+  }
+
+  main.addEventListener('click', e => {
+    const t = e.target;
+    if (t.id === 'wAdd') return addWords();
+    // Konu: kelime seçimi (chip, liste bağlantısı, şemadaki kutu)
+    const chipW = !t.dataset.del && t.closest('.chip[data-w], .wlink[data-w]');
+    if (chipW && isTopic(cur)) { selWord = chipW.dataset.w; renderMain(); return; }
+    const jump = t.closest('[data-jump]');
+    if (jump) {
+      const [kind, key] = jump.dataset.jump.split(/:(.*)/);
+      if (kind === 'word') { selWord = key; renderMain(); $('#wlCard').scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+      const el = main.querySelector(`.path[data-slot="${key}"]`);
+      if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.querySelector('textarea').focus({ preventScroll: true }); }
+      return;
+    }
+    if (t.id === 'simRun' || t.id === 'simAgain') { simText = $('#simIn').value; return runSim(); }
+    // Huylar
+    const ttab = t.closest('.ttab');
+    if (ttab) { traitTab = ttab.dataset.ttab; return renderMain(); }
+    if (t.id === 'resetTraitSet') { D.traitSettings = {}; return changed(); }
+    if (t.dataset.treset) {
+      if (!confirm(`"${trCur(t.dataset.treset).label}" huyundaki tüm değişiklikler (ihtimaller ve bütün kişiliklerdeki cümleler) geri alınsın mı?`)) return;
+      delete D.traits[t.dataset.treset]; return changed();
+    }
+    if (t.dataset.tract) {
+      const el = t.closest('.path'), id = el.dataset.trait, slot = el.dataset.tslot;
+      if (t.dataset.tract === 'reset') { setTraitLines(id, trKey(slot), clone((trOrig(id).lines || {})[trKey(slot)] || [])); return changed(); }
+      const list = trList(id, trKey(slot)).length ? trList(id, trKey(slot)) : trList(id, slot);
+      el.querySelector('.bubbles').innerHTML = list.length ? bubbles(traitTab || arch, pickRaw(list)) : '<span class="hint">boş</span>';
+      return;
+    }
+    if (t.id === 'resetSet') { D.topicSettings = {}; return changed(); }
+    if (t.id === 'resetTopic') {
+      if (!confirm(`"${label(cur)}" konusundaki tüm değişiklikler geri alınsın mı?`)) return;
+      delete D.topics[tid(cur)]; return changed();
+    }
+    if (t.id === 'delTopic') {
+      if (!confirm(`"${label(cur)}" konusu silinsin mi?`)) return;
+      delete D.topics[tid(cur)]; cur = 'tones'; return changed();
+    }
+    if (t.dataset.tact) {
+      const el = t.closest('.path'), out = el.querySelector('.bubbles');
+      const { slot, tone, shared, wl } = el.dataset;
+      if (wl) {
+        if (t.dataset.tact === 'clearwl') { editTopic(tid(cur), x => { delete x.wordLines[wl]; }); return changed(); }
+        const list = (topicCur(tid(cur)).wordLines || {})[wl] || [];
+        out.innerHTML = list.length ? bubbles(arch, pickRaw(list), wl) : '<span class="hint">boş</span>';
+        return;
+      }
+      if (t.dataset.tact === 'reset') {
+        if (slot) editTopic(tid(cur), x => { x.lines[slot] = clone((topicOrig(tid(cur)).lines || {})[slot] || []); });
+        if (tone) delete D.tones[tone];
+        if (shared) delete D.topicShared[shared];
+        return changed();
+      }
+      if (shared) { out.innerHTML = bubbles(arch, pickRaw(A.TOPIC_SHARED[shared] || [''])); return; }
+      const tp = topicCur(tid(cur)), L = tp.lines || {};
+      const x = (tp.words[0] || 'kahve').replace(/^\^/, '');
+      let list = L[slot] || [], via = '';
+      if (!list.length && (slot === 'love' || slot === 'meh')) { list = A.TOPIC_SHARED[slot] || []; via = 'ortak cümle'; }
+      if (!list.length && slot === 'ask') { list = L.any || []; via = 'Genel'; }
+      out.innerHTML = list.length ? bubbles(arch, pickRaw(list), x) + (via ? `<span class="hint">(${via})</span>` : '')
+        : '<span class="hint">boş: karakter normal cevabını verir</span>';
+      return;
+    }
+    if (t.dataset.del != null) {
+      const words = [...wordsOf(cur)]; words.splice(+t.dataset.del, 1);
+      setWords(cur, words); return changed();
+    }
+    if (t.id === 'resetWords') { delete def(cur).words; tidy(cur); return changed(); }
+    if (t.id === 'resetEff') { delete def(cur).effect; tidy(cur); return changed(); }
+    if (t.id === 'resetIntent') {
+      if (!confirm(`"${label(cur)}" niyetindeki tüm değişiklikler (kelimeler, öncelik, etki, bütün kişiliklerdeki cümleler) geri alınsın mı?`)) return;
+      delete D.intents[cur];
+      dropLines(cur);
+      return changed();
+    }
+    if (t.id === 'delIntent') {
+      if (!confirm(`"${label(cur)}" niyeti ve bütün cümleleri silinsin mi?`)) return;
+      const gone = cur, before = D.intents[gone].before;
+      delete D.intents[gone];
+      Object.values(D.intents).forEach(x => { if (x.before === gone) { if (before) x.before = before; else delete x.before; } });
+      dropLines(gone);
+      cur = 'greet';
+      return changed();
+    }
+    const tab = t.closest('.tab');
+    if (tab) { arch = tab.dataset.arch; $('#tArch').value = arch; renderMain(); return runTest(); }
+    if (t.dataset.act) {
+      const el = t.closest('.path'), key = el.dataset.key;
+      if (t.dataset.act === 'sample') {
+        const p = PATHS.find(x => x.key(keyIntent(key)) === key);
+        const r = poolCur(arch, key).length ? { pool: poolCur(arch, key) } : resolve(arch, keyIntent(key), p);
+        el.querySelector('.bubbles').innerHTML = r.pool.length ? bubbles(arch, pickRaw(r.pool)) : '<span class="hint">ortak kısa cümle (hmm, tamam…)</span>';
+      }
+      if (t.dataset.act === 'reset') {
+        D.lines[arch] && delete D.lines[arch][key];
+        if (D.lines[arch] && !Object.keys(D.lines[arch]).length) delete D.lines[arch];
+        changed();
+      }
+      if (t.dataset.act === 'copy') {
+        const list = poolCur(arch, key);
+        if (!confirm(`Bu ${list.length} cümle tüm kişiliklerde bu yola yazılsın mı? (Diğer kişiliklerin bu yoldaki cümleleri değişir.)`)) return;
+        P.arch.forEach(a => setPool(a.id, key, [...list]));
+        changed();
+        toast('Tüm kişiliklere kopyalandı. Kişiliğe göre tonu düzeltmeyi unutma.');
+      }
+    }
+  });
+  main.addEventListener('dblclick', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    const words = [...wordsOf(cur)];
+    const [w] = words.splice(+chip.dataset.i, 1);
+    setWords(cur, words); changed();
+    $('#wIn').value = bareW(w); $('#wStart').checked = /^~?\^/.test(w); $('#wIn').focus();
+    if ($('#wWeak')) $('#wWeak').checked = w.startsWith('~');
+  });
+  main.addEventListener('keydown', e => { if (e.target.id === 'wIn' && e.key === 'Enter') addWords(); });
+  main.addEventListener('change', e => {
+    const t = e.target;
+    if (t.id === 'before') {
+      const d = def(cur);
+      if (t.value) d.before = t.value; else if (isCustom(cur)) d.before = ''; else delete d.before;
+      if (d.before === '') delete d.before;
+      tidy(cur); changed();
+    }
+    if (t.id === 'lblIn') { def(cur).label = t.value.trim() || cur; changed(); }
+    if (t.id === 'tLbl') { editTopic(tid(cur), x => { x.label = t.value.trim() || tid(cur); }); changed(); }
+    if (t.id === 'tTaste') { editTopic(tid(cur), x => { x.tastes = splitWords(t.value); }); changed(); }
+    if (t.dataset.set) renderMain(); // karar sırasındaki yüzdeler güncellensin
+  });
+  main.addEventListener('input', e => {
+    const t = e.target;
+    if (t.id === 'simIn') { simText = t.value; return; }
+    if (t.dataset.trset) {
+      const k = t.dataset.trset, val = +t.value, s = TR_SET.find(x => x.k === k);
+      if (val === P.trset[k]) delete D.traitSettings[k]; else D.traitSettings[k] = val;
+      t.nextElementSibling.textContent = s.pct ? pctTxt(val) : val;
+      return changed(false);
+    }
+    if (t.dataset.tchance) {
+      const [id, aid] = t.dataset.tchance.split(':'), val = +t.value;
+      setTraitChance(id, aid, val);
+      const out = t.nextElementSibling;
+      out.textContent = pctTxt(val);
+      out.style.color = val !== ((trOrig(id).chance || {})[aid] || 0) ? 'var(--mod)' : '';
+      return changed(false);
+    }
+    const trp = t.tagName === 'TEXTAREA' && t.closest('.path[data-tslot]');
+    if (trp) { setTraitLines(trp.dataset.trait, trKey(trp.dataset.tslot), splitLines(t.value)); return changed(false); }
+    if (t.dataset.set) {
+      const k = t.dataset.set, val = +t.value;
+      if (val === P.tset[k]) delete D.topicSettings[k]; else D.topicSettings[k] = val;
+      t.nextElementSibling.textContent = SETTINGS.find(s => s.k === k).pct ? pctTxt(val) : val;
+      return changed(false);
+    }
+    const tp = t.tagName === 'TEXTAREA' && t.closest('.path');
+    if (tp && tp.dataset.wl) { editTopic(tid(cur), x => { x.wordLines[tp.dataset.wl] = splitLines(t.value); }); return changed(false); }
+    if (tp && tp.dataset.slot) { editTopic(tid(cur), x => { x.lines[tp.dataset.slot] = splitLines(t.value); }); return changed(false); }
+    if (tp && tp.dataset.tone) { setList(D.tones, P.tones, tp.dataset.tone, splitWords(t.value)); return changed(false); }
+    if (tp && tp.dataset.shared) { setList(D.topicShared, P.tshared, tp.dataset.shared, splitLines(t.value)); return changed(false); }
+    if (t.tagName === 'TEXTAREA') {
+      const key = t.closest('.path').dataset.key;
+      setPool(arch, key, t.value.split('\n').map(s => s.trim()).filter(Boolean));
+      return changed(false);
+    }
+    if (['effV', 'effA', 'effF'].includes(t.id)) {
+      t.nextElementSibling.textContent = fmt(t.value, t.id === 'effF' ? 0 : 2);
+      const eff = { valence: +$('#effV').value, arousal: +$('#effA').value, aff: +$('#effF').value };
+      const o = P.effects[cur] || {};
+      const orig = { valence: o.valence || 0, arousal: o.arousal || 0, aff: o.aff ?? 1 };
+      const d = def(cur);
+      if (!isCustom(cur) && same(eff, orig)) delete d.effect; else d.effect = eff;
+      tidy(cur); changed(false);
+    }
+  });
+
+  function dropLines(id) {
+    Object.keys(D.lines).forEach(aid => {
+      Object.keys(D.lines[aid]).forEach(k => { if (keyIntent(k) === id) delete D.lines[aid][k]; });
+      if (!Object.keys(D.lines[aid]).length) delete D.lines[aid];
+    });
+  }
+
+  /* ---------- Test ---------- */
+  const tIn = $('#tIn'), tOut = $('#tOut'), tArch = $('#tArch');
+  tArch.innerHTML = P.arch.map(a => `<option value="${a.id}">${a.icon} ${esc(a.label)}</option>`).join('');
+  function runTest() {
+    const msg = tIn.value.trim();
+    if (!msg) { tOut.innerHTML = ''; return; }
+    const d = E.detect(msg);
+    const id = d.intent;
+    const why = d.word ? `eşleşen kelime: <b>${esc(d.word)}</b>`
+      : id === 'tell_name' ? `ad yakalandı: <b>${esc(d.name)}</b>`
+      : id === 'question' ? 'hiçbir kelime tutmadı, soru gibi göründüğü için'
+      : 'hiçbir kelime tutmadı';
+    const ways = pathsFor(id).map(p => {
+      const r = resolve(arch, id, p);
+      return `<div class="way"><small>${p.name}${r.via ? ' · ' + esc(r.via) : ''}</small>
+        ${r.pool.length ? `<div class="bubbles">${bubbles(arch, pickRaw(r.pool))}</div>` : '<span class="hint">hmm / tamam…</span>'}</div>`;
+    }).join('') || `<div class="way">${esc(NOTES[id] || '')}</div>`;
+
+    // Konu
+    const tp = E.topicOf(msg, id);
+    let topicRow = '', topicWay = '';
+    if (tp) {
+      const ok = E.TOPIC_FULL.includes(id) || E.TOPIC_AFTER.includes(id);
+      const a = archOf(A.ARCHETYPES, arch);
+      const taste = E.topicTaste(a, tp);
+      const where = !ok ? `«${label(id)}» niyetinde konu cevabı kullanılmaz`
+        : E.TOPIC_AFTER.includes(id) ? 'normal cevabın ilk balonundan sonra eklenir' : 'normal cevabın yerine geçer';
+      topicRow = `<div class="top" style="margin-top:6px"><span>◆</span><b>${esc(tp.topic.label)}</b>
+        <span class="hint" style="margin:0">konu · kelime: <b>${esc(tp.word)}</b> · ton: <b>${TONE_NAME[tp.tone]}</b>
+        ${taste ? ` · ${esc(a.label)} ${taste === 'love' ? 'bu konuyu seviyor 💜' : 'bu konuyu sevmiyor ✖'}` : ''} · ${where}
+        ${ok ? '· sohbet içindeki takibi görmek için «Konu akışı» sayfasındaki simülasyonu kullan' : ''}</span>
+        <span class="grow"></span><button class="btn sm" data-go="topic:${esc(tp.id)}">Bu konuyu aç</button></div>`;
+      if (ok) {
+        const wl = (tp.topic.wordLines || {})[tp.word] || [];
+        if (wl.length && (tp.tone === 'ask' || tp.tone === 'any')) topicWay += `<div class="way" style="outline:2px dashed var(--accent)">
+          <small>Kelimeye özel «${esc(tp.word)}» · ${pctTxt(A.TOPIC_SETTINGS.wordChance)}</small><div class="bubbles">${bubbles(arch, pickRaw(wl), tp.word)}</div></div>`;
+        const cards = [[null, TONE_NAME[tp.tone]]];
+        if (taste && (tp.tone === 'ask' || tp.tone === 'any')) cards.unshift([taste, taste === 'love' ? 'Seviyor (%65)' : 'Sevmiyor (%65)']);
+        topicWay += cards.map(([ts, name]) => {
+          const pool = E.topicPool(tp, ts);
+          return `<div class="way" style="outline:2px solid var(--accent)"><small>Konu cevabı · ${name}</small>
+            ${pool && pool.length ? `<div class="bubbles">${bubbles(arch, pickRaw(pool), tp.word)}</div>` : '<span class="hint">bu tonda cümle yok → normal cevap</span>'}</div>`;
+        }).join('');
+      }
+    }
+
+    const canAdd = isTopic(cur) ? d.text && (!tp || 'topic:' + tp.id !== cur) : !isSpecial(cur) && !isPage(cur) && d.text && cur !== id;
+    tOut.innerHTML = `<div class="res"><div class="top">
+        <span>→</span><b>${esc(label(id))}</b><code>${esc(id)}</code><span class="hint" style="margin:0">${why}${d.greet ? ' · selam da içeriyor, cevabın başına selam eklenir' : ''}</span>
+        <span class="grow"></span>
+        <button class="btn sm" data-go="${esc(id)}">Bu niyeti aç</button>
+        ${canAdd ? `<button class="btn sm" data-addto="1">"${esc(d.text)}" → «${esc(label(cur))}» kelimelerine ekle</button>` : ''}
+        <button class="btn sm" data-again="1">başka örnek</button>
+      </div>${topicRow}<div class="ways">${topicWay}${ways}</div></div>`;
+  }
+  tIn.addEventListener('input', runTest);
+  tArch.addEventListener('change', () => { arch = tArch.value; renderMain(); runTest(); });
+  tOut.addEventListener('click', e => {
+    const t = e.target;
+    if (t.dataset.go) { cur = t.dataset.go; renderSide(); renderMain(); }
+    if (t.dataset.again) runTest();
+    if (t.dataset.addto) {
+      const text = E.detect(tIn.value).text;
+      const words = [...wordsOf(cur)];
+      if (!words.some(w => E.norm(w) === text)) { words.push(text); setWords(cur, words); changed(); toast(`"${text}" eklendi.`); }
+    }
+  });
+
+  /* ---------- Başlat ---------- */
+  $('#save').addEventListener('click', save);
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); if (!$('#save').disabled) save(); }
+  });
+  window.addEventListener('beforeunload', e => { if (JSON.stringify(D) !== saved) { e.preventDefault(); e.returnValue = ''; } });
+
+  fetch('/api/dialog', { cache: 'no-store' })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(j => {
+      D = { intents: j.intents || {}, lines: j.lines || {}, topics: j.topics || {}, tones: j.tones || {}, topicShared: j.topicShared || {}, topicSettings: j.topicSettings || {},
+        traits: j.traits || {}, traitSettings: j.traitSettings || {} };
+      saved = JSON.stringify(D);
+      changed();
+    })
+    .catch(() => {
+      document.body.innerHTML = `<div class="fatal"><h2>Sunucuya ulaşılamadı</h2>
+        <p>Bu sayfa proje klasöründeki <b>diyalog-editoru.bat</b> ile açılmalı. Bat dosyası küçük bir yerel sunucu başlatır ve editörü tarayıcıda açar;
+        kaydettiklerin <code>js/data/custom-dialog.js</code> dosyasına yazılır.</p>
+        <p>Siyah pencere kapandıysa bat dosyasını tekrar çalıştır.</p></div>`;
+    });
+})();
+</script>
+</body>
+</html>

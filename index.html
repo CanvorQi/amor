@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#7b5cff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="description" content="Amor - kalıp tabanlı, ruh hali olan sanal profillerle sohbet.">
+  <title>Amor</title>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Amor">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <div class="splash" id="splash">
+      <div class="logo">am<span class="logo-o">o</span>r</div>
+      <div class="splash-sub">kalpten gelen kalıplar</div>
+    </div>
+
+    <main id="view"></main>
+
+    <nav class="nav" id="nav">
+      <a class="nav-brand" href="#/home" aria-label="Amor">am<span>o</span>r</a>
+      <a href="#/home" data-tab="home">
+        <svg viewBox="0 0 24 24"><path d="M12 3c2.2 0 3.6 1.6 3.6 3.4 1.8 0 3.4 1.4 3.4 3.6 0 1.4-.8 2.4-1.7 3 .9.6 1.7 1.6 1.7 3 0 2.2-1.6 3.6-3.4 3.6 0 1.8-1.4 3.4-3.6 3.4s-3.6-1.6-3.6-3.4C6.6 19.6 5 18.2 5 16c0-1.4.8-2.4 1.7-3C5.8 12.4 5 11.4 5 10c0-2.2 1.6-3.6 3.4-3.6C8.4 4.6 9.8 3 12 3z"/></svg>
+        <span>Ana sayfa</span>
+      </a>
+      <a href="#/messages" data-tab="messages">
+        <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.2 3.6c-.5.4-1.3.1-1.3-.6V16A2.5 2.5 0 0 1 4 13.5z"/></svg>
+        <span>Mesaj</span>
+        <b class="badge-count" id="navBadge" hidden>0</b>
+      </a>
+      <a href="#/mood" data-tab="mood">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.3-9.6C1.5 8 3.6 4.5 7.2 4.5c2 0 3.5 1.1 4.8 2.8 1.3-1.7 2.8-2.8 4.8-2.8 3.6 0 5.7 3.5 4.5 6.9C19.5 16.4 12 21 12 21z"/></svg>
+        <span>Ruh Hali</span>
+      </a>
+      <a href="#/me" data-tab="me">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.2"/><path d="M3.8 20.2c.9-4 4.2-6.2 8.2-6.2s7.3 2.2 8.2 6.2c.1.5-.3.8-.8.8H4.6c-.5 0-.9-.3-.8-.8z"/></svg>
+        <span>Ben</span>
+      </a>
+    </nav>
+
+    <div class="toasts" id="toasts"></div>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/data/photos.js"></script>
+  <script src="js/data/pools.js"></script>
+  <script src="js/data/archetypes.js"></script>
+  <script src="js/data/intents.js"></script>
+  <script src="js/data/topics.js"></script>
+  <script src="js/data/traits.js"></script>
+  <script src="js/data/shop.js"></script>
+  <script src="js/data/questions.js"></script>
+  <script src="js/data/memory-data.js"></script>
+  <script src="js/data/custom-characters.js"></script>
+  <script src="js/data/custom-dialog.js"></script>
+  <script src="js/schedule.js"></script>
+  <script src="js/mood.js"></script>
+  <script src="js/memory.js"></script>
+  <script src="js/interest.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/wallet.js"></script>
+  <script src="js/shop.js"></script>
+  <script src="js/games.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
