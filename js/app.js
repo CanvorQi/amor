@@ -14,7 +14,10 @@
   const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
   const chars = () => A.CHARACTERS;
 
-  const ui = { homeTab: 'recommended', msgFilter: 'all', profileTab: 'profile', route: null };
+  const ui = {
+    homeTab: 'recommended', msgTab: 'msg', msgFilter: 'all', contactFilter: 'all', contactAsc: false, profileTab: 'profile', route: null,
+    filter: { min: 18, max: 99, city: '', online: false }
+  };
   const typing = {};   // karakter yazıyor mu
   const reading = {};  // mesajı okumak üzere bekliyor mu
   const timers = {};   // cevap bekletme zamanlayıcıları
@@ -152,28 +155,39 @@
       const score = c => { const v = A.Mood.current(c).values; return (A.Mood.isOnline(c) ? 1 : 0) + v.valence + v.social; };
       list.sort((a, b) => score(b) - score(a));
     }
+    const f = ui.filter;
+    const filtered = f.min > 18 || f.max < 99 || f.city || f.online;
+    list = list.filter(c => c.age >= f.min && c.age <= f.max && (!f.city || c.city === f.city) && (!f.online || A.Mood.isOnline(c)));
 
     view.innerHTML = `
-      <div class="page-pad home">
-        <div class="banners">
-          <a class="banner gold" href="#/rewards"><b>Ödüller</b><small>${A.Wallet.claimableCount()} ödül alınabilir</small><span class="art">🪙</span></a>
-          <button class="banner green" data-act="mood"><b>Ruh hali</b><small>herkes nasıl?</small><span class="art">💗</span></button>
-        </div>
-        <div class="tabs">
-          ${tabs.map(([k, t]) => `<button data-tab="${k}" class="${ui.homeTab === k ? 'active' : ''}">${t}</button>`).join('')}
+      <div class="page-pad home ${window.scrollY > 120 ? 'compact' : ''}">
+        <div class="home-top">
+          <div class="banners">
+            <a class="banner gold" href="#/rewards"><b>Ödüller</b><small>${A.Wallet.claimableCount()} ödül alınabilir</small><span class="art">🪙</span></a>
+            <button class="banner green" data-act="mood"><b>Ruh hali</b><small>herkes nasıl?</small><span class="art">💗</span></button>
+          </div>
+          <div class="tabs-row">
+            <div class="tabs">
+              ${tabs.map(([k, t]) => `<button data-tab="${k}" class="${ui.homeTab === k ? 'active' : ''}">${t}</button>`).join('')}
+            </div>
+            <button class="tab-tool ${filtered ? 'on' : ''}" data-act="filter" aria-label="Filtre"><svg viewBox="0 0 24 24"><path d="M4 5h13l-5 6.5V18l-3 1.5v-8z"/><path d="M15 15h5M15 18.5h5"/></svg></button>
+            <button class="tab-tool" data-act="rank" aria-label="Sıralama">🏆</button>
+          </div>
         </div>
         <div class="list">
-          ${list.length ? list.map(homeRow).join('') : `<div class="empty"><span class="big">😴</span>${chars().length ? 'Şu an kimse çevrimiçi değil' : 'Henüz karakter yok.<br><a href="#/create" style="color:var(--pink)">Bir tane oluştur ✨</a>'}</div>`}
+          ${list.length ? list.map(homeRow).join('') : `<div class="empty"><span class="big">😴</span>${!chars().length ? 'Henüz karakter yok.<br><a href="#/create" style="color:var(--pink)">Bir tane oluştur ✨</a>' : filtered ? 'Filtreye uyan kimse yok' : 'Şu an kimse çevrimiçi değil'}</div>`}
         </div>
       </div>`;
 
     view.querySelectorAll('.tabs button').forEach(b => b.onclick = () => { ui.homeTab = b.dataset.tab; renderHome(); });
     view.querySelector('[data-act=mood]').onclick = () => { location.hash = '#/mood'; };
+    view.querySelector('[data-act=filter]').onclick = filterSheet;
+    view.querySelector('[data-act=rank]').onclick = rankSheet;
     view.querySelectorAll('.row').forEach(row => row.onclick = e => {
       const id = row.dataset.id;
       if (e.target.closest('.hi-btn')) {
         const c = A.byId(id);
-        if (!chatOf(c).length) sendUser(c, 'Selam 👋');
+        if (!chatOf(c).length && !sendUser(c, 'Selam 👋')) return;
         location.hash = `#/chat/${id}`;
       } else {
         ui.profileTab = 'profile';
@@ -190,8 +204,10 @@
         <div class="info">
           <div class="name">${esc(c.display)} <span class="verified">💜</span></div>
           <div class="chips">
-            <span class="chip sex">♀ ${c.age}</span>
+            <span class="chip sex">♀</span>
+            <span class="chip flag">🇹🇷</span>
             <span class="chip">${esc(c.city)}</span>
+            <span class="chip">${c.age}yş</span>
             <span class="chip">${c.height}cm</span>
             <span class="chip">${esc(c.job)}</span>
           </div>
@@ -199,6 +215,50 @@
         </div>
         <button class="hi-btn ${started ? 'msg' : 'hi'}" aria-label="Mesaj">${started ? ICON.chat : 'Hi'}</button>
       </div>`;
+  }
+
+  // Yukarı kaydırınca banner'lar küçülür (eşik aralığı titremeyi önler)
+  window.addEventListener('scroll', () => {
+    const h = $('.home');
+    if (!h) return;
+    if (window.scrollY > 120) h.classList.add('compact');
+    else if (window.scrollY < 20) h.classList.remove('compact');
+  }, { passive: true });
+
+  function filterSheet() {
+    const f = ui.filter;
+    const cities = [...new Set(chars().map(c => c.city))].sort((a, b) => a.localeCompare(b, 'tr'));
+    const ages = Array.from({ length: 82 }, (_, i) => i + 18);
+    const opts = (list, sel) => list.map(v => `<option ${v === sel ? 'selected' : ''}>${v}</option>`).join('');
+    const sh = A.Eco.sheet(`
+      <div class="sheet-grip"></div>
+      <h3>Filtre</h3>
+      <div class="flt-row"><span>Yaş</span><select id="fMin">${opts(ages, f.min)}</select><em>–</em><select id="fMax">${opts(ages, f.max)}</select></div>
+      <div class="flt-row"><span>Şehir</span><select id="fCity"><option value="">Hepsi</option>${cities.map(c => `<option ${c === f.city ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></div>
+      <label class="flt-row"><span>Sadece çevrimiçi</span><input type="checkbox" id="fOn" ${f.online ? 'checked' : ''}></label>
+      <div class="flt-btns"><button class="btn ghost" id="fReset">Sıfırla</button><button class="btn pink" id="fApply">Uygula</button></div>`, 'light');
+    const $s = sel => sh.el.querySelector(sel);
+    $s('#fReset').onclick = () => { ui.filter = { min: 18, max: 99, city: '', online: false }; sh.close(); renderHome(); };
+    $s('#fApply').onclick = () => {
+      const a = +$s('#fMin').value, b = +$s('#fMax').value;
+      ui.filter = { min: Math.min(a, b), max: Math.max(a, b), city: $s('#fCity').value, online: $s('#fOn').checked };
+      sh.close();
+      renderHome();
+    };
+  }
+
+  // Hediye sıralaması: en çok hediye alanlar
+  function rankSheet() {
+    const score = c => c.gifts + A.Wallet.receivedCount(c.id);
+    const top = [...chars()].sort((a, b) => score(b) - score(a)).slice(0, 20);
+    const medal = i => ['🥇', '🥈', '🥉'][i] || `<b>${i + 1}</b>`;
+    const sh = A.Eco.sheet(`
+      <div class="sheet-grip"></div>
+      <h3>🏆 Hediye Sıralaması</h3>
+      ${top.map((c, i) => `<button class="c-row rank" data-p="${c.id}"><span class="medal">${medal(i)}</span>${avatar(c, 48)}
+        <div class="info"><div class="name">${esc(c.display)}</div><div class="chips"><span class="chip">${esc(c.city)}</span></div></div>
+        <span class="chip gift">🎁 ${score(c).toLocaleString('tr-TR')}</span></button>`).join('')}`, 'light');
+    sh.el.onclick = e => { const r = e.target.closest('[data-p]'); if (r) { sh.close(); location.hash = `#/p/${r.dataset.p}`; } };
   }
 
   /* ---------- Mesajlar ---------- */
@@ -269,20 +329,96 @@
   }
 
   function messagesPanel(activeId) {
+    const tabs = [['contacts', 'Rehber'], ['msg', 'Mesaj'], ['calls', 'Arama']];
     const filters = [['all', 'Tümü'], ['unread', 'Okunmamış'], ['online', 'Çevrimiçi']];
-    return `<div class="msg-panel">
-      <div class="page-pad">
-        <div class="h-title">Mesaj</div>
-        <div class="tabs">
-          ${filters.map(([k, t]) => `<button data-f="${k}" class="${ui.msgFilter === k ? 'active' : ''}" style="font-size:16px">${t}</button>`).join('')}
-        </div>
-      </div>
+    const head = `<div class="page-pad"><div class="tabs msg-tabs">
+      ${tabs.map(([k, t]) => `<button data-mt="${k}" class="${ui.msgTab === k ? 'active' : ''}">${t}</button>`).join('')}
+    </div></div>`;
+    if (ui.msgTab === 'contacts') return `<div class="msg-panel">${head}${contactsHtml()}</div>`;
+    if (ui.msgTab === 'calls') return `<div class="msg-panel">${head}${callsHtml()}</div>`;
+    return `<div class="msg-panel">${head}
+      <div class="page-pad"><div class="tabs sub-tabs">
+        ${filters.map(([k, t]) => `<button data-f="${k}" class="${ui.msgFilter === k ? 'active' : ''}">${t}</button>`).join('')}
+      </div></div>
       ${!S().user.name ? '<a class="notice" href="#/me" style="display:block">Adını yazarsan kızlar sana adınla hitap eder ✨</a>' : ''}
       <div class="pin-hint">📌 Sabitlemek için sohbete basılı tut ya da sağ tıkla · ${pinned().length}/${MAX_PINS}</div>
       <div class="list" id="msgRows">${msgRowsHtml(activeId)}</div></div>`;
   }
 
+  /* ---------- Rehber ---------- */
+  // Seni tanıyacak kadar yakınlaşanlar (Lv.2+) seni takip eder
+  const followsMe = c => A.Engine.level(c).lv >= 2;
+  const contactGroups = () => {
+    const rel = S().relations || {};
+    return [
+      ['friends', 'Dostluk', chars().filter(c => rel[c.id])],
+      ['fans', 'Beni Takip Edenler', chars().filter(followsMe)],
+      ['following', 'Takip Ettiklerim', chars().filter(c => S().follows[c.id])],
+      ['mutual', 'Karşılıklı Takip', chars().filter(c => S().follows[c.id] && followsMe(c))]
+    ];
+  };
+  const giftCount = c => Object.values((S().giftsReceived || {})[c.id] || {}).reduce((a, b) => a + b, 0);
+
+  function contactsHtml() {
+    const filters = [['all', 'Tümü'], ['gift', 'Hediye gönderdiklerim'], ['online', 'Çevrimiçi']];
+    let list = chars().filter(c => chatOf(c).length || S().affinity[c.id]);
+    if (ui.contactFilter === 'gift') list = list.filter(giftCount);
+    if (ui.contactFilter === 'online') list = list.filter(A.Mood.isOnline);
+    const aff = c => S().affinity[c.id] || 0;
+    list.sort((a, b) => (A.Mood.isOnline(b) - A.Mood.isOnline(a)) || (ui.contactAsc ? aff(a) - aff(b) : aff(b) - aff(a)));
+    return `
+      <div class="c-groups">${contactGroups().map(([k, t, l]) => `<button class="c-group" data-g="${k}"><span>${t}</span><b>${l.length}</b><i>›</i></button>`).join('')}</div>
+      <div class="c-head"><b>Yakınlık <small>(${list.length})</small></b><button id="cSort" aria-label="Sırala">⇅</button></div>
+      <div class="c-filters">${filters.map(([k, t]) => `<button data-cf="${k}" class="${ui.contactFilter === k ? 'active' : ''}">${t}</button>`).join('')}</div>
+      <div class="c-note">Şu anda çevrimiçi kullanıcılar önceliklidir</div>
+      <div class="list">${list.length ? list.map(c => {
+        const mine = chatOf(c).filter(m => m.from === 'me').length, g = giftCount(c);
+        return `<button class="c-row" data-chat="${c.id}">${avatar(c, 56)}
+          <div class="info"><div class="name">${esc(c.display)}</div>
+            <div class="chips"><span class="chip sex">💬 ${mine}</span>${g ? `<span class="chip gift">🎁 ${g}</span>` : ''}${relChip(c)}</div></div>
+          <span class="chip lv">♥ Lv.${A.Engine.level(c).lv}</span></button>`;
+      }).join('') : '<div class="empty"><span class="big">💞</span>Henüz kimseyle yakınlaşmadın</div>'}</div>`;
+  }
+
+  function contactSheet(key) {
+    const [, title, list] = contactGroups().find(g => g[0] === key);
+    const sh = A.Eco.sheet(`
+      <div class="sheet-grip"></div><h3>${title} <small>(${list.length})</small></h3>
+      ${list.length ? list.map(c => `<button class="c-row" data-p="${c.id}">${avatar(c, 48)}
+        <div class="info"><div class="name">${esc(c.display)}</div><div class="chips"><span class="chip">${esc(c.city)}</span><span class="chip">${c.age}yş</span></div></div>
+        <span class="chip lv">♥ Lv.${A.Engine.level(c).lv}</span></button>`).join('')
+        : `<div class="empty">${key === 'fans' ? 'Biriyle biraz yazışınca seni takip etmeye başlar' : 'Burada henüz kimse yok'}</div>`}`, 'light');
+    sh.el.onclick = e => { const r = e.target.closest('[data-p]'); if (r) { sh.close(); location.hash = `#/p/${r.dataset.p}`; } };
+  }
+
+  /* ---------- Arama geçmişi ---------- */
+  function callsHtml() {
+    const list = A.Call ? A.Call.calls() : [];
+    if (!list.length) return '<div class="empty"><span class="big">📞</span>Henüz arama yok.<br>Sohbette 📞 ya da 📹 ile arayabilirsin.</div>';
+    return `<div class="list">${list.map(e => {
+      const c = A.byId(e.id);
+      const bad = e.dir === 'in' && e.status !== 'done';
+      return `<div class="call-row" data-chat="${c.id}">${avatar(c, 64, { dot: false })}
+        <div class="info"><div class="name">${esc(c.display)}</div>
+          <div class="st ${bad ? 'bad' : ''}">${e.dir === 'in' ? '↙' : '↗'} ${esc(A.Call.label(e))}</div>
+          <small>${fmtTime(e.ts)}</small></div>
+        <button class="call-btn" data-call="voice" data-id="${c.id}" aria-label="Sesli ara">${A.Call.ICON.phone}</button>
+        <button class="call-btn" data-call="video" data-id="${c.id}" aria-label="Görüntülü ara">${A.Call.ICON.video}</button></div>`;
+    }).join('')}</div>`;
+  }
+
   function bindMessagesPanel(root, activeId) {
+    const redraw = () => { root.innerHTML = messagesPanel(activeId); bindMessagesPanel(root, activeId); };
+    root.querySelectorAll('[data-mt]').forEach(b => b.onclick = () => { ui.msgTab = b.dataset.mt; redraw(); });
+    root.querySelectorAll('[data-cf]').forEach(b => b.onclick = () => { ui.contactFilter = b.dataset.cf; redraw(); });
+    root.querySelectorAll('[data-g]').forEach(b => b.onclick = () => contactSheet(b.dataset.g));
+    const sort = root.querySelector('#cSort');
+    if (sort) sort.onclick = () => { ui.contactAsc = !ui.contactAsc; redraw(); };
+    root.querySelectorAll('[data-chat]').forEach(r => r.onclick = e => {
+      const call = e.target.closest('[data-call]');
+      if (call) A.Call.start(A.byId(call.dataset.id), call.dataset.call);
+      else location.hash = `#/chat/${r.dataset.chat}`;
+    });
     root.querySelectorAll('[data-f]').forEach(b => b.onclick = () => {
       ui.msgFilter = b.dataset.f;
       root.querySelectorAll('[data-f]').forEach(x => x.classList.toggle('active', x === b));
@@ -494,7 +630,6 @@
     A.Store.save();
     const lv = A.Engine.level(c);
     const { meta } = moodInfo(c);
-    const pct = lv.next ? Math.round((lv.pts - lv.prev) / (lv.next - lv.prev) * 100) : 100;
     const quick = [...A.QUICK_REPLIES].sort(() => Math.random() - 0.5).slice(0, 6);
 
     const chatHtml = `
@@ -518,7 +653,7 @@
             <div class="nm">${esc(c.name.toLocaleUpperCase('tr').split('').join(' '))}</div>
             <div class="meta">${c.age} | ${c.height}cm | ${esc(c.zodiac)} | ${esc(c.job)}</div>
             ${relChip(c) ? `<div style="margin-top:4px">${relChip(c)}</div>` : ''}
-            <div class="lvbar"><span>${lv.name}</span><div class="bar"><i style="width:${pct}%"></i></div></div>
+            <div class="lvbar">${lvbarInner(lv)}</div>
             ${c.album.length > 1 ? `<div class="thumbs">${c.album.slice(1, 5).map((s, i) => `<img src="${esc(s)}" alt="" data-zoom="${i + 1}">`).join('')}</div>` : ''}
           </div>
           <a class="mood-btn" href="#/mood/${c.id}" id="moodBtn">${meta.emoji}<small>${meta.name}</small></a>
@@ -529,10 +664,16 @@
         <div id="forceBar">${forceBtn(c)}</div>
         <div class="quick" id="quick">${quick.map(q => `<button>${esc(q)}</button>`).join('')}</div>
         <form class="composer" id="composer" autocomplete="off">
-          <button type="button" class="gift-btn" id="giftBtn" aria-label="Hediye gönder">🎁</button>
-          <input id="msgInput" type="text" placeholder="Bir şey söyle" enterkeyhint="send" maxlength="300">
+          <input id="msgInput" type="text" placeholder="Bir şey söyle · ${MSG_COST} ♥" enterkeyhint="send" maxlength="300">
           <button class="send-btn" type="submit" aria-label="Gönder">${ICON.send}</button>
         </form>
+        <div class="chat-tools" id="chatTools">
+          <button type="button" id="giftBtn" aria-label="Hediye gönder"><span>🎁</span>Hediye</button>
+          <button type="button" data-call="video" aria-label="Görüntülü ara"><span>📹</span>Görüntülü</button>
+          <button type="button" data-call="voice" aria-label="Sesli ara"><span>📞</span>Sesli</button>
+          <button type="button" data-tool="tasks" aria-label="Yakınlık görevleri"><span>💗</span>Görevler</button>
+          <button type="button" data-tool="memory" aria-label="Hakkımda bildikleri"><span>🧠</span>Hafıza</button>
+        </div>
       </div>`;
 
     if (wide()) {
@@ -549,8 +690,7 @@
       e.preventDefault();
       const t = input.value.trim();
       if (!t) return;
-      input.value = '';
-      sendUser(c, t);
+      if (sendUser(c, t)) input.value = '';
       input.focus();
     };
     $('#quick').querySelectorAll('button').forEach(b => b.onclick = () => sendUser(c, b.textContent));
@@ -561,7 +701,43 @@
     };
     const openGifts = () => A.GiftPanel.open(c, r => sendGift(c, r));
     $('#giftBtn').onclick = openGifts;
+    $('#chatTools').addEventListener('click', e => {
+      const b = e.target.closest('[data-call], [data-tool]');
+      if (!b) return;
+      if (b.dataset.call) A.Call.start(c, b.dataset.call);
+      if (b.dataset.tool === 'tasks') tasksSheet(c);
+      if (b.dataset.tool === 'memory') memorySheet(c);
+    });
     if (ui.route.extra === 'gift') { history.replaceState(null, '', `#/chat/${c.id}`); ui.route.extra = null; openGifts(); }
+  }
+
+  // Yakınlık çubuğu: seviye adı, puan (°C) ve sonraki seviyeye ilerleme
+  function lvbarInner(lv) {
+    const pct = lv.next ? Math.round((lv.pts - lv.prev) / (lv.next - lv.prev) * 100) : 100;
+    return `<span>${lv.name} · ${lv.pts}°C</span><div class="bar"><i style="width:${pct}%"></i></div>`;
+  }
+
+  // Yakınlık görevleri: seviyeyi nasıl artıracağı ve hangi özelliklerin açıldığı
+  function tasksSheet(c) {
+    const lv = A.Engine.level(c);
+    const pct = lv.next ? Math.round((lv.pts - lv.prev) / (lv.next - lv.prev) * 100) : 100;
+    const M = A.Call.MIN_LV;
+    const tasks = [
+      ['💬', `Mesajlaş · ${MSG_COST} ♥`, 'Her sohbet yakınlığı artırır; onu merak etmek daha çok', true],
+      ['🎁', 'Hediye gönder', 'Değerine göre: 10 ♥ ≈ +2°C, 1.000 ♥ ≈ +12°C, 10.000 ♥ ≈ +34°C', true],
+      ['📞', `Sesli ara · Lv.${M.voice}`, 'Konuştuğun her dakika +1°C (aramada en fazla 10)', lv.lv >= M.voice],
+      ['📹', `Görüntülü ara · Lv.${M.video}`, 'Yakınlaşınca kamerayı açmayı kabul eder', lv.lv >= M.video],
+      ['📲', 'Seni arasın · Lv.3', 'Keyfi yerindeyse arada bir kendisi arar', lv.lv >= 3]
+    ];
+    A.Eco.sheet(`
+      <div class="sheet-grip"></div>
+      <h3>💗 Yakınlık Görevleri</h3>
+      <div class="mem-block">
+        <div class="row2"><b>Lv.${lv.lv} ${lv.name}</b><span>${lv.pts}°C${lv.next ? ` / ${lv.next}°C` : ''}</span></div>
+        <div class="bar"><i style="width:${pct}%"></i></div>
+        <small>${lv.next ? `Sonraki seviyeye ${lv.next - lv.pts}°C kaldı` : 'En yüksek seviyedesiniz 💞'}</small>
+      </div>
+      ${tasks.map(([i, t, d, ok]) => `<div class="task-row ${ok ? '' : 'locked'}"><span>${i}</span><div><b>${t}</b><small>${d}</small></div><em>${ok ? '✓' : '🔒'}</em></div>`).join('')}`, 'light');
   }
 
   /* ---------- Hediye ---------- */
@@ -569,8 +745,13 @@
     chatOf(c).push({ from: 'me', type: 'gift', gift: r.delivered.id, qty: r.qty, text: `🎁 ${r.delivered.name} x${r.qty}`, ts: Date.now() });
     if (r.gift.lucky) chatOf(c).push({ from: 'sys', text: `${r.gift.e} ${r.gift.name} açıldı: içinden ${r.delivered.e} ${r.delivered.name} çıktı!`, ts: Date.now() });
     if (r.rel) chatOf(c).push({ from: 'sys', text: `💞 ${c.name} ile artık ${r.rel.title} rozetiniz var`, ts: Date.now() });
+    const before = A.Engine.level(c).lv;
+    const gain = A.Engine.giftAffinity(c, r.value);
+    const lv = A.Engine.level(c);
+    chatOf(c).push({ from: 'sys', text: lv.lv > before ? `💗 +${gain}°C yakınlık · Lv.${lv.lv} ${lv.name} oldunuz!` : `💗 +${gain}°C yakınlık`, ts: Date.now() });
     A.Store.save();
     refresh(c);
+    if (onChatWith(c)) updateChatHeader(c);
     if (!A.Mood.isOnline(c)) {
       // hediye sosyal pilini biraz doldurur; çevrimiçi olunca teşekkür eder
       A.Mood.nudge(c, { social: 0.15 });
@@ -679,9 +860,10 @@
   function refresh(c) {
     if (onChatWith(c)) { drawMessages(c); updateStatus(c); }
     const side = $('.split-list');
-    if (side) {
+    const rows = $('#msgRows');
+    if (side && rows) {
       // geniş ekran: yan listedeki satırları güncelle (yazıyor…, son mesaj, okunmamış)
-      $('#msgRows').innerHTML = msgRowsHtml(ui.route.name === 'chat' ? ui.route.id : null);
+      rows.innerHTML = msgRowsHtml(ui.route.name === 'chat' ? ui.route.id : null);
       bindRows(side);
     } else if (ui.route && ui.route.name === 'messages') renderMessages();
     updateBadge();
@@ -697,7 +879,12 @@
     if (fb) fb.innerHTML = forceBtn(c);
   }
 
+  const MSG_COST = 40; // her mesaj bu kadar coin harcar
   function sendUser(c, text) {
+    if (!A.Wallet.spend(MSG_COST, `Mesaj · ${c.name}`)) {
+      if (confirm(`Mesaj göndermek için ${MSG_COST} ♥ gerekli. Coin yüklemek ister misin?`)) location.hash = '#/recharge';
+      return false;
+    }
     chatOf(c).push({ from: 'me', text, ts: Date.now() });
     A.Wallet.track('msg');
     A.Wallet.track('chat', c.id);
@@ -705,14 +892,15 @@
     if (!A.Mood.isOnline(c)) {
       markPending(c);
       refresh(c);
-      return;
+      return true;
     }
     refresh(c);
     // Okumak üzere bekliyorsa yeni mesajı da o okuyunca görecek
-    if (reading[c.id]) return;
+    if (reading[c.id]) return true;
     // Art arda yazılan mesajları toplayıp tek seferde cevaplasın
     clearTimeout(timers[c.id]);
     timers[c.id] = setTimeout(() => startReply(c), 1100);
+    return true;
   }
 
   function unanswered(c) {
@@ -857,9 +1045,8 @@
     const btn = $('#moodBtn');
     if (btn) btn.innerHTML = `${meta.emoji}<small>${meta.name}</small>`;
     const lv = A.Engine.level(c);
-    const pct = lv.next ? Math.round((lv.pts - lv.prev) / (lv.next - lv.prev) * 100) : 100;
     const bar = $('.hcard .lvbar');
-    if (bar) bar.innerHTML = `<span>${lv.name}</span><div class="bar"><i style="width:${pct}%"></i></div>`;
+    if (bar) bar.innerHTML = lvbarInner(lv);
     const heart = $('.couple .heart small');
     if (heart) heart.textContent = `LV ${lv.lv}`;
   }
@@ -1345,6 +1532,8 @@
       play(c, A.Engine.opener(c));
     }
 
+    if (A.Call) A.Call.maybeIncoming();
+
     // Listelerdeki çevrimiçi / ruh hali bilgisini tazele
     const r = ui.route;
     if (r && !r.id && r.name === 'home') renderHome();
@@ -1376,7 +1565,7 @@
   }
 
   /* ---------- Başlat ---------- */
-  A.UI = { render, fmtTime, avatar, userAvatar };
+  A.UI = { render, fmtTime, avatar, userAvatar, pushHer, refresh };
   A.Wallet.onChange = () => {
     const n = A.Wallet.coins().toLocaleString('tr-TR');
     document.querySelectorAll('[data-coins]').forEach(el => { el.textContent = n; });

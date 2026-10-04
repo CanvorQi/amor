@@ -134,7 +134,7 @@ Amor.Gen = (() => {
       id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10),
       setId,
       name,
-      deco: Math.random() < 0.3 ? pick(Amor.NAME_DECOS) : ['', ''],
+      deco: Math.random() < 0.4 ? pick(Amor.NAME_DECOS) : ['', ''],
       archetype: arch.id,
       age,
       cityName: city.name,
@@ -159,6 +159,43 @@ Amor.Gen = (() => {
     };
   }
 
+  /* ---------- Ekran adı (Amor.NAME_STYLES) ----------
+   * Stil kayıtta yoksa kimlikten sabit türetilir (her açılışta aynı). Elle tanımlanan karakterlere dokunulmaz. */
+  const nicks = new Map(); // karakter id -> takma ad
+  const hashOf = s => { let h = 7; for (const ch of String(s)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
+  function styledName(id) {
+    const name = id.name;
+    if ((Amor.CUSTOM_CHARACTERS || []).some(d => d.id === id.id)) return name;
+    const h = hashOf(id.id);
+    let style = id.nameStyle;
+    if (style === undefined) {
+      const total = Amor.NAME_STYLES.reduce((a, s) => a + s[1], 0);
+      let r = h % total;
+      style = Amor.NAME_STYLES.find(s => (r -= s[1]) < 0)[0];
+    }
+    const at = list => list[(h >>> 8) % list.length];
+    const up = s => s.toLocaleUpperCase('tr'), low = s => s.toLocaleLowerCase('tr');
+    switch (style) {
+      case 'upper': return up(name);
+      case 'lower': return low(name);
+      case 'stretch': return name + name.slice(-1).repeat(1 + (h >>> 4) % 2);
+      case 'paren': { const b = at(Amor.NAME_BRACKETS); return b[0] + up(name) + b[1]; }
+      case 'az': return name.replace(/e/g, 'ə') + name.slice(-1);
+      case 'nick': {
+        // aynı takma ad iki kişide olmasın: doluysa listede sıradakine geç
+        if (!nicks.has(id.id)) {
+          const taken = new Set(nicks.values()), L = Amor.NICKNAMES;
+          const fill = n => n.replace(/\{name\}/g, name).replace(/\{low\}/g, low(name).replace(/\s+/g, ''));
+          let i = (h >>> 8) % L.length, k = 0;
+          while (taken.has(fill(L[i])) && k++ < L.length) i = (i + 1) % L.length;
+          nicks.set(id.id, fill(L[i]));
+        }
+        return nicks.get(id.id);
+      }
+      default: return name;
+    }
+  }
+
   /* ---------- Kimlik + arketip -> çalışan karakter ---------- */
   function hydrate(id) {
     const arch = Amor.archetype(id.archetype);
@@ -166,10 +203,11 @@ Amor.Gen = (() => {
     const job = Amor.JOBS.find(j => j.title === id.job) || Amor.JOBS[0];
     const set = setById(id.setId);
     const deco = id.deco || ['', ''];
+    const shown = styledName(id);
     return {
       ...id,
       traits: traitsOf(id),
-      display: `${deco[0]} ${id.name} ${deco[1]}`.trim(),
+      display: (deco[2] ? deco[0] + shown + deco[1] : `${deco[0]} ${shown} ${deco[1]}`).trim(),
       city: city.name, cityAt: city.at, fav: city.fav,
       jobIs: job.is, doing: job.doing,
       archLabel: arch.label, emoji: arch.icon, colors: arch.colors,

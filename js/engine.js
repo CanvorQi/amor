@@ -694,6 +694,15 @@ Amor.Engine = (() => {
     return finish(c, line.split('|').map(p => fill(c, p)), { ...mods, emoji: 0.3 }, 'neu', {}, 'nudge');
   }
 
+  /* ---------- Hediyeden yakınlık ----------
+   * Gönderildiği an eklenir (çevrimdışıyken de). Değerin kareköküyle artar:
+   * 10 coin ≈ +2°C, 150 ≈ +5, 1000 ≈ +12, 10k ≈ +34. Hediye seven arketipte daha fazla. */
+  function giftAffinity(c, value) {
+    const gain = Math.round((Math.sqrt(value) / 3 + 1) * (Amor.GIFT_LOVE[c.archetype] ?? 1));
+    S().affinity[c.id] = (S().affinity[c.id] || 0) + gain;
+    return gain;
+  }
+
   /* ---------- Hediye tepkisi ----------
    * r: Wallet.sendGift sonucu { delivered, qty, value, rel } */
   function giftReact(c, r) {
@@ -705,7 +714,6 @@ Amor.Engine = (() => {
       arousal: v >= 3000 ? 0.15 : 0.04,
       social: Math.min(0.4, 0.05 + Math.log10(v + 1) * 0.05)
     });
-    S().affinity[c.id] = (S().affinity[c.id] || 0) + Math.round((Math.sqrt(v) / 3 + 1) * love);
     Amor.Interest.add(c, Math.min(0.1, Math.log10(v + 1) * 0.02 * love));
 
     const mood = Amor.Mood.current(c);
@@ -734,6 +742,6 @@ Amor.Engine = (() => {
     return line.split('|').map(p => fill(c, p)).join(' ');
   }
 
-  return { detect, respond, opener, comeBack, nudge, wake, giftReact, level, norm, sample, applyDialog, topicOf, topicTaste, topicPool, topicTurn,
+  return { detect, respond, opener, comeBack, nudge, wake, giftReact, giftAffinity, level, norm, sample, applyDialog, topicOf, topicTaste, topicPool, topicTurn,
     traitTurn, traitPool, TRAIT_SETTINGS: TSET, TOPIC_FULL, TOPIC_AFTER, TOPIC_INHERIT, LEVELS };
 })();

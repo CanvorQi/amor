@@ -136,5 +136,23 @@ Amor.NAME_DECOS = [
   ['🌊', ''], ['🔥', ''], ['', '🍓'], ['🌻', ''], ['💎', '💎'], ['🕊️', ''], ['', '🎀'], ['🍒', ''], ['🌿', ''], ['', '💫'],
   ['🐰', ''], ['🧸', ''], ['🌈', ''], ['🍵', ''], ['🪐', ''], ['', '🫶'],
   // semboller
-  ['♡', '♡'], ['⋆', '⋆'], ['☾', ''], ['ʚ', 'ɞ'], ['꒰', '꒱'], ['༄', ''], ['✿', ''], ['', '୨୧'], ['☆', ''], ['❀', '❀']
+  ['♡', '♡'], ['⋆', '⋆'], ['☾', ''], ['ʚ', 'ɞ'], ['꒰', '꒱'], ['༄', ''], ['✿', ''], ['', '୨୧'], ['☆', ''], ['❀', '❀'],
+  // isme bitişik (üçüncü eleman 1): 🍺Seda🍺, 👑Mine, elisa💜
+  ['🍺', '🍺', 1], ['👑', '', 1], ['', '💜', 1], ['❤️‍🔥', '❤️‍🔥', 1], ['🐱', '🐱', 1], ['😈😈', '', 1], ['', '🍭', 1], ['ᯓ', '🍭', 1],
+  ['', '👸', 1], ['🎲 ', '', 1], ['⍟🍂 ', ' ⍟🍂', 1], ['', ' 『✗』', 1], ['🦋', '🦋', 1], ['', '🥀', 1], ['🖤', '🖤', 1], ['', '😈', 1],
+  ['🍒', '', 1], ['', '🫦', 1], ['✮', '✮', 1], ['', '🌙', 1], ['💋', '', 1], ['', '🐾', 1], ['ꨄ', '', 1], ['', '⚡', 1]
+];
+
+/* İsmin yazılışı (ekran adı): BÜYÜK, küçük, son harfi uzatma (SUDEE), parantez ((ZEHRA)), Azeri harfi (Nəzrinn).
+ * Karakterin kaydında yoksa kimliğinden sabit olarak türetilir; böylece eski karakterler de çeşitlenir. */
+Amor.NAME_STYLES = [
+  ['', 52], ['upper', 13], ['lower', 11], ['stretch', 9], ['paren', 6], ['az', 3], ['nick', 6]
+];
+Amor.NAME_BRACKETS = [['((', '))'], ['『', '』'], ['【', '】'], ['〖', '〗'], ['(', ')']];
+
+/* İsim yerine kullanılan takma adlar ({name}: gerçek isim, {low}: küçük harfle) */
+Amor.NICKNAMES = [
+  'KRALİÇE', 'Prenses', 'Alevvvlik', 'Tatlı Cadı', 'Bal Kız', 'Ay Kızı', 'Leydi', 'Sultan', 'Melek', 'Gece Kuşu',
+  'kelebek', 'Pamuk', 'minnoş', 'Asi Kız', 'Fırtına', 'Kraliçe Arı', 'Papatya', 'Yıldız Tozu', 'cadı', 'Sihirli',
+  '{low}kara', '{low}cım', '{low}nur', '{low}_', 'its{low}', '{low}.x', 'miss{low}', '{name} Hanım', 'Küçük {name}', '{name}ş'
 ];
