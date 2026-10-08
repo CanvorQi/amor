@@ -275,32 +275,35 @@ window.Amor = window.Amor || {};
   let storeCat = 'frames', storeFilter = 'all';
   A.Pages.store = () => {
     const coins = W().coins();
-    const items = storeCat === 'frames' ? A.FRAMES : A.BACKGROUNDS;
+    const items = { frames: A.FRAMES, bgs: A.BACKGROUNDS, bubbles: A.BUBBLES }[storeCat];
+    const slot = { frames: 'frame', bgs: 'bg', bubbles: 'bubble' }[storeCat];
     const eq = W().st().equipped;
     const list = items.filter(it => storeFilter === 'all' ? true : storeFilter === 'ok' ? it.price <= coins || W().owns(storeCat, it.id) : it.price > coins && !W().owns(storeCat, it.id));
-    const cats = [['frames', '🏵️', 'Çerçeveler'], ['bgs', '🌌', 'Arka Plan']];
+    const cats = [['frames', '🏵️', 'Çerçeveler'], ['bgs', '🌌', 'Arka Plan'], ['bubbles', '💬', 'Baloncuk']];
 
     view().innerHTML = `
       <div class="eco store">
         <div class="eco-head">${back('#/me')}<h1>Eşya Mağazası</h1><span></span></div>
         <div class="cats">${cats.map(([k, i, n]) => `<button data-cat="${k}" class="${storeCat === k ? 'on' : ''}"><span>${i}</span>${n}</button>`).join('')}</div>
         <div class="filters">${[['all', 'Hepsi'], ['ok', 'Uygun'], ['no', 'Uygun Değil']].map(([k, n]) => `<button data-f="${k}" class="${storeFilter === k ? 'on' : ''}">${n}</button>`).join('')}</div>
+        ${storeCat !== 'frames' ? '<p class="store-hint">💗 Biriyle Lv.4 olunca o sohbette kalp teması kendiliğinden açılır</p>' : ''}
         <div class="items">
           ${list.map(it => {
             const owned = W().owns(storeCat, it.id);
-            const slot = storeCat === 'frames' ? 'frame' : 'bg';
             const using = eq[slot] === it.id && owned;
             const locked = it.vip && W().vip().lv < it.vip;
-            const preview = storeCat === 'frames'
-              ? U().userAvatar(76, it)
-              : `<div class="bg-swatch" style="background:${it.css}"><i></i><i></i></div>`;
+            const lvTheme = storeCat !== 'frames' && A.LEVEL_THEMES.find(t => t[slot] === it.id);
+            const preview = storeCat === 'frames' ? U().userAvatar(76, it)
+              : storeCat === 'bgs' ? `<div class="bg-swatch ${it.cls || ''}" ${it.css ? `style="background:${it.css}"` : ''}><i></i><i></i></div>`
+              : `<div class="bub-swatch bub-${it.id}"><div class="msg her"><div class="bubble">Selam 💕</div></div><div class="msg me"><div class="bubble">Merhaba</div></div></div>`;
             let action;
             if (locked) action = `<span class="lock">🔒 VIP${it.vip}</span>`;
             else if (using) action = `<button class="btn sm ghost" disabled>Kullanılıyor</button>`;
             else if (owned) action = `<button class="btn sm pink" data-use="${it.id}">Kullan</button>`;
             else action = `<button class="btn sm pink" data-buy="${it.id}">Satın al</button>`;
-            const left = owned && it.price && !(storeCat === 'bgs' && it.id === 'mor-gece') ? `${W().expiresIn(storeCat, it.id)} gün kaldı` : (it.price ? `${A.ITEM_DAYS} gün` : 'süresiz');
+            const left = owned && it.price ? `${W().expiresIn(storeCat, it.id)} gün kaldı` : (it.price ? `${A.ITEM_DAYS} gün` : 'süresiz');
             return `<div class="item">
+              ${lvTheme ? `<em class="item-tag">💗 Lv.${lvTheme.lv}</em>` : ''}
               <div class="item-prev">${preview}</div>
               <b class="item-name">${esc(it.name)}</b>
               <div class="row2"><span class="price">${it.price ? `${COIN} ${fmt(it.price)}` : 'Ücretsiz'}</span><small>${left}</small></div>
@@ -316,13 +319,13 @@ window.Amor = window.Amor || {};
     view().querySelectorAll('[data-buy]').forEach(b => b.onclick = () => {
       const it = items.find(x => x.id === b.dataset.buy);
       if (!W().buyItem(storeCat, it)) return notify('Yeterli coin yok', '😕');
-      W().equip(storeCat === 'frames' ? 'frame' : 'bg', it.id);
+      W().equip(slot, it.id);
       burst('✨', 12);
       notify(`${it.name} alındı ve kullanılıyor`, '🛍️');
       A.Pages.store();
     });
     view().querySelectorAll('[data-use]').forEach(b => b.onclick = () => {
-      W().equip(storeCat === 'frames' ? 'frame' : 'bg', b.dataset.use);
+      W().equip(slot, b.dataset.use);
       A.Pages.store();
     });
   };

@@ -96,12 +96,14 @@ Amor.Engine = (() => {
   else compile();
 
   function matches(text, { start, p }) {
+    if (window.Amor?.NLU) return Amor.NLU.matchPattern(text, { start, p }).hit;
     if (start) return text === p || text.startsWith(p + ' ');
     if (!/^\p{L}/u.test(p)) return text.includes(p);
     return (' ' + text).includes(' ' + p);
   }
 
   function detect(raw) {
+    if (window.Amor?.NLU) return Amor.NLU.classifyIntent(raw, COMPILED, ORDER);
     const text = norm(raw);
     const lower = raw.toLocaleLowerCase('tr');
     const nameM = lower.match(/(?:^|\s)(?:benim )?(?:adım|adim|ismim|bana)\s+([a-zçğıöşü]{2,15})(?:\s+de(?:\s|$)|\s|$)/);
@@ -130,15 +132,24 @@ Amor.Engine = (() => {
   const SET = () => ({ wordChance: 0.4, contChance: 0.45, skipChance: 0.15, tasteChance: 0.65, keep: 2, ...(Amor.TOPIC_SETTINGS || {}) });
 
   function toneOf(raw, intent) {
+    if (intent === 'answer_bad') return 'bad';
+    if (intent === 'answer_good') return 'good';
+    if (window.Amor?.NLU) return Amor.NLU.classifyTone(raw, TONES_C, isQuestion(raw));
     const text = norm(raw);
-    return intent === 'answer_bad' ? 'bad' : intent === 'answer_good' ? 'good'
-      : TONES_C.bad.some(p => matches(text, p)) ? 'bad'
+    return TONES_C.bad.some(p => matches(text, p)) ? 'bad'
       : TONES_C.good.some(p => matches(text, p)) ? 'good'
       : isQuestion(raw) ? 'ask' : 'any';
   }
 
   // current: şu an konuşulan konunun id'si (zayıf kelimeleri açar, eşitlikte +5 puan)
   function topicOf(raw, intent, current = null) {
+    if (window.Amor?.NLU) {
+      const bestNlu = Amor.NLU.classifyTopic(raw, TOPICS_C, current);
+      if (bestNlu) {
+        bestNlu.tone = toneOf(raw, intent);
+        return bestNlu;
+      }
+    }
     const text = norm(raw);
     let best = null;
     TOPICS_C.forEach(T => {
@@ -365,6 +376,20 @@ Amor.Engine = (() => {
     return d;
   }
 
+  /* ---------- Yansıtma (js/reflect.js) ----------
+   * "bugün sinemaya gittim" -> "aa bugün sinemaya gittin mi, anlat bakalım" */
+  const REFLECT_ON = ['fallback', 'answer_good', 'answer_bad', 'agree', 'laugh'];
+  function reflectLine(c, raw, intent) {
+    if (!Amor.Reflect || !REFLECT_ON.includes(intent)) return null;
+    const r = Amor.Reflect.analyze(raw);
+    if (!r) return null;
+    const s = window.Amor?.NLU ? Amor.NLU.sentiment(raw) : 0;
+    const tone = r.tone || (intent === 'answer_bad' || s < -0.25 ? 'bad' : intent === 'answer_good' || s > 0.25 ? 'good' : null);
+    const L = Amor.REFLECT_LINES || {};
+    const pool = (tone && L[`${r.tense}_${tone}`]) || L[`${r.tense}_any`];
+    return pool ? fill(c, pick(c, pool), { x: r.x }) : null;
+  }
+
   /* ---------- Yakınlığa göre havuz ----------
    * Lv.3+ iken "_close" havuzu varsa onu kullanır (daha sıcak, romantik).
    * Normal hali "daha yeni tanışıyoruz" gibi yakınlıkla çelişen niyetlerde her zaman, diğerlerinde %75. */
@@ -497,8 +522,9 @@ Amor.Engine = (() => {
     // Ruh hali + yakınlık etkisi
     const eff = Amor.INTENT_EFFECTS[best.intent] || {};
     const E = c.big5.E;
+    const sent = window.Amor?.NLU ? Amor.NLU.sentiment(messages.join(' ')) : 0;
     Amor.Mood.nudge(c, {
-      valence: (eff.valence || 0) * (best.intent === 'insult' ? (0.6 + c.big5.N) : 1),
+      valence: ((eff.valence || 0) + sent * 0.05) * (best.intent === 'insult' ? (0.6 + c.big5.N) : 1),
       arousal: eff.arousal || 0,
       energy: -0.004 * messages.length,
       social: -(0.015 + (1 - E) * 0.025) * messages.length
@@ -517,7 +543,7 @@ Amor.Engine = (() => {
 
     const plan = Amor.Schedule.status(c);
     const casual = ['fallback', 'agree', 'answer_good', 'laugh', 'question', 'disagree'];
-    let line, extra = { name: best.name, x: best.x }, askId = null;
+    let line, extra = { name: best.name, x: best.x }, askId = null, rf = null;
 
     // Konu ve konu akışı (ruh hali kötü olsa da konu takip edilir, sadece cevapta kullanılmaz)
     const topicCtx = S().topicCtx = S().topicCtx || {};
@@ -536,6 +562,8 @@ Amor.Engine = (() => {
       line = pick(c, Amor.SHARED.repeat);
     } else if (best.intent === 'react_q') {
       line = best.qLine;
+    } else if (best.intent === 'ask_call' && Amor.Call) {
+      line = Amor.Call.permit(c, messages.join(' '));
     } else if (best.intent === 'ask_memory') {
       line = Amor.Memory.summary(c).join('|');
     } else if (best.intent.startsWith('react_')) {
@@ -560,6 +588,12 @@ Amor.Engine = (() => {
         extra.x = turn.tp.word;
         topicUsed = turn.tp;
       }
+      // Cümledeki fiili onaylayarak cevap ver; konu cevabı varsa önüne ekle
+      rf = !repeated && reflectLine(c, messages[messages.length - 1], best.intent);
+      if (rf) {
+        if (best.intent === 'fallback' && !turn.reply) { if (Math.random() < 0.85) line = rf; }
+        else if (Math.random() < 0.55) line = rf + '|' + line;
+      }
       if (best.greet && best.intent !== 'greet' && c.lines.greet) {
         line = pick(c, c.lines.greet).split('|')[0] + '|' + line;
       }
@@ -571,7 +605,7 @@ Amor.Engine = (() => {
     if (newFacts.length && best.intent !== 'insult' && grp !== 'neg' && !repeated && !(toldOutcome && newFacts[0].type === 'event')) {
       const fr = Amor.Memory.reaction(c, newFacts[0]);
       if (fr) {
-        if (casual.includes(best.intent) || best.intent === 'answer_bad') line = fr;
+        if (casual.includes(best.intent) || best.intent === 'answer_bad') line = rf && newFacts[0].type === 'event' ? rf + '|' + fr : fr; // olayda önce onay, sonra tepki (şehir/zevk tepkisi zaten yansıtır)
         else if (best.intent === 'greet') line = line.split('|')[0] + '|' + fr; // önce selam, sonra tepki
         else line = fr + '|' + line;
       }
@@ -592,7 +626,7 @@ Amor.Engine = (() => {
     }
 
     // Yakınsa (Lv.3+) ve keyfi yerindeyse arada tatlı bir cümle ekler
-    const noAsk = ['bye', 'night', 'insult', 'tell_name'].includes(best.intent) || plan.state === 'busy';
+    const noAsk = ['bye', 'night', 'insult', 'tell_name', 'ask_call'].includes(best.intent) || plan.state === 'busy';
     let sweetened = false;
     if (good && !noAsk && !repeated && c.sweet?.length && level(c).lv >= 3 && interest >= 0.5 &&
         Math.random() < 0.12 + 0.05 * (level(c).lv - 3)) {

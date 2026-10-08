@@ -30,19 +30,85 @@ Amor.Memory = (() => {
 
   /* ---------- Tepki cümleleri (karakterin tarzı sonradan uygulanır) ---------- */
   const REACT = {
-    city_same: ['{x} mı?? ben de oradayım!', 'aa hemşehriyiz o zaman 😄'],
-    city: ['{x} ha, hiç gitmedim oraya', '{x} güzel yermiş diyorlar', '{x} mı? hep merak etmişimdir'],
-    age: ['{x} mı, güzel yaş', '{x} ha, tamam not ettim'],
-    job_student: ['öğrencisin demek, ne okuyorsun?', 'okul hayatı ha, kolay gelsin'],
-    job: ['{x} ha, nasıl gidiyor?', 'vay, {x}! zor mu?'],
-    job_issiz: ['olsun, iyi bir şey bulursun 🍀'],
-    pet: ['ayy {x} mı var? adı ne? 🥺', '{x} mı var?? fotosunu görmem lazım'],
-    like_same: ['ayy ben de {x} çok severim!', '{x} mı? zevklerimiz uyuşuyor 😄'],
-    like: ['{x} ha, not ettim', '{x} demek, güzel'],
-    dislike: ['{x} sevmiyorsun demek, not ettim {laugh}', 'anlaşıldı, {x} yok'],
-    event: ['ayy {x} {mi} var? başarılar 🍀', '{x} {mi}? kolay gelsin, sonra anlat ama'],
-    event_birthday: ['doğum günün mü?? iyi ki doğdun 🎂🎉'],
-    event_past: ['{x} nasıl geçti peki?']
+    city_same: [
+      '{x} mı?? ben de oradayım!',
+      'aa hemşehriyiz o zaman 😄',
+      '{x} mi?! Tesadüfe bak, aynı şehirdeyiz!',
+      'Vay canına, ben de {x}\'dayım! Karşılaşırız belki {laugh}'
+    ],
+    city: [
+      '{x} ha, hiç gitmedim oraya',
+      '{x} güzel yermiş diyorlar',
+      '{x} mı? hep merak etmişimdir',
+      '{x} çok özel bir yer bence',
+      '{x}\'nın havası bambaşka derler',
+      'Bir gün {x}\'ya gelirsem bana etrafı gezdirirsin artık!'
+    ],
+    age: [
+      '{x} mı, güzel yaş',
+      '{x} ha, tamam not ettim',
+      '{x} mi? Hayatın en güzel, en enerjik dönemleri bence',
+      'Vaay {x}! Tam en keyifli yaşlar',
+      '{x} demek... Yaşıt sayılırız neredeyse {laugh}'
+    ],
+    job_student: [
+      'öğrencisin demek, ne okuyorsun?',
+      'okul hayatı ha, kolay gelsin',
+      'öğrenci olmak hem eğlenceli hem yorucu, kolay gelsin!',
+      'dersler ve vizeler seni çok yıpratmıyordur umarım {laugh}'
+    ],
+    job: [
+      '{x} ha, nasıl gidiyor?',
+      'vay, {x}! zor mu?',
+      '{x} olmak epey havalıymış bu arada!',
+      'işinde başarılar dilerim, kendini çok yorma ama',
+      '{x} demek... Severek mi yapıyorsun işini?'
+    ],
+    job_issiz: [
+      'olsun, iyi bir şey bulursun 🍀',
+      'sakın moralini bozma, en güzeli karşına çıkacaktır 🍀',
+      'her şey zamanla yoluna girer, biraz dinlenmene bak'
+    ],
+    pet: [
+      'ayy {x} mı var? adı ne? 🥺',
+      '{x} mı var?? fotosunu görmem lazım',
+      'inanmıyorum, {x} beslemek harika bir his olmalı 🥺',
+      'ayy bayılırım! Sevgimi ilet minik dostumuza'
+    ],
+    like_same: [
+      'ayy ben de {x} çok severim!',
+      '{x} mı? zevklerimiz uyuşuyor 😄',
+      '{x} konusunda aynı fikirde olmamıza çok sevindim!',
+      'ortak zevklerimizin olması ne kadar hoş {laugh}'
+    ],
+    like: [
+      '{x} ha, not ettim',
+      '{x} demek, güzel',
+      '{x} sevmene sevindim, bunu aklımda tutacağım',
+      'zevkli birisin belli ki, {x} harika bir tercih'
+    ],
+    dislike: [
+      '{x} sevmiyorsun demek, not ettim {laugh}',
+      'anlaşıldı, {x} yok',
+      'tamamdır, {x} konusunu rafa kaldırıyorum {laugh}',
+      'haklısın, {x} herkesin sevebileceği bir şey değil'
+    ],
+    event: [
+      'ayy {x} {mi} var? başarılar 🍀',
+      '{x} {mi}? kolay gelsin, sonra anlat ama',
+      'harika bir gün olsun senin için, bol şans 🍀',
+      'aklım sende kalacak, umarım her şey harika geçer!'
+    ],
+    event_birthday: [
+      'doğum günün mü?? iyi ki doğdun 🎂🎉',
+      'ayy mutlu yıllar! İyi ki varsın, yeni yaşın sana güzellikler getirsin 🎂✨',
+      'doğum günün kutlu olsun, sevdiklerinle nice harika senelere! 🎉'
+    ],
+    event_past: [
+      '{x} nasıl geçti peki?',
+      '{x} nasıldı, umarım her şey istediğin gibi gitmiştir?',
+      '{x} bitti mi, rahatladın mı biraz?'
+    ]
   };
 
   /* ---------- Bilgi çıkarma ---------- */

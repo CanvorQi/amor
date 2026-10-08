@@ -65,12 +65,6 @@ a { color: inherit; text-decoration: none; }
   -webkit-background-clip: text; background-clip: text; color: transparent;
   animation: pop .7s cubic-bezier(.2, 1.4, .4, 1);
 }
-/* iOS Safari, konumlandırılmış span'i ebeveynin gradyanıyla boyamaz; "o" kendi rengini taşır (gradyanın orta tonu) */
-.logo-o { position: relative; color: #7b5cff; -webkit-text-fill-color: #7b5cff; }
-.logo-o::after {
-  content: '♥'; position: absolute; left: 50%; top: 54%; transform: translate(-50%, -50%);
-  font-size: 22px; color: #fff; -webkit-text-fill-color: #fff;
-}
 .splash-sub { margin-top: 4px; color: var(--muted); font-weight: 700; font-size: 14px; }
 @keyframes pop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
@@ -801,6 +795,65 @@ a { color: inherit; text-decoration: none; }
 .gift-bubble b { display: block; font-weight: 900; }
 .gift-bubble small { font-weight: 700; opacity: .9; }
 
+/* Sohbet arka planları (mağaza + kalp düzeyi) */
+.bg-pembe-ruya {
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,182,220,.45), transparent 40%),
+    radial-gradient(circle at 85% 70%, rgba(196,132,252,.4), transparent 45%),
+    linear-gradient(180deg, #7a2a6e 0%, #4b1a5c 50%, #2a0f3d 100%);
+}
+.bg-ucan-kalpler {
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><defs><filter id='b'><feGaussianBlur stdDeviation='1.5'/></filter><path id='h' d='M16 28C6 20 1 15 1 9a7.5 7.5 0 0 1 15-2 7.5 7.5 0 0 1 15 2c0 6-5 11-15 19z'/></defs><g filter='url(%23b)'><use href='%23h' fill='%23ff6fb5' opacity='.35' transform='translate(20 30) rotate(-15) scale(1.1)'/><use href='%23h' fill='%23e879f9' opacity='.25' transform='translate(130 15) rotate(12) scale(.7)'/><use href='%23h' fill='%23ff8fc7' opacity='.3' transform='translate(95 110) rotate(-8) scale(1.6)'/><use href='%23h' fill='%23f472b6' opacity='.22' transform='translate(10 140) rotate(20) scale(.6)'/><use href='%23h' fill='%23c084fc' opacity='.25' transform='translate(160 150) rotate(-20) scale(.8)'/></g></svg>") 0 0 / 200px 200px,
+    radial-gradient(circle at 50% 35%, rgba(255,80,170,.35), transparent 60%),
+    linear-gradient(180deg, #4a1350 0%, #2a0c3a 55%, #16061f 100%);
+}
+.bg-kalp-kolye {
+  background:
+    linear-gradient(180deg, rgba(16,6,24,.55) 0%, rgba(16,6,24,.15) 30%, rgba(16,6,24,.15) 70%, rgba(16,6,24,.6) 100%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 760' preserveAspectRatio='xMidYMid slice'><defs><radialGradient id='bg' cx='.5' cy='.5' r='.7'><stop offset='0' stop-color='%233a1450'/><stop offset='.6' stop-color='%231e0c2e'/><stop offset='1' stop-color='%23100618'/></radialGradient><radialGradient id='gl' cx='.5' cy='.5' r='.5'><stop offset='0' stop-color='%23ff4fb0' stop-opacity='.55'/><stop offset='1' stop-color='%23ff4fb0' stop-opacity='0'/></radialGradient><linearGradient id='au' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23ffe7a3'/><stop offset='.45' stop-color='%23c58a2c'/><stop offset='.7' stop-color='%23fff0bf'/><stop offset='1' stop-color='%236e3d0e'/></linearGradient><linearGradient id='gem' x1='.2' y1='0' x2='.8' y2='1'><stop offset='0' stop-color='%23ff9fd8'/><stop offset='.45' stop-color='%23c026d3'/><stop offset='1' stop-color='%233b0764'/></linearGradient><filter id='bl'><feGaussianBlur stdDeviation='4'/></filter><path id='h' d='M16 28C6 20 1 15 1 9a7.5 7.5 0 0 1 15-2 7.5 7.5 0 0 1 15 2c0 6-5 11-15 19z'/><ellipse id='p' cx='0' cy='-17' rx='9' ry='17'/></defs><rect width='400' height='760' fill='url(%23bg)'/><g filter='url(%23bl)' opacity='.5'><use href='%23h' fill='%23ff5fa8' transform='translate(20 560) rotate(-20) scale(2.2)'/><use href='%23h' fill='%23e04895' transform='translate(320 600) rotate(15) scale(1.8)'/><use href='%23h' fill='%23c2185b' transform='translate(300 120) rotate(10) scale(1.4)'/><use href='%23h' fill='%23ff7ab8' transform='translate(30 160) rotate(-10) scale(1.2)'/><use href='%23h' fill='%23ff5fa8' transform='translate(180 680) rotate(5) scale(1.5)'/></g><g fill='none' stroke='url(%23au)' stroke-width='6' stroke-dasharray='4 5' stroke-linecap='round'><path d='M110 0Q140 200 196 350'/><path d='M290 0Q260 200 204 350'/></g><circle cx='200' cy='420' r='190' fill='url(%23gl)'/><use href='%23h' fill='url(%23au)' transform='translate(64 292) scale(8.5)'/><use href='%23h' fill='url(%23gem)' transform='translate(88 315) scale(7)'/><use href='%23h' fill='%23f0abfc' opacity='.25' transform='translate(128 352) scale(4.5)'/><path d='M200 505L200 372M118 380L200 440L282 380M140 465L200 440L260 465' fill='none' stroke='%23fff' stroke-opacity='.25' stroke-width='2'/><ellipse cx='145' cy='385' rx='26' ry='13' transform='rotate(-35 145 385)' fill='%23fff' opacity='.35'/><g fill='%239333ea' stroke='%23ffe7a3' stroke-width='2'><circle cx='200' cy='357' r='7'/><circle cx='84' cy='373' r='6'/><circle cx='316' cy='373' r='6'/><circle cx='200' cy='520' r='7'/></g><g fill='%238b5cf6' opacity='.9' transform='translate(305 495)'><use href='%23p'/><use href='%23p' transform='rotate(72)'/><use href='%23p' transform='rotate(144)'/><use href='%23p' transform='rotate(216)'/><use href='%23p' transform='rotate(288)'/><circle r='7' fill='%23fde68a'/></g><g fill='%23d946ef' opacity='.75' transform='translate(100 505) scale(.7)'><use href='%23p'/><use href='%23p' transform='rotate(72)'/><use href='%23p' transform='rotate(144)'/><use href='%23p' transform='rotate(216)'/><use href='%23p' transform='rotate(288)'/><circle r='7' fill='%23fde68a'/></g></svg>") center / cover no-repeat,
+    #100618;
+}
+
+/* Sohbet baloncukları (.bub-<id>, sohbette ve mağaza önizlemesinde) */
+.bub-kalp .msg .bubble {
+  position: relative; margin-bottom: 6px; border: 1.5px solid rgba(255,255,255,.55);
+  box-shadow: 0 4px 14px rgba(255,60,150,.35), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.bub-kalp .msg.me .bubble { background: linear-gradient(100deg, #ff7a6b 0%, #ff4fa0 45%, #f83cb0 100%); }
+.bub-kalp .msg.her .bubble { background: linear-gradient(160deg, #f45fc8 0%, #ff8fb5 60%, #ffb38a 100%); color: #4a0f2e; }
+.bub-kalp .msg .bubble::after {
+  content: ''; position: absolute; bottom: -11px; width: 26px; height: 24px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 30'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ffd0ec'/><stop offset='.5' stop-color='%23ff3d9a'/><stop offset='1' stop-color='%23b0125f'/></linearGradient></defs><path d='M16 28C6 20 1 15 1 9a7.5 7.5 0 0 1 15-2 7.5 7.5 0 0 1 15 2c0 6-5 11-15 19z' fill='url(%23g)' stroke='%23ffe7a3' stroke-width='1.6'/><path d='M7 6c2-1.5 4-1 5 1' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' opacity='.85'/><path d='M16 10l-5 5 5 8 5-8z' fill='%23fff' opacity='.35'/></svg>") center / contain no-repeat;
+  filter: drop-shadow(0 2px 4px rgba(120,0,60,.5));
+}
+.bub-kalp .msg.me .bubble::after { left: -10px; }
+.bub-kalp .msg.her .bubble::after { right: -10px; }
+
+.bub-seker .msg .bubble { border: 1.5px solid rgba(255,255,255,.7); color: #4a2a5a; }
+.bub-seker .msg.me .bubble { background: linear-gradient(135deg, #ffb3d9, #b8c6ff); }
+.bub-seker .msg.her .bubble { background: linear-gradient(135deg, #d7f3ff, #ffe0f0); }
+
+.bub-altin .msg.me .bubble { background: linear-gradient(135deg, #fde68a, #f59e0b 55%, #fbbf24); color: #4a2c00; box-shadow: 0 4px 14px rgba(245,158,11,.35); }
+.bub-altin .msg.her .bubble { background: #2c2442; border: 1.5px solid #f8d34a; }
+
+.bub-neon .msg .bubble { border: 2px solid; }
+.bub-neon .msg.me .bubble { background: rgba(40,5,30,.7); border-color: #ec4899; box-shadow: 0 0 12px rgba(236,72,153,.7); }
+.bub-neon .msg.her .bubble { background: rgba(15,10,35,.75); border-color: #22d3ee; box-shadow: 0 0 12px rgba(34,211,238,.6); }
+
+.bub-galaksi .msg .bubble { --stars: radial-gradient(circle at 15% 25%, rgba(255,255,255,.8) 0 1px, transparent 2px), radial-gradient(circle at 72% 60%, rgba(255,255,255,.7) 0 1px, transparent 2px), radial-gradient(circle at 45% 82%, rgba(255,255,255,.6) 0 1px, transparent 2px); }
+.bub-galaksi .msg.me .bubble { background: var(--stars), linear-gradient(135deg, #6d28d9, #db2777); }
+.bub-galaksi .msg.her .bubble { background: var(--stars), linear-gradient(135deg, #1e1b4b, #4c1d95); }
+
+/* Mağaza: baloncuk önizlemesi */
+.bub-swatch { width: 100%; padding: 8px; border-radius: 12px; background: #241444; }
+.bub-swatch .msg { margin: 4px 0; animation: none; }
+.bub-swatch .msg .bubble { font-size: 12px; padding: 6px 10px; max-width: 85%; }
+.bub-swatch.bub-kalp .msg .bubble::after { width: 16px; height: 15px; bottom: -7px; }
+.item { position: relative; }
+.item-tag { position: absolute; top: 8px; right: 8px; z-index: 1; padding: 2px 8px; border-radius: 999px; background: #ff3d8b; color: #fff; font-size: 11px; font-weight: 900; font-style: normal; }
+.store-hint { margin: 0 16px 8px; font-size: 13px; font-weight: 700; color: #f9c4dd; }
+
 /* Hediye paneli */
 .gift-sheet { background: #0c0c12; color: #fff; padding: 0 0 calc(10px + var(--safe-b)); }
 .gp-banner {
@@ -1036,6 +1089,9 @@ a { color: inherit; text-decoration: none; }
 .call-row small { color: var(--muted); font-size: 12.5px; font-weight: 600; }
 .call-btn { flex: none; width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #ff3d8b, #c13bff); display: flex; align-items: center; justify-content: center; }
 .call-btn svg { width: 22px; height: 22px; fill: #fff; }
+.call-btn.ask { background: var(--purple-soft); font-size: 20px; }
+.call-row small.call-ok { color: #16a34a; font-weight: 800; }
+.call-hint { margin: 4px 16px 8px; padding: 10px 12px; border-radius: 14px; background: var(--purple-soft); color: var(--text); font-size: 13px; font-weight: 600; line-height: 1.4; }
 .task-row { display: flex; align-items: center; gap: 12px; padding: 12px 4px; border-top: 1px solid var(--line); }
 .task-row > span { font-size: 26px; }
 .task-row div { flex: 1; }
@@ -1268,7 +1324,6 @@ a { color: inherit; text-decoration: none; }
 /* ---------- Hesap ekranı ---------- */
 .auth { min-height: 100vh; min-height: 100dvh; padding: calc(40px + var(--safe-t)) 16px 40px; display: flex; flex-direction: column; align-items: center; }
 .auth-logo { font-size: 54px; font-weight: 900; letter-spacing: -2px; margin-bottom: 18px; color: var(--text); }
-.auth-logo .logo-o::after { font-size: 18px; }
 .auth-card { width: 100%; max-width: 420px; }
 .auth-card h2 { margin: 0 0 6px; font-size: 22px; font-weight: 900; }
 .auth-sub { margin: 0 0 6px; color: var(--muted); font-weight: 600; font-size: 14px; }

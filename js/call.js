@@ -37,8 +37,18 @@ Amor.Call = (() => {
     declineBusy: st => [`Şu an ${st.say || 'müsait değilim'}, sonra konuşalım`, `Açamadım, ${st.status || 'meşgulüm'} 🙈`],
     declineMood: ['Şu an konuşacak modda değilim, yazışalım mı?', 'Kusura bakma, telefonla konuşasım yok şimdi'],
     missedIn: ['Aradım açmadın 🥺', 'Seni aradım ama meşguldün galiba'],
-    rejected: ['Neden açmadın? 🥺', 'Tamam, müsait değilsen sonra konuşuruz']
+    rejected: ['Neden açmadın? 🥺', 'Tamam, müsait değilsen sonra konuşuruz'],
+    // Mesajla izin ("arayabilir miyim?")
+    permitYes: ['Ara hadi 🙈', 'Olur, bekliyorum 📞', 'Tamam ara, sesini merak ettim', 'Hıı olur, ara bakalım 😊', 'Müsaitim, arayabilirsin'],
+    permitYesVideo: ['Olur ama saçım dağınık 🙈 ara hadi', 'Tamam, görüntülü ara bakalım 😊', 'Hıı olur, kamerayı açıyorum'],
+    permitCallMe: ['Tamam, ben ararım şimdi 🙈', 'Dur ben arıyorum 📞', 'Olur, birazdan arıyorum seni'],
+    permitNo: ['Şu an olmaz ya, yazışalım mı?', 'Biraz sonra olur mu? Şimdi pek müsait değilim', 'Bugün konuşasım yok açıkçası 🙈'],
+    permitBusy: st => [`Şu an ${st.say || 'müsait değilim'}, çıkınca sen ara olur mu?`, `${st.status || 'Meşgulüm'}, sonra konuşalım 🙈`],
+    permitEarly: ['Daha yeni tanışıyoruz 🙈 biraz daha yazışalım, sonra olur', 'Telefon için biraz erken bence, önce yazışalım'],
+    permitEarlyVideo: ['Görüntülü için erken bence 🙈 sesli olur belki?', 'Kamera için daha erken, önce biraz yazışalım'],
+    permitNow: ['Zaten konuşuyoruz 🙈']
   };
+  const PERMIT_MIN = 10; // izin verdikten sonra bu kadar dakika arama kesin açılır
 
   const svg = p => `<svg viewBox="0 0 24 24">${p}</svg>`;
   const PHONE = 'M5 4h3.5l1.5 4.5-2.2 1.4a11 11 0 0 0 6.3 6.3l1.4-2.2L20 15.5V19a2 2 0 0 1-2.2 2A17 17 0 0 1 3 6.2 2 2 0 0 1 5 4z';
@@ -237,6 +247,12 @@ Amor.Call = (() => {
     const lv = A.Engine.level(c).lv;
     const t = (a, b) => a + Math.random() * (b - a);
     if (st.forced) return { accept: true, ring: t(2000, 3500) };
+    // Mesajla izin verdiyse açar (görüntülü izin sesliyi de kapsar)
+    const ok = (S().callOk || {})[c.id];
+    if (ok && ok.until > Date.now() && (ok.type === 'video' || type === 'voice')) {
+      delete S().callOk[c.id];
+      return { accept: true, ring: t(1500, 3000) };
+    }
     if (!A.Mood.isOnline(c)) return { status: 'missed', ring: 22000 };
     if (st.state === 'busy') return { status: 'declined', ring: t(4000, 8000), text: rnd(LINES.declineBusy(st)) };
     if (lv < MIN_LV[type]) {
@@ -246,6 +262,35 @@ Amor.Call = (() => {
     const p = clamp(0.3 + 0.45 * A.Interest.get(c) + 0.2 * v.valence + 0.06 * (lv - MIN_LV[type]), 0.1, 0.95);
     if (Math.random() < p) return { accept: true, ring: t(2500, 7000) };
     return Math.random() < 0.5 ? { status: 'declined', ring: t(3000, 8000), text: rnd(LINES.declineMood) } : { status: 'missed', ring: 22000 };
+  }
+
+  /* ---------- Mesajla izin ----------
+   * Sohbette "arayabilir miyim?" -> karakter cevap verir; "olur" derse PERMIT_MIN dakika içindeki arama kesin açılır.
+   * Sormak seviye şartını bir basamak düşürür. "Beni ara" denirse ve kabul ederse birazdan kendisi arar. */
+  function permit(c, text) {
+    if (cur) return rnd(LINES.permitNow);
+    const type = /g[oö]r[uü]nt[uü]|kamera|video/i.test(text) ? 'video' : 'voice';
+    const callMe = /beni\s+ara/i.test(text);
+    const st = A.Schedule.status(c);
+    const lv = A.Engine.level(c).lv;
+    if (st.state === 'busy' && !st.forced) return rnd(LINES.permitBusy(st));
+    if (lv < MIN_LV[type] - 1) return rnd(type === 'video' ? LINES.permitEarlyVideo : LINES.permitEarly);
+    const v = A.Mood.current(c).values;
+    const p = clamp(0.45 + 0.4 * A.Interest.get(c) + 0.25 * v.valence + 0.1 * (lv - MIN_LV[type] + 1), 0.15, 0.97);
+    if (Math.random() >= p) return rnd(LINES.permitNo);
+    S().callOk = S().callOk || {};
+    S().callOk[c.id] = { type, until: Date.now() + PERMIT_MIN * 60000 };
+    A.Store.save();
+    if (callMe) {
+      setTimeout(() => { if (!cur && A.Mood.isOnline(c)) incoming(c, type); }, 9000 + Math.random() * 8000);
+      return rnd(LINES.permitCallMe);
+    }
+    return rnd(type === 'video' ? LINES.permitYesVideo : LINES.permitYes);
+  }
+  // Arama izni kaç dakika daha geçerli (yoksa 0)
+  function permitLeft(c) {
+    const ok = (S().callOk || {})[c.id];
+    return ok && ok.until > Date.now() ? { type: ok.type, min: Math.ceil((ok.until - Date.now()) / 60000) } : null;
   }
 
   /* ---------- Akış ---------- */
@@ -282,6 +327,7 @@ Amor.Call = (() => {
     log(d.status);
     later(1800, close);
     if (d.text) setTimeout(() => A.UI.pushHer(k.c, d.text), 3000);
+    setTimeout(() => A.Eco.notify('İpucu: önce mesajla "arayabilir miyim?" diye sor', '💬'), 2200);
   }
 
   function reject() {
@@ -482,5 +528,5 @@ Amor.Call = (() => {
     incoming(c, A.Engine.level(c).lv >= 4 && Math.random() < 0.3 ? 'video' : 'voice');
   }
 
-  return { start, incoming, maybeIncoming, calls, label, MIN_LV, ICON, active: () => !!cur };
+  return { start, incoming, maybeIncoming, calls, label, permit, permitLeft, MIN_LV, ICON, active: () => !!cur };
 })();

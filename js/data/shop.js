@@ -136,7 +136,27 @@ Amor.BACKGROUNDS = [
   { id: 'gul-bahcesi', name: 'Gül bahçesi', price: 1490, css: 'linear-gradient(180deg,#5b1036 0%,#3a0d2a 50%,#1e0716 100%)' },
   { id: 'okyanus', name: 'Okyanus', price: 1490, css: 'linear-gradient(180deg,#0b3a5b 0%,#0a2540 50%,#061426 100%)' },
   { id: 'galaksi', name: 'Galaksi', price: 2490, css: 'radial-gradient(circle at 30% 20%,#4c1d95 0%,#1e1b4b 40%,#0b0820 100%)' },
-  { id: 'gun-batimi', name: 'Gün batımı', price: 1990, css: 'linear-gradient(180deg,#7c2d12 0%,#4a1942 55%,#1a0b24 100%)' }
+  { id: 'gun-batimi', name: 'Gün batımı', price: 1990, css: 'linear-gradient(180deg,#7c2d12 0%,#4a1942 55%,#1a0b24 100%)' },
+  // cls: görünüm style.css'teki sınıftan gelir
+  { id: 'ucan-kalpler', name: 'Uçan kalpler', price: 1990, cls: 'bg-ucan-kalpler' },
+  { id: 'kalp-kolye', name: 'Mücevher kalp', price: 2990, cls: 'bg-kalp-kolye' },
+  { id: 'pembe-ruya', name: 'Pembe rüya', price: 1490, cls: 'bg-pembe-ruya' }
+];
+
+// Sohbet baloncukları (görünüm style.css'te .bub-<id>)
+Amor.BUBBLES = [
+  { id: 'klasik', name: 'Klasik', price: 0 },
+  { id: 'kalp', name: 'Kalp mücevheri', price: 1990 },
+  { id: 'seker', name: 'Pamuk şeker', price: 990 },
+  { id: 'altin', name: 'Altın ışıltı', price: 1990 },
+  { id: 'neon', name: 'Gece neonu', price: 1290 },
+  { id: 'galaksi', name: 'Galaksi', price: 1490 }
+];
+
+// Kalp düzeyi temaları: varsayılan arka plan/baloncuk kullanılıyorsa o sohbette kendiliğinden açılır
+Amor.LEVEL_THEMES = [
+  { lv: 4, bg: 'ucan-kalpler', bubble: 'kalp' },
+  { lv: 5, bg: 'kalp-kolye', bubble: 'kalp' }
 ];
 Amor.ITEM_DAYS = 7; // satın alınan eşya süresi
 

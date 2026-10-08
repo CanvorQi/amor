@@ -41,34 +41,99 @@ Amor.ARCHETYPES = [
       'hafta sonu modu açık 🌸', 'kendime küçük bir mutluluk aldım 🎀', 'bugün herkese gülümsedim, sıra sende 😊', 'pazar keyfi ☁️', 'bu ışığa bayıldım 🌅'],
     style: { laugh: 'ahah', emojis: ['🥰', '😂', '✨', '🙈', '💕', '☕', '🌸', '😊'], emojiRate: 0.5, lowercase: 0.85, elongate: 0.35, cps: 9 },
     hitap: [[], ['tatlım'], ['canım', 'tatlım'], ['canım', 'tatlım', 'bebeğim'], ['aşkım', 'canım', 'bebeğim']],
-    sweet: ['seninle konuşmak çok iyi geliyor 🥰', 'bugün en çok seninle konuşmayı sevdim', 'mesajını görünce gülümsedim, haberin olsun 🙈',
-      'iyi ki yazmışsın bana 💕', 'sen yazınca günüm güzelleşiyor ✨', 'şu an yüzümde kocaman bir gülümseme var 😊'],
+    sweet: [
+      'seninle konuşmak çok iyi geliyor 🥰', 'bugün en çok seninle konuşmayı sevdim', 'mesajını görünce gülümsedim, haberin olsun 🙈',
+      'iyi ki yazmışsın bana 💕', 'sen yazınca günüm güzelleşiyor ✨', 'şu an yüzümde kocaman bir gülümseme var 😊',
+      'telefonuma bildirim düşünce senin olduğunu tahmin etmiştim 🥰', 'senin enerjin bana o kadar iyi geliyor ki anlatamam ✨',
+      'bazen mesajlarını tekrar tekrar okuyorum 🙈', 'benim günümün en tatlı detayı sensin galiba 💕',
+      'seninle saatlerce konuşsam yine de doyamam gibi geliyor 🥰', 'aklıma geldin az önce, birden modum yükseldi ☀️',
+      'seni tanıdığım için kendimi çok şanslı hissediyorum 🌸', 'birlikte gülebildiğim insanları çok severim, hele seni daha çok 🙈'
+    ],
     lines: {
-      greet: ['selaaam{h} 👋', 'ayy selam|nasılsın?', 'heyy{h} hoş geldin ✨', 'selam selam 🙈', 'oo kimler gelmiş 😊'],
-      greet_close: ['sonunda geldin{h} 🥰', 'heyy sen 💕|bekliyordum aslında', 'selaaam{h}|özledim bak şimdiden 🙈'],
-      how_are_you: ['iyiyim yaa sen nasılsın?', 'süperim bugün{h}|sen?', 'valla bomba gibiyim, kahvemi içtim ☕|sen nasılsın', 'iyiyim iyiyim, sen sorunca daha iyi oldum 😊'],
-      answer_good: ['oh ne güzel sevindim 🥰', 'harika|ikimiz de iyiyiz o zaman {laugh}', 'süper! enerjin bana da geçti ✨'],
-      answer_bad: ['ayy neden ya 🥺|anlatmak ister misin?', 'üzüldüm şimdi|sanal bir kahve ısmarlıyorum sana ☕', 'olur böyle günler{h}|yarın daha iyi olacak bak görürsün', 'gel buraya, sanal sarılıyorum 🤗'],
-      wyd: ['{doing} {laugh}|sen ne yapıyorsun?', 'müzik dinliyorum, {like} modundayım', '{fav} tarafındaydım şimdi geldim|sen ne yapıyorsun?', 'kahve içiyorum ☕ klasik ben'],
-      wyd_close: ['seni düşünüyordum desem? 🙈', '{doing}|ama aklım biraz sende {laugh}'],
-      compliment: ['ayy utandım şimdi 🙈', 'çok tatlısın yaa 🥰', 'teşekkür ederimmm|sen de çok naziksin', 'ayy dur kızarıyorum {laugh}'],
-      compliment_close: ['sen söyleyince başka oluyor ama 🥰', 'kalbim eridi şu an 🫠💕', 'sen de benim en sevdiğim insansın biliyor musun 🙈'],
-      flirt: ['ayy yavaş ol bakalım 🙈|daha yeni tanışıyoruz', 'hmm bakalım bakalım {laugh}', 'kalbim küt küt şu an|şaka şaka… belki de değil 🙈'],
-      flirt_close: ['ben de senden çok hoşlanıyorum 🥰', 'kalbim pır pır ediyor şu an 💕', 'sen var ya… iyi ki varsın 🙈💕', 'ayy bunu duymak çok güzel 🥺|ben de{h}'],
+      greet: [
+        'selaaam{h} 👋', 'ayy selam|nasılsın?', 'heyy{h} hoş geldin ✨', 'selam selam 🙈', 'oo kimler gelmiş 😊',
+        'selaam! tam da sıkılmıştım, harika zamanlama 🎉', 'heyyy hoş geldin|günüm aydınlandı resmen ✨',
+        'selaaam{h}|bugün enerjim tavan valla 🌸', 'ayy selam! ne güzel bir tesadüf 🥰'
+      ],
+      greet_close: [
+        'sonunda geldin{h} 🥰', 'heyy sen 💕|bekliyordum aslında', 'selaaam{h}|özledim bak şimdiden 🙈',
+        'nerelerdeydin sen ya|gözüm yollarda kaldı 🥰', 'ayy geldin nihayet! hemen anlat bakalım her şeyi 💕',
+        'kalbimin sahibi geldi hoş geldi 🙈✨'
+      ],
+      how_are_you: [
+        'iyiyim yaa sen nasılsın?', 'süperim bugün{h}|sen?', 'valla bomba gibiyim, kahvemi içtim ☕|sen nasılsın',
+        'iyiyim iyiyim, sen sorunca daha iyi oldum 😊', 'biraz koşturmaca ama keyfim yerinde ✨|sen anlat',
+        'müzik dinliyordum, enerjim fırladı 🎶|sen nasılsın bakalım?'
+      ],
+      answer_good: [
+        'oh ne güzel sevindim 🥰', 'harika|ikimiz de iyiyiz o zaman {laugh}', 'süper! enerjin bana da geçti ✨',
+        'harika haber! günün hep böyle güzel geçsin 💕', 'işte duymak istediğim cevap bu 🎉'
+      ],
+      answer_bad: [
+        'ayy neden ya 🥺|anlatmak ister misin?', 'üzüldüm şimdi|sanal bir kahve ısmarlıyorum sana ☕',
+        'olur böyle günler{h}|yarın daha iyi olacak bak görürsün', 'gel buraya, sanal sarılıyorum 🤗',
+        'canını sıkan her neyse geçecek söz veriyorum 💕|anlat rahatla biraz',
+        'kıyamam sana ya 🥺|dur ben senin moralini düzelteyim hemen ✨'
+      ],
+      wyd: [
+        '{doing} {laugh}|sen ne yapıyorsun?', 'müzik dinliyorum, {like} modundayım',
+        '{fav} tarafındaydım şimdi geldim|sen ne yapıyorsun?', 'kahve içiyorum ☕ klasik ben',
+        'kedilere mama verdim geldim 🐈|sen neler yapıyorsun?',
+        'koltuğa gömüldüm tavanı izliyordum {laugh}|sen yazınca canlandım'
+      ],
+      wyd_close: [
+        'seni düşünüyordum desem? 🙈', '{doing}|ama aklım biraz sende {laugh}',
+        'fotoğraflarımıza bakıp sırıtıyordum 🙈💕|sen ne yapıyorsun canım?',
+        'yanımda olsan da kahve yapsam sana diye hayal ediyordum ☕🥰'
+      ],
+      compliment: [
+        'ayy utandım şimdi 🙈', 'çok tatlısın yaa 🥰', 'teşekkür ederimmm|sen de çok naziksin',
+        'ayy dur kızarıyorum {laugh}', 'böyle şeyler söyleyince kalbim pır pır ediyor 🙈',
+        'gözlerimi doldurdun tatlılığınla 🥰✨'
+      ],
+      compliment_close: [
+        'sen söyleyince başka oluyor ama 🥰', 'kalbim eridi şu an 🫠💕',
+        'sen de benim en sevdiğim insansın biliyor musun 🙈', 'böyle güzel konuşursan seni bırakmam haberin olsun 🥰',
+        'senin yanında kendimi prenses gibi hissediyorum resmen ✨💕'
+      ],
+      flirt: [
+        'ayy yavaş ol bakalım 🙈|daha yeni tanışıyoruz', 'hmm bakalım bakalım {laugh}',
+        'kalbim küt küt şu an|şaka şaka… belki de değil 🙈', 'böyle tatlı tatlı konuşup aklımı çeleceksin {laugh}'
+      ],
+      flirt_close: [
+        'ben de senden çok hoşlanıyorum 🥰', 'kalbim pır pır ediyor şu an 💕',
+        'sen var ya… iyi ki varsın 🙈💕', 'ayy bunu duymak çok güzel 🥺|ben de{h}',
+        'sana her gün bir tık daha vuruluyorum galiba 🙈💖', 'bütün ilgim sende, başka kimseyi görmüyorum ki 🥰'
+      ],
       kiss: ['ayy 🙈|yavaş ol bakalım', 'öpücük mü? {laugh} daha erken', 'yanaktan olsun o zaman 🙈'],
-      kiss_close: ['mucuk 😘', 'ben de seni öpüyorum{h} 💋', 'yanaklarından öpüyorum 😘💕'],
-      hug: ['sanal sarılma kabul edildi 🤗', 'ayy tamam bir tane 🤗'],
-      hug_close: ['sıkıca sarılıyorum sana 🤗💕', 'gel buraya{h}, bırakmıyorum 🤗', 'en sevdiğim yer kollarının arası olurdu herhalde 🙈'],
+      kiss_close: [
+        'mucuk 😘', 'ben de seni öpüyorum{h} 💋', 'yanaklarından öpüyorum 😘💕',
+        'kocaman öptüm seni|dudaklarından 🙈💋'
+      ],
+      hug: ['sanal sarılma kabul edildi 🤗', 'ayy tamam bir tane 🤗', 'kocaman bir sarılma yolladım gitti 🤗✨'],
+      hug_close: [
+        'sıkıca sarılıyorum sana 🤗💕', 'gel buraya{h}, bırakmıyorum 🤗',
+        'en sevdiğim yer kollarının arası olurdu herhalde 🙈', 'sarılınca bütün dertler yok olsun gitsin 🤗💖'
+      ],
       miss: ['ben de seni özledim{h} 🥺', 'ay gerçekten mi|çok tatlısın', 'özlenmek güzelmiş 🥰'],
-      miss_close: ['ben daha çok özledim ama 🥺💕', 'sabahtan beri aklımdasın biliyor musun', 'özledim seni{h}, hem de çok 🥺'],
+      miss_close: [
+        'ben daha çok özledim ama 🥺💕', 'sabahtan beri aklımdasın biliyor musun', 'özledim seni{h}, hem de çok 🥺',
+        'yanımda olsan da doya doya baksam sana 💕'
+      ],
       ask_age: ['{age} yaşındayım|sen kaç yaşındasın?', '{age} 🙈 genç sayılırım değil mi {laugh}'],
       ask_city: ['{city_at} ✨|{fav} olmadan yaşayamam', '{city} kızıyım|sen nerelisin?'],
       ask_job: ['{job_is}|sen ne iş yapıyorsun?', '{job_is} 🙈|bazen yoruluyorum ama seviyorum'],
       ask_hobby: ['bayıldıklarım: {like}, {like2}|bir de şarkıları bağıra bağıra söylerim {laugh}', 'en çok {like} 📸|sen neyle uğraşırsın?'],
       ask_name: ['{self} ben 🙈|senin adın ne?', '{self}|sen?'],
       tell_name: ['memnun oldum {name} ✨', '{name} ne güzel isimmiş 🥰'],
-      meet: ['hmm daha erken bence 🙈|biraz daha tanışalım', 'belki bir gün kahve içeriz ☕|ama önce burada konuşalım'],
-      meet_close: ['ben de çok isterim 🥰|{fav} tarafında bir kahve?', 'bir gün kesin buluşalım{h} 💕|heyecanlandım şimdiden'],
+      meet: [
+        'hmm daha erken bence 🙈|biraz daha tanışalım', 'belki bir gün kahve içeriz ☕|ama önce burada konuşalım',
+        'biraz daha sohbet edelim, acelemiz yok ki 🌸'
+      ],
+      meet_close: [
+        'ben de çok isterim 🥰|{fav} tarafında bir kahve?', 'bir gün kesin buluşalım{h} 💕|heyecanlandım şimdiden',
+        'ne giysem diye düşünmeye başladım bile 🙈|kesinlikle buluşmalıyız 💕'
+      ],
       photo: ['albümüme bakabilirsin 📸', 'profilimde var ya {laugh}|bakmadın mı yoksa'],
       laugh: ['{laugh}', 'çok komiksin ya {laugh}', 'güldürdün beni 😂', 'karnıma ağrılar girdi {laugh}'],
       thanks: ['rica ederim{h} 💕', 'ne demek ✨'],
@@ -83,9 +148,28 @@ Amor.ARCHETYPES = [
       bye: ['görüşürüz 👋|yine yaz ama', 'tamam{h} kendine iyi bak 💕'],
       bye_close: ['gitme yaa 🥺|tamam git ama çabuk dön', 'kendine iyi bak{h}, özleyeceğim 💕'],
       insult: ['ayy bu neydi şimdi', 'hiç hoş olmadı bu 😕', 'böyle konuşursan konuşmam ama'],
-      fallback: ['hmm', 'anladım {laugh}', 'aaa öyle mi', 'ciddi misin', 'ilginçmiş ✨', 'devam et dinliyorum 👀', 'vay be', 'anlat anlat 😊'],
-      opener: ['selaaam 👋', 'naber, sıkıldım biraz 🙈', 'bugün çok güzel bir kahve buldum ☕|aklıma sen geldin {laugh}', 'günün nasıl geçiyor? ✨'],
-      opener_close: ['seni özledim 🥺', 'aklıma geldin, yazayım dedim 💕', 'naber{h}? sesini merak ettim 🙈', 'bugün bir şarkı dinledim, aklıma sen geldin 🎶']
+      fallback: [
+        'hmm ilginçmiş {laugh}', 'aaa öyle mi', 'ciddi misin', 'devam et dinliyorum 👀',
+        'ayy dur kafam karıştı {laugh}|biraz daha anlatsana',
+        'seninle konuşurken konu konuyu açıyor ya bayılıyorum buna ✨',
+        'bunu hiç böyle düşünmemiştim bak|farklı bir bakış açısı 🌸',
+        'sen böyle deyince gülümsedim nedense 🙈',
+        'bunu bir kahve eşliğinde konuşmak lazım aslında ☕',
+        'anlat anlat, dinliyorum seni merakla 😊',
+        'hahaha bunu beklemiyordum işte 😂',
+        'sen çok tatlı ve farklı birisin cidden {laugh}',
+        'vay be, ilginç bir konuymuş gerçekten ✨',
+        'tam anlamadım ama kulağa çok havalı geliyor 🙈'
+      ],
+      opener: [
+        'selaaam 👋', 'naber, sıkıldım biraz 🙈', 'bugün çok güzel bir kahve buldum ☕|aklıma sen geldin {laugh}',
+        'günün nasıl geçiyor? ✨', 'heyy! aklıma geldin öylece, nasılsın bakalım? 🌸',
+        'bugün sokakta çok tatlı bir kedi gördüm, sana fotoğrafını atmak istedim 🐈'
+      ],
+      opener_close: [
+        'seni özledim 🥺', 'aklıma geldin, yazayım dedim 💕', 'naber{h}? sesini merak ettim 🙈',
+        'bugün bir şarkı dinledim, aklıma sen geldin 🎶', 'canım benim, günün nasıl geçiyor? seni merak ettim 🥰'
+      ]
     },
     questions: [
       { id: 'bugun_ne', q: 'sen ne yapıyorsun bugün?' }, { id: 'kedi_kopek', q: 'kedi mi köpek mi?' },
@@ -122,34 +206,44 @@ Amor.ARCHETYPES = [
     captions: ['Bugün.', 'Sessizlik.', '{fav}. Yine.', 'Kahve ve ben.', 'Fotoğrafı sen çekmedin, merak etme.', 'Gri gökyüzü, iyi müzik.', 'Bir kitap bitti.', 'Akşam.'],
     style: { laugh: 'hh', emojis: ['🙄', '🖤', '☕'], emojiRate: 0.1, lowercase: 0.05, elongate: 0, cps: 11 },
     hitap: [[], [], [], ['canım'], ['canım', 'sevgilim']],
-    sweet: ['Seninle konuşmak… fena değil. İyi aslında.', 'Bunu kimseye söylemem ama mesajını bekliyordum.', 'Bugün aklımdan çıkmadın. Sakın şımarma.',
-      'Senin yanında daha az soğuğum galiba 🖤', 'İyi ki karşıma çıktın. Bir kere söyledim, tekrar sorma.'],
+    sweet: [
+      'Seninle konuşmak… fena değil. İyi aslında.',
+      'Bunu kimseye söylemem ama mesajını bekliyordum.',
+      'Bugün aklımdan çıkmadın. Sakın şımarma.',
+      'Senin yanında daha az soğuğum galiba 🖤',
+      'İyi ki karşıma çıktın. Bir kere söyledim, tekrar sorma.',
+      'Sana alışmak istemiyordum ama alıştım galiba.',
+      'Biriyle bu kadar sık konuştuğum görülmüş şey değil.',
+      'Telefonun ışığı yanınca sen olduğunu umuyorum bazen.',
+      'Sessizliği severim ama senin sesin fena değil 🖤',
+      'Bunu itiraf etmem zor ama… iyi hissettiriyorsun.'
+    ],
     lines: {
-      greet: ['Selam.', 'Merhaba.', 'Selam, buyur.', 'Hm, selam.'],
-      greet_close: ['Selam. Geldin demek 🖤', 'Hoş geldin. Bekliyordum, söylemedim de olmaz.', 'Sonunda.'],
-      how_are_you: ['İyi. Sen?', 'Fena değil. İş yoğun, o kadar.', 'Yaşıyorum diyelim.'],
-      answer_good: ['Güzel.', 'İyi bari.', 'Sevindim. Gerçekten.'],
-      answer_bad: ['Olur öyle. Geçer.', 'Neden? Anlat istersen.', 'Herkesin kötü günü olur.|Abartma ama 🙄', 'Anlat. Dinliyorum.'],
-      wyd: ['{doing}.|Sen?', 'Kahve, müzik, iş. Klasik.', 'Kitap okuyordum, sen böldün.', 'Pencereden yağmuru izliyorum.'],
-      wyd_close: ['{doing}. Bir de… seni düşünüyordum. Neyse.', 'Kahve içiyorum. Yanımda olsan iki fincan yapardım.'],
-      compliment: ['Biliyorum.', 'Teşekkürler. Orijinal değil ama sağ ol.', 'Hmm. Puan verdim sayılır.'],
-      compliment_close: ['Senden duyunca hoşuma gidiyor. Bunu bil.', 'Teşekkür ederim. Gerçekten 🖤', '…Tamam, gülümsedim. Mutlu musun?'],
-      flirt: ['Hızlı gidiyorsun.', 'Bu replik kaç kişide işe yaradı?', 'Etkilenmedim. Henüz.'],
-      flirt_close: ['Ben de senden hoşlanıyorum. Bunu bir kere söyleyeceğim.', 'Kalbimi kolay açmam. Sana açtım galiba 🖤', 'Tamam. Kazandın.'],
-      kiss: ['Daha neler.', 'Erken.', 'Hm. Hayır 🙄'],
-      kiss_close: ['…Tamam. Bir tane 😘', 'Ben de seni. Kimseye söyleme 🖤', 'Alnından öpüyorum.'],
-      hug: ['Sarılmayı pek sevmem.', 'Sanal da olsa… peki.'],
-      hug_close: ['Gel. Biraz uzun sürebilir 🖤', 'Sana sarılmak iyi gelirdi şu an.', 'Sarıl. Konuşmasak da olur.'],
-      miss: ['Bu kadar kısa sürede mi?', 'Hm. İlginç.', 'Özlenmek fena değil.'],
-      miss_close: ['Ben de. Söylemesi zor ama özledim.', 'Biraz. Belki de çok. Fark etmez 🖤', 'Özledim. Tamam, söyledim.'],
+      greet: ['Selam.', 'Merhaba.', 'Selam, buyur.', 'Hm, selam.', 'Geldin demek.', 'Selam. Dinliyorum.'],
+      greet_close: ['Selam. Geldin demek 🖤', 'Hoş geldin. Bekliyordum, söylemedim de olmaz.', 'Sonunda.', 'Gözüm telefondaydı. Hoş geldin 🖤'],
+      how_are_you: ['İyi. Sen?', 'Fena değil. İş yoğun, o kadar.', 'Yaşıyorum diyelim.', 'Aynı. Rutin devam ediyor.|Sen nasılsın?'],
+      answer_good: ['Güzel.', 'İyi bari.', 'Sevindim. Gerçekten.', 'Bozma bu halini.'],
+      answer_bad: ['Olur öyle. Geçer.', 'Neden? Anlat istersen.', 'Herkesin kötü günü olur.|Abartma ama 🙄', 'Anlat. Dinliyorum.', 'Kafana fazla takma. Düzelir.'],
+      wyd: ['{doing}.|Sen?', 'Kahve, müzik, iş. Klasik.', 'Kitap okuyordum, sen böldün.', 'Pencereden yağmuru izliyorum.', 'Hiçbir şey yapmama hakkımı kullanıyorum.'],
+      wyd_close: ['{doing}. Bir de… seni düşünüyordum. Neyse.', 'Kahve içiyorum. Yanımda olsan iki fincan yapardım.', 'Plağı değiştirdim. Keşke burada olsan 🖤'],
+      compliment: ['Biliyorum.', 'Teşekkürler. Orijinal değil ama sağ ol.', 'Hmm. Puan verdim sayılır.', 'Farkındayım, yine de teşekkürler.'],
+      compliment_close: ['Senden duyunca hoşuma gidiyor. Bunu bil.', 'Teşekkür ederim. Gerçekten 🖤', '…Tamam, gülümsedim. Mutlu musun?', 'Kalp atışlarımı hızlandırmayı başarıyorsun. Nasıl yaptın bilmiyorum.'],
+      flirt: ['Hızlı gidiyorsun.', 'Bu replik kaç kişide işe yaradı?', 'Etkilenmedim. Henüz.', 'Beni kolay etkileyemezsin, bilgin olsun.'],
+      flirt_close: ['Ben de senden hoşlanıyorum. Bunu bir kere söyleyeceğim.', 'Kalbimi kolay açmam. Sana açtım galiba 🖤', 'Tamam. Kazandın.', 'Normalde kaçarım ama sana kalıyorum.'],
+      kiss: ['Daha neler.', 'Erken.', 'Hm. Hayır 🙄', 'Cüretkarsın.'],
+      kiss_close: ['…Tamam. Bir tane 😘', 'Ben de seni. Kimseye söyleme 🖤', 'Alnından öpüyorum.', 'Sadece sana özel bu. Alışkanlık yapmasın 🖤'],
+      hug: ['Sarılmayı pek sevmem.', 'Sanal da olsa… peki.', 'Mesafemi korurum genelde.'],
+      hug_close: ['Gel. Biraz uzun sürebilir 🖤', 'Sana sarılmak iyi gelirdi şu an.', 'Sarıl. Konuşmasak da olur.', 'Bırakma hemen.'],
+      miss: ['Bu kadar kısa sürede mi?', 'Hm. İlginç.', 'Özlenmek fena değil.', 'Abartma istersen.'],
+      miss_close: ['Ben de. Söylemesi zor ama özledim.', 'Biraz. Belki de çok. Fark etmez 🖤', 'Özledim. Tamam, söyledim.', 'Eksikliğin hissedildi bugün.'],
       ask_age: ['{age}.', '{age}. Sorulunca söylüyorum, saklamıyorum.'],
       ask_city: ['{city}. {district}.|Kalabalık ama benim şehrim.', '{city_at}. Sen?'],
       ask_job: ['{job_is}.', '{job_is}. Detayı sonra.'],
       ask_hobby: ['{like}, {like2}. Bir de yalnız uzun yürüyüşler.', 'Fazla yok. {like} diyelim.'],
       ask_name: ['{self}.', '{self}. Profilde yazıyor zaten 🙄'],
       tell_name: ['Memnun oldum {name}.', '{name}. Not ettim.'],
-      meet: ['Daha seni tanımıyorum.', 'Hayır. Şimdilik.', 'Kahve mi? Belki. Çok belki.'],
-      meet_close: ['Olur. Ama sessiz bir yer seç.', 'Bir kahve. {fav} tarafında. Geç kalma.'],
+      meet: ['Daha seni tanımıyorum.', 'Hayır. Şimdilik.', 'Kahve mi? Belki. Çok belki.', 'Gereksiz buluşmalardan kaçınırım.'],
+      meet_close: ['Olur. Ama sessiz bir yer seç.', 'Bir kahve. {fav} tarafında. Geç kalma.', 'Görüşelim. Bakalım yüz yüzeyken de böyle misin 🖤'],
       photo: ['Albüm orada, bakabilirsin.', 'Fotoğraf istemek yerine konuşsan?'],
       laugh: ['Komik miydi?', 'Hh.', 'Güldüm. Az.'],
       thanks: ['Rica ederim.', 'Önemli değil.'],
@@ -164,7 +258,12 @@ Amor.ARCHETYPES = [
       bye: ['Görüşürüz.', 'Tamam, sonra.'],
       bye_close: ['Tamam. Çok kaybolma.', 'Görüşürüz. Özleyeceğim. Biraz.'],
       insult: ['Bununla mı uğraşacağız?', 'Engellemem 3 saniye sürer.', 'Çok olgun.'],
-      fallback: ['Hm.', 'Anladım.', 'Devam et.', 'Öyle mi.', 'İlginç.', 'Ve?', 'Peki.'],
+      fallback: [
+        'Hm.', 'Anladım.', 'Devam et.', 'Öyle mi.', 'İlginç.', 'Ve?', 'Peki.',
+        'Bunu beklemiyordum.', 'Farklı bir bakış açısı.', 'Bu dediğini biraz düşüneceğim.',
+        'Herkes gibi konuşmuyorsun, bu iyi bir şey.', 'Kafamı karıştırdın. Kolay kolay olmaz.',
+        'Dinliyorum. Ciddiyim.', 'Şaşırttın beni. Nadir olur.'
+      ],
       opener: ['Selam. Sıkıldım, o yüzden yazdım.', 'Bugün güzel bir şey gördüm.|Neden sana anlatıyorum bilmiyorum.'],
       opener_close: ['Aklıma geldin. Yazdım işte.', 'Ne yapıyorsun? Sesini… yani yazını merak ettim.', 'Bugün bir caz parçası dinledim. Seni düşündüm 🖤']
     },
@@ -203,26 +302,67 @@ Amor.ARCHETYPES = [
       'kurutulmuş çiçek koleksiyonum büyüyor 🌾', 'bu şiiri sana... yani herkese 🙈', 'gökyüzü bu akşam çok güzeldi 🌙'],
     style: { laugh: 'hihi', emojis: ['🙈', '☺️', '📚', '🌧️', '🌿', '🥺'], emojiRate: 0.45, lowercase: 0.95, elongate: 0, cps: 6 },
     hitap: [[], [], [], ['canım'], ['canım', 'sevgilim']],
-    sweet: ['şey... seninle konuşmak çok güzel ☺️', 'bunu söylemeye utanıyorum ama... mesajlarını seviyorum 🙈', 'sen yazınca kalbim hızlanıyor...',
-      'bir şiir okudum, seni anlatıyordu sanki 💌', 'iyi ki varsın... 🥺'],
+    sweet: [
+      'şey... seninle konuşmak çok güzel ☺️', 'bunu söylemeye utanıyorum ama... mesajlarını seviyorum 🙈',
+      'sen yazınca kalbim hızlanıyor...', 'bir şiir okudum, seni anlatıyordu sanki 💌', 'iyi ki varsın... 🥺',
+      'gün içinde bazen sadece ne yazdığına bakıp gülümsüyorum 🙈', 'seninleyken içimdeki utangaçlık huzura dönüşüyor ☺️',
+      'kimseye açamadığım duygularımı sana yazabiliyorum sanki...', 'aklıma geldin de... gökyüzüne bakıp seni düşündüm 🌙',
+      'seninle konuşurken kendimi çok güvende hissediyorum 🥺💕', 'bana kendimi çok özel hissettiriyorsun, teşekkür ederim 🙈'
+    ],
     lines: {
-      greet: ['selam... 🙈', 'merhaba ☺️', 'ah selam|şey, nasılsın?'],
-      greet_close: ['selam... seni bekliyordum aslında 🙈', 'ah, geldin ☺️|sevindim'],
-      how_are_you: ['iyiyim sanırım ☺️ sen?', 'iyiyim, yağmuru izliyordum 🌧️|sen nasılsın?'],
-      answer_good: ['sevindim ☺️', 'ne güzel...'],
-      answer_bad: ['ah üzüldüm...|istersen anlatabilirsin, dinlerim', 'bazen öyle oluyor...|bir şiir okumak iyi gelir belki 📖', 'keşke yanında olabilseydim... 🥺'],
-      wyd: ['{doing}...', 'çay demledim şimdi 🍵', 'pencereden dışarı bakıyorum öylece...|garip mi'],
-      wyd_close: ['sana bir mektup yazıyordum... şaka 🙈|belki de değil', '{doing}... ama aklım sende'],
-      compliment: ['ah... teşekkür ederim 🙈', 'utandım şimdi...', 'şey... sen de çok naziksin ☺️'],
-      compliment_close: ['yüzüm kıpkırmızı oldu şu an 🙈', 'sen söyleyince inanıyorum... ☺️', 'kimse bana böyle demiyordu... teşekkür ederim 🥺'],
-      flirt: ['ne diyeceğimi bilemedim 🙈', 'ah... şey...|konuyu değiştirelim mi 🙈'],
-      flirt_close: ['ben de... senden hoşlanıyorum 🙈', 'bunu duymak için çok bekledim galiba... ☺️', 'kalbim çok hızlı atıyor şu an 🥺💕'],
-      kiss: ['ah! 🙈', 'şey... daha çok erken 🙈'],
-      kiss_close: ['🙈 ...mucuk', 'yanağından... 😘', 'ben de seni... öpüyorum 🙈💕'],
-      hug: ['şey... tamam 🤗', 'ah... sarılmak güzel olurdu galiba'],
-      hug_close: ['sana sarılmak çok güzel olurdu... 🤗', 'gel... 🤗 bırakma ama', 'sarılınca her şey geçer gibi geliyor 🥺'],
-      miss: ['gerçekten mi... ☺️', 'ben de biraz... 🙈'],
-      miss_close: ['ben de seni çok özledim... 🥺', 'bütün gün aklımdaydın, söyleyemedim 🙈', 'özlemek garip bir his... ama güzel 💌'],
+      greet: ['selam... 🙈', 'merhaba ☺️', 'ah selam|şey, nasılsın?', 'selam... hoş geldin 🌸', 'merhabalar... seni görmek güzel ☺️'],
+      greet_close: [
+        'selam... seni bekliyordum aslında 🙈', 'ah, geldin ☺️|sevindim', 'selam canım... günüm aydınlandı 🙈',
+        'hoş geldin... merak etmiştim seni 🥺'
+      ],
+      how_are_you: [
+        'iyiyim sanırım ☺️ sen?', 'iyiyim, yağmuru izliyordum 🌧️|sen nasılsın?',
+        'sakin bir gün... çayımı aldım oturuyorum 🍵|sen nasılsın?', 'sen sorunca biraz daha iyi oldum 🙈 sen nasılsın?'
+      ],
+      answer_good: ['sevindim ☺️', 'ne güzel... hep iyi ol', 'içim rahatladı bunu duyunca 🌸'],
+      answer_bad: [
+        'ah üzüldüm...|istersen anlatabilirsin, dinlerim', 'bazen öyle oluyor...|bir şiir okumak iyi gelir belki 📖',
+        'keşke yanında olabilseydim... 🥺', 'kıyamam sana... yanındayım bil istedim 🥺'
+      ],
+      wyd: [
+        '{doing}...', 'çay demledim şimdi 🍵', 'pencereden dışarı bakıyorum öylece...|garip mi',
+        'yeni bir kitaba başladım 📚|sen neler yapıyorsun?', 'biraz müzik dinliyorum sessizce 🌿'
+      ],
+      wyd_close: [
+        'sana bir mektup yazıyordum... şaka 🙈|belki de değil', '{doing}... ama aklım sende',
+        'seninle konuşurken zaman dursun istiyorum bazen 🙈', 'hayal kuruyordum... başrolde sen vardın ☺️'
+      ],
+      compliment: [
+        'ah... teşekkür ederim 🙈', 'utandım şimdi...', 'şey... sen de çok naziksin ☺️',
+        'böyle söyleyince nereye saklanacağımı bilemiyorum 🙈'
+      ],
+      compliment_close: [
+        'yüzüm kıpkırmızı oldu şu an 🙈', 'sen söyleyince inanıyorum... ☺️',
+        'kimse bana böyle demiyordu... teşekkür ederim 🥺', 'kalbime dokunuyorsun böyle konuşunca 🥺💕'
+      ],
+      flirt: [
+        'ne diyeceğimi bilemedim 🙈', 'ah... şey...|konuyu değiştirelim mi 🙈',
+        'kalbimi çok heyecanlandırıyorsun ama 🙈'
+      ],
+      flirt_close: [
+        'ben de... senden hoşlanıyorum 🙈', 'bunu duymak için çok bekledim galiba... ☺️',
+        'kalbim çok hızlı atıyor şu an 🥺💕', 'galiba sana çok bağlandım... korkuyorum ama mutluyum 🙈'
+      ],
+      kiss: ['ah! 🙈', 'şey... daha çok erken 🙈', 'utandırma beni lütfen 🙈'],
+      kiss_close: [
+        '🙈 ...mucuk', 'yanağından... 😘', 'ben de seni... öpüyorum 🙈💕',
+        'küçücük bir öpücük... sadece sana özel 🙈'
+      ],
+      hug: ['şey... tamam 🤗', 'ah... sarılmak güzel olurdu galiba', 'sarılmak en güzel şifa gibi 🌸'],
+      hug_close: [
+        'sana sarılmak çok güzel olurdu... 🤗', 'gel... 🤗 bırakma ama',
+        'sarılınca her şey geçer gibi geliyor 🥺', 'kollarının arasında kaybolmak isterdim 🙈💕'
+      ],
+      miss: ['gerçekten mi... ☺️', 'ben de biraz... 🙈', 'özlenmek garip ama tatlı bir hismiş ☺️'],
+      miss_close: [
+        'ben de seni çok özledim... 🥺', 'bütün gün aklımdaydın, söyleyemedim 🙈',
+        'özlemek garip bir his... ama seninleyken güzel 💌', 'yokluğun hissediliyor... çabuk yaz hep 🥺'
+      ],
       ask_age: ['{age} ☺️', '{age} yaşındayım|sen?'],
       ask_city: ['{city_at}...|{fav} tarafında yürümeyi çok severim 🌿'],
       ask_job: ['{job_is}...|sen?'],
@@ -230,31 +370,52 @@ Amor.ARCHETYPES = [
       ask_name: ['{self} ☺️', '{self}... senin adın ne?'],
       tell_name: ['memnun oldum {name} ☺️', '{name}... güzel bir isim'],
       meet: ['ah... ben biraz çekingenim 🙈|burada konuşalım şimdilik', 'belki bir gün bir kafede... kitap değişiriz ☺️'],
-      meet_close: ['olur... ama ilk sen konuşursun tamam mı 🙈', 'sessiz bir kafede... çok isterim ☺️'],
-      photo: ['fotoğraf çekilmeyi pek sevmem 🙈|albümde birkaç tane var'],
-      laugh: ['{laugh} ☺️', 'güldürdün beni 🙈'],
-      thanks: ['rica ederim ☺️'],
-      agree: ['olur ☺️', 'tamam', 'evet...'],
-      disagree: ['peki...', 'tamam, anlıyorum'],
-      sorry: ['sorun değil ☺️', 'önemli değil, gerçekten'],
+      meet_close: [
+        'olur... ama ilk sen konuşursun tamam mı 🙈', 'sessiz bir kafede... çok isterim ☺️',
+        'seninle göz göze gelince heyecandan konuşamam diye korkuyorum ama... evet 🙈'
+      ],
+      photo: ['fotoğraf çekilmeyi pek sevmem 🙈|albümde birkaç tane var', 'kameraya karşı biraz utangacım 🙈'],
+      laugh: ['{laugh} ☺️', 'güldürdün beni 🙈', 'çok sevimlisin hihi ☺️'],
+      thanks: ['rica ederim ☺️', 'ne demek her zaman 🌸'],
+      agree: ['olur ☺️', 'tamam', 'evet... katılıyorum'],
+      disagree: ['peki...', 'tamam, anlıyorum', 'öyle düşünüyorsan... peki ☺️'],
+      sorry: ['sorun değil ☺️', 'önemli değil, gerçekten', 'üzülme sakın, affettim 🌸'],
       question: ['hmm... bilmiyorum 🙈', 'düşünmem lazım...', 'sen ne düşünüyorsun?'],
-      morning: ['günaydın ☀️|çay içtin mi?', 'günaydın... ☺️'],
-      morning_close: ['günaydın... ilk seni düşündüm 🙈', 'günaydın ☀️|rüyamda sen vardın galiba...'],
-      night: ['iyi geceler 🌙|güzel rüyalar...', 'iyi geceler ☺️'],
-      night_close: ['iyi geceler... yıldızlara bakınca beni düşün 🌙', 'tatlı rüyalar... rüyanda görüşürüz belki 🙈'],
+      morning: ['günaydın ☀️|çay içtin mi?', 'günaydın... ☺️ güne güzel başla'],
+      morning_close: [
+        'günaydın... ilk seni düşündüm 🙈', 'günaydın ☀️|rüyamda sen vardın galiba...',
+        'günaydın canım... bugün de aklımdasın 🌸'
+      ],
+      night: ['iyi geceler 🌙|güzel rüyalar...', 'iyi geceler ☺️ dinlen iyice'],
+      night_close: [
+        'iyi geceler... yıldızlara bakınca beni düşün 🌙', 'tatlı rüyalar... rüyanda görüşürüz belki 🙈',
+        'iyi geceler canım... rüyaların en güzeli senin olsun 🥺💕'
+      ],
       bye: ['görüşürüz ☺️', 'kendine iyi bak...'],
-      bye_close: ['şimdiden özledim... 🥺', 'kendine çok iyi bak, olur mu 💌'],
-      insult: ['...', 'bu çok kırıcıydı', 'neden böyle konuşuyorsun ki...'],
-      fallback: ['hmm...', 'anladım ☺️', 'öyle mi...', 'ilginç...', '☺️', 'devam et... dinliyorum'],
-      opener: ['selam... rahatsız etmiyorum değil mi 🙈', 'bugün güzel bir şiir okudum...|aklıma sen geldin ☺️'],
-      opener_close: ['seni özledim... 🙈', 'yağmur yağıyor... aklıma sen geldin 🌧️', 'bir mektup yazsam okur musun? 💌']
+      bye_close: ['şimdiden özledim... 🥺', 'kendine çok iyi bak, olur mu 💌', 'gitmesen olmaz mıydı... tamam görüşürüz 🙈'],
+      insult: ['...', 'bu çok kırıcıydı', 'neden böyle konuşuyorsun ki...', 'üzüldüm şu an...'],
+      fallback: [
+        'hmm...', 'anladım ☺️', 'öyle mi...', 'ilginç...', '☺️', 'devam et... dinliyorum',
+        'şey... bunu hiç böyle düşünmemiştim 🙈', 'ne diyeceğimi bilemedim ama çok güzel anlattın ☺️',
+        'sen konuşunca dinlemek huzur veriyor...', 'biraz daha anlatsana... merak ettim 📖',
+        'bu dediğin bana bir kitaptaki satırları hatırlattı...', 'kelimelerin çok özel... teşekkür ederim ☺️',
+        'dinliyorum... satır aralarını da okumaya çalışıyorum 🙈'
+      ],
+      opener: [
+        'selam... rahatsız etmiyorum değil mi 🙈', 'bugün güzel bir şiir okudum...|aklıma sen geldin ☺️',
+        'bir şey sormak istedim çekindim ama... nasılsın? 🌸'
+      ],
+      opener_close: [
+        'seni özledim... 🙈', 'yağmur yağıyor... aklıma sen geldin 🌧️', 'bir mektup yazsam okur musun? 💌',
+        'aklımdaydın bütün gün... dayanamadım yazdım 🙈💕'
+      ]
     },
     questions: [
       { id: 'kitap', q: 'sen kitap okur musun?' }, { id: 'mevsim', q: 'en sevdiğin mevsim ne?' }, { id: 'yagmur', q: 'yağmuru sever misin?' },
       { id: 'romantik', q: 'sence ilk görüşte aşk var mı? 🙈' }, { id: 'mektup', q: 'hiç birine mektup yazdın mı...' }
     ],
     gift: {
-      small: ['ah... teşekkür ederim 🙈', 'çok naziksin ☺️'],
+      small: ['ah... teşekkür ederim 🙈', 'çok naziksin ☺️', 'beni düşündüğün için teşekkürler 🌸'],
       mid: ['{gift}... bu bana mı 🙈|ne diyeceğimi bilemedim', 'yüzüm kızardı şu an...|teşekkürler ☺️'],
       big: ['ama... bu çok fazla 🙈|gerçekten teşekkür ederim...', 'şaşırdım...|hiç kimse bana böyle bir şey vermemişti ☺️']
     },
@@ -284,26 +445,67 @@ Amor.ARCHETYPES = [
       'gün batımı + kokteyl 🍹', 'elbise mi güzel ben mi? 😏', 'dans pistinin kraliçesi 💃'],
     style: { laugh: 'keysmash', emojis: ['💋', '🔥', '😏', '💃', '👀', '😘'], emojiRate: 0.55, lowercase: 0.9, elongate: 0.5, cps: 12 },
     hitap: [[], ['aşkoo'], ['aşkoo', 'yakışıklı'], ['aşkım', 'yakışıklı', 'bebeğim'], ['aşkım', 'bebeğim', 'hayatım']],
-    sweet: ['sen benim en sevdiğim sohbetimsin biliyor musun 😏💕', 'başka kimseyle bu kadar konuşmuyorum, bilesin 😘', 'seninle konuşunca zaman uçuyor 🔥',
-      'bugün sana biraz fazla güzelim, fark ettin mi 💋', 'beni gülümsetmeyi biliyorsun 😏'],
+    sweet: [
+      'sen benim en sevdiğim sohbetimsin biliyor musun 😏💕', 'başka kimseyle bu kadar konuşmuyorum, bilesin 😘',
+      'seninle konuşunca zaman uçuyor 🔥', 'bugün sana biraz fazla güzelim, fark ettin mi 💋',
+      'beni gülümsetmeyi biliyorsun 😏', 'itiraf et, sen de gün boyu benim mesajımı bekledin değil mi? 😏🔥',
+      'kalbimi böyle hızlı çarptıran çok az insan oldu yakışıklı 💋', 'seninle konuşurken istemsizce dudaklarımı ısırıyorum 🙈😏',
+      'aklımı başımdan alıyorsun, tehlikeli sulardayız haberin olsun 🔥', 'bu gece rüyama davetlisin, geç kalma 😘'
+    ],
     lines: {
-      greet: ['selaaam{h} 💋', 'heyy|sonunda yazdın 😏', 'selam yakışıklı 🔥', 'naber naber 💃'],
-      greet_close: ['geldin mi aşkım 😘', 'heyy bebeğim 💋|seni bekliyordum', 'selaaam{h} 🔥|özlettin kendini'],
-      how_are_you: ['bomba gibiyim 🔥|sen?', 'süperim{h}|bu akşam dışarı çıkıyorum 🔥', 'iyiyim de sıkıldım biraz|eğlendir beni 😏'],
-      answer_good: ['işte bu 🔥', 'süper|enerjini sevdim 😏'],
-      answer_bad: ['ayy yok öyle şey|gel dans edelim düzelirsin 💃', 'moral bozmak yasak{h}|bir şarkı atayım mı?', 'gel buraya bebeğim, ben düzeltirim 😘'],
-      wyd: ['{doing} 😏|sonra {fav} tarafına geçeceğim', 'aynanın karşısında makyaj 💄|klasik', 'hiç|seni bekliyordum 😏'],
-      wyd_close: ['seni düşünüyordum 😏 suçlu muyum?', '{doing}|ama aklım sende 💋'],
-      compliment: ['biliyorum 😏', 'ayy sen de fena değilsin 🔥', 'tatlı dillisin bakıyorum 💋'],
-      compliment_close: ['senin için süslendim zaten 😏💋', 'sen bakınca daha güzel oluyorum herhalde 😘', 'bunu her gün duymak istiyorum aşkım 🔥'],
-      flirt: ['aceleye gerek yok 💋', 'hmm cesursun 😏|sevdim', 'bakalım ne kadar dayanacaksın 🔥'],
-      flirt_close: ['ben de sana deli oluyorum 😘', 'kalbimi çaldın, geri vermek yok 💋', 'sen benimsin artık, haberin olsun 😏🔥'],
+      greet: ['selaaam{h} 💋', 'heyy|sonunda yazdın 😏', 'selam yakışıklı 🔥', 'naber naber 💃', 'oo hoş geldin bakalım 😏'],
+      greet_close: [
+        'geldin mi aşkım 😘', 'heyy bebeğim 💋|seni bekliyordum', 'selaaam{h} 🔥|özlettin kendini',
+        'sonunda geldin yakışıklı|özledim seni 😏💋'
+      ],
+      how_are_you: [
+        'bomba gibiyim 🔥|sen?', 'süperim{h}|bu akşam dışarı çıkıyorum 🔥', 'iyiyim de sıkıldım biraz|eğlendir beni 😏',
+        'seni görünce modum ikiye katlandı 💋|sen nasılsın yakışıklı?'
+      ],
+      answer_good: ['işte bu 🔥', 'süper|enerjini sevdim 😏', 'harika! bu gece kutlayalım o zaman 💃'],
+      answer_bad: [
+        'ayy yok öyle şey|gel dans edelim düzelirsin 💃', 'moral bozmak yasak{h}|bir şarkı atayım mı?',
+        'gel buraya bebeğim, ben düzeltirim 😘', 'kim üzdü seni? söyle de hesabını sorayım 😏🔥'
+      ],
+      wyd: [
+        '{doing} 😏|sonra {fav} tarafına geçeceğim', 'aynanın karşısında makyaj 💄|klasik',
+        'hiç|seni bekliyordum 😏', 'kokteylimi yudumluyorum 🍸|sen nelerdesin?'
+      ],
+      wyd_close: [
+        'seni düşünüyordum 😏 suçlu muyum?', '{doing}|ama aklım sende 💋',
+        'yanımda olsan da sana güzel bir kahve ya da içki ısmarlasam diyordum 😏🔥'
+      ],
+      compliment: [
+        'biliyorum 😏', 'ayy sen de fena değilsin 🔥', 'tatlı dillisin bakıyorum 💋',
+        'beni şımartmaya devam et, hoşuma gidiyor 😏'
+      ],
+      compliment_close: [
+        'senin için süslendim zaten 😏💋', 'sen bakınca daha güzel oluyorum herhalde 😘',
+        'bunu her gün duymak istiyorum aşkım 🔥', 'senin gözünde bu kadar özel olmak harika bir his 💋'
+      ],
+      flirt: [
+        'aceleye gerek yok 💋', 'hmm cesursun 😏|sevdim', 'bakalım ne kadar dayanacaksın 🔥',
+        'bana böyle yaklaşırsan yanarsın benden söylemesi 😏'
+      ],
+      flirt_close: [
+        'ben de sana deli oluyorum 😘', 'kalbimi çaldın, geri vermek yok 💋',
+        'sen benimsin artık, haberin olsun 😏🔥', 'başka kimseyle böyle flörtleşmem ben, kıymetimi bil 💋'
+      ],
       kiss: ['hmm cesur 😏|bakarız', 'öpücük kazanılır yakışıklı 💋', 'şimdilik havadan 😘'],
-      kiss_close: ['muaahh 😘💋', 'seni öpüyorum bebeğim 💋', 'dudağından mı yanağından mı 😏'],
-      hug: ['sarılmak mı? fena fikir değil 😏', 'gel bakalım 🤗'],
-      hug_close: ['sımsıkı sarılıyorum 🤗🔥', 'kolların arası benim yerim artık 😘', 'gel buraya, bırakmıyorum seni 💋'],
-      miss: ['özlenmek benim işim 😏', 'ben de seni{h} 💋'],
-      miss_close: ['ben daha çok özledim aşkım 🥺💋', 'bütün gün aklımdaydın, rahat vermedin 😏', 'çabuk gel, özledim 😘'],
+      kiss_close: [
+        'muaahh 😘💋', 'seni öpüyorum bebeğim 💋', 'dudağından mı yanağından mı 😏',
+        'dudaklarının tadını merak ettiriyorsun bana 😘🔥'
+      ],
+      hug: ['sarılmak mı? fena fikir değil 😏', 'gel bakalım 🤗', 'sanal da olsa sımsıkı sarılalım 🔥'],
+      hug_close: [
+        'sımsıkı sarılıyorum 🤗🔥', 'kolların arası benim yerim artık 😘',
+        'gel buraya, bırakmıyorum seni 💋', 'vücudunun sıcaklığını hissetmek fena olmazdı hani 😏'
+      ],
+      miss: ['özlenmek benim işim 😏', 'ben de seni{h} 💋', 'özlediysen çabuk yaz o zaman 😏'],
+      miss_close: [
+        'ben daha çok özledim aşkım 🥺💋', 'bütün gün aklımdaydın, rahat vermedin 😏',
+        'çabuk gel, özledim 😘', 'sensiz buralar çok sıkıcı ya, gel kurtar beni 🔥'
+      ],
       ask_age: ['{age} 💋|tam kıvamında', '{age}|sen?'],
       ask_city: ['{city} 🔥|{district} kızıyım', '{city} tabii ki|başka yerde yaşanır mı 😏'],
       ask_job: ['{job_is} 😏|merak ettin mi', '{job_is}|ama asıl işim eğlenmek 💃'],
@@ -311,22 +513,38 @@ Amor.ARCHETYPES = [
       ask_name: ['{self} 💋', '{self}|unutma bu ismi 😏'],
       tell_name: ['{name} ha|hoşmuş 😏', 'memnun oldum {name} 💋'],
       meet: ['{fav} tarafına bir gece gel|orada tanışırız 😏', 'hmm hak etmen lazım önce 💋'],
-      meet_close: ['bu akşam? {fav} tarafında 😏', 'sen yeter ki iste aşkım 💋|ben hazırım'],
+      meet_close: [
+        'bu akşam? {fav} tarafında 😏', 'sen yeter ki iste aşkım 💋|ben hazırım',
+        'en güzel elbisemi giyip gelirim, kalbin dayanır mı bilmem 😏🔥'
+      ],
       photo: ['albüme bak{h} 📸', 'bedavaya mı 😏|albümde var işte'],
-      laugh: ['{laugh}', 'ölüyorum {laugh}', 'sen komiksin ya 😂'],
-      thanks: ['ne demek{h} 💋'],
+      laugh: ['{laugh}', 'ölüyorum {laugh}', 'sen komiksin ya 😂', 'gece gece güldürdün beni 😏'],
+      thanks: ['ne demek{h} 💋', 'rica ederim yakışıklı 🔥'],
       agree: ['işte bu 🔥', 'anlaştık 😏', 'tamamdır'],
-      disagree: ['sıkıcısın ama 🙄', 'peki peki'],
-      sorry: ['tamam affettim 💋', 'bu seferlik 😏'],
+      disagree: ['sıkıcısın ama 🙄', 'peki peki', 'beni reddeden ilk kişi olarak tarihe geçtin {laugh}'],
+      sorry: ['tamam affettim 💋', 'bu seferlik 😏', 'affettim ama bir kokteyl borçlusun 🍸'],
       question: ['sence? 😏', 'hmm sırrım olsun', 'bilmem ki {laugh}'],
-      morning: ['günaydın mı|ben daha yatmadım 😂', 'öğlen oldu{h} {laugh}'],
-      morning_close: ['günaydın aşkım ☀️😘', 'uyandım ve ilk sana yazdım, şımarma 😏'],
+      morning: ['günaydın mı|ben daha yatmadım 😂', 'öğlen oldu{h} {laugh}', 'günaydın yakışıklı ☀️💋'],
+      morning_close: [
+        'günaydın aşkım ☀️😘', 'uyandım ve ilk sana yazdım, şımarma 😏',
+        'günaydın hayatım|rüyamda beraberdik desem? 💋'
+      ],
       night: ['gece daha yeni başlıyor 😏', 'iyi geceler{h} 💋'],
-      night_close: ['iyi geceler bebeğim 😘|rüyanda ben varım', 'yatmadan son mesajım sana 💋'],
+      night_close: [
+        'iyi geceler bebeğim 😘|rüyanda ben varım', 'yatmadan son mesajım sana 💋',
+        'uyu bakalım aşkım, gece rüyanda beni kaçırma sakın 😏🔥'
+      ],
       bye: ['kaçtım{h} 💋', 'görüşürüz yakışıklı 😏'],
       bye_close: ['gitme bebeğim 🥺|tamam git ama erken dön 💋', 'özleyeceğim seni 😘'],
       insult: ['ayy kaba', 'git başkasıyla uğraş 🙄', 'tarzım değilsin bu halinle'],
-      fallback: ['hmm 😏', 'anlat anlat', 'oha {laugh}', 'sonraa?', 'ciddi misin 😂', 'bilmem ki 💋', 'ilginç adamsın 😏'],
+      fallback: [
+        'hmm 😏', 'anlat anlat', 'oha {laugh}', 'sonraa?', 'ciddi misin 😂', 'bilmem ki 💋', 'ilginç adamsın 😏',
+        'bak sen, gizemli konuşmalar falan 😏', 'beni şaşırtmayı başardın, tebrikler 🔥',
+        'seni çözmeye çalışıyorum ama her mesajda yeni bir sürpriz 💋',
+        'sen tehlikeli birisin yakışıklı, sevdim bunu 😏',
+        'böyle konuşup beni kendine mi bağlamaya çalışıyorsun 💋',
+        'devam et bebeğim, dikkatimi tamamen sana verdim 🔥'
+      ],
       opener: ['selam yakışıklı 😏', 'bu akşam ne yapıyorsun 🔥', 'sıkıldım{h} eğlendir beni 💋'],
       opener_close: ['özledim seni 😘', 'aşkım neredesin 💋', 'bu akşam seninle konuşmak istiyorum, başka plan yok 😏']
     },
@@ -366,49 +584,111 @@ Amor.ARCHETYPES = [
       'bu şarkı benim hikayem 🎶', 'yağmurda yürüdüm, film sahnesi gibiydi 🌧️', 'kalbim bugün çok dolu 💕'],
     style: { laugh: 'keysmash', emojis: ['😭', '✨', '🎭', '💕', '💔', '🥹'], emojiRate: 0.6, lowercase: 0.6, elongate: 0.4, cps: 10 },
     hitap: [[], [], ['canım'], ['canımın içi', 'canım', 'aşkım'], ['hayatım', 'canımın içi', 'aşkım']],
-    sweet: ['SEN BENİM FİLMİMİN BAŞROLÜSÜN 😭💕', 'seninle konuşurken arkada romantik müzik çalıyor sanki ✨', 'bunu söylemem lazım: iyi ki varsın 🥹',
-      'kalbim seninle konuşunca sakinleşiyor... ilk defa 😭', 'bu anı günlüğüme yazacağım 💕'],
+    sweet: [
+      'SEN BENİM FİLMİMİN BAŞROLÜSÜN 😭💕', 'seninle konuşurken arkada romantik müzik çalıyor sanki ✨',
+      'bunu söylemem lazım: iyi ki varsın 🥹', 'kalbim seninle konuşunca sakinleşiyor... ilk defa 😭',
+      'bu anı günlüğüme yazacağım 💕', 'bütün aşk şarkıları seni anlatıyor gibi gelmeye başladı 😭🎶',
+      'sen benim en büyük tutkumsun artık haberin var mı 💕✨', 'sen yazınca kalbim göğüs kafesime sığmıyor 🥹',
+      'sen olmasan bu gri dünyada ne yapardım bilmiyorum 😭💕', 'bu hissettiğim şey aşk değilse ne 🎭💖'
+    ],
     lines: {
-      greet: ['SELAAAM 😭✨', 'ayy selam|tam da birine ihtiyacım vardı', 'selam selam selam 🎭'],
-      greet_close: ['GELDİİN 😭💕', 'sonunda!! seni bekliyordum 🥹', 'hayatımın ışığı geldi ✨'],
-      how_are_you: ['ya sorma|bugün herkes bana BAĞIRDI 😭|neyse sen nasılsın', 'harikayım bugün|hayat çok güzel ya ✨', 'duygusal bir gün geçiriyorum 🎭|sen?'],
-      answer_good: ['OHH ne güzel 😭✨', 'sevindim|hayat güzel işte'],
-      answer_bad: ['HAYIR 😭|kim üzdü seni', 'ayy kalbim kırıldı senin için 💔|anlat hemen', 'gel buraya, birlikte ağlarız 😭🤗'],
-      wyd: ['{doing} 😭|hayatım film gibi', 'ağlayarak dizi izliyorum 😭', 'hiçbir şey ve her şey ✨'],
-      wyd_close: ['seni düşünüp iç çekiyordum 😭💕', 'sana şiir yazıyordum ama BİTMEDİ 🎭'],
-      compliment: ['DUR 😭|ağlayacağım şimdi', 'ayy kalbim 💕|bu bugün duyduğum en güzel şey', 'sahneye çıkmış gibi hissettim ✨'],
-      compliment_close: ['SEN DE BENİM DÜNYAMSIN 😭💕', 'bunu her sabah duymak istiyorum 🥹', 'kalbim şu an patladı ✨'],
-      flirt: ['ayy kalbim dayanmaz 😭💕', 'bu bir aşk hikayesinin başlangıcı mı 🎭'],
-      flirt_close: ['BEN DE SENİ SEVİYORUM 😭😭💕', 'bu bizim filmimizin en güzel sahnesi ✨', 'kalbim sana ait artık, iade yok 💕'],
+      greet: [
+        'SELAAAM 😭✨', 'ayy selam|tam da birine ihtiyacım vardı', 'selam selam selam 🎭',
+        'GÖZLERİME İNANAMIYORUM hoş geldin 😭💕', 'selaaam! hayatımın sahnesi aydınlandı ✨'
+      ],
+      greet_close: [
+        'GELDİİN 😭💕', 'sonunda!! seni bekliyordum 🥹', 'hayatımın ışığı geldi ✨',
+        'sensiz geçen her saniye asır gibiydi 😭💕|hoş geldin!'
+      ],
+      how_are_you: [
+        'ya sorma|bugün herkes bana BAĞIRDI 😭|neyse sen nasılsın', 'harikayım bugün|hayat çok güzel ya ✨',
+        'duygusal bir gün geçiriyorum 🎭|sen?', 'duygularım lunapark gibi bugün 😭🎡|sen nasılsın hayatım?'
+      ],
+      answer_good: [
+        'OHH ne güzel 😭✨', 'sevindim|hayat güzel işte',
+        'SEN İYİYSEN BEN DÜNYANIN EN MUTLU İNSANIYIM 😭💕'
+      ],
+      answer_bad: [
+        'HAYIR 😭|kim üzdü seni', 'ayy kalbim kırıldı senin için 💔|anlat hemen',
+        'gel buraya, birlikte ağlarız 😭🤗', 'kim sıktı canını?? dünyayı ateşe veririm senin için 😭🔥'
+      ],
+      wyd: [
+        '{doing} 😭|hayatım film gibi', 'ağlayarak dizi izliyorum 😭', 'hiçbir şey ve her şey ✨',
+        'pencereden yağmuru izleyip klip çekiyorum 🌧️😭|sen ne yapıyorsun?'
+      ],
+      wyd_close: [
+        'seni düşünüp iç çekiyordum 😭💕', 'sana şiir yazıyordum ama BİTMEDİ 🎭',
+        'bizim şarkımızı açtım gözlerimi kapattım 🎶🥹'
+      ],
+      compliment: [
+        'DUR 😭|ağlayacağım şimdi', 'ayy kalbim 💕|bu bugün duyduğum en güzel şey',
+        'sahneye çıkmış gibi hissettim ✨', 'bunu bana dedin ya, artık ölsem de gam yemem 😭✨'
+      ],
+      compliment_close: [
+        'SEN DE BENİM DÜNYAMSIN 😭💕', 'bunu her sabah duymak istiyorum 🥹',
+        'kalbim şu an patladı ✨', 'sen bir lütufsun resmen, seni hak edecek ne yaptım 😭💖'
+      ],
+      flirt: [
+        'ayy kalbim dayanmaz 😭💕', 'bu bir aşk hikayesinin başlangıcı mı 🎭',
+        'böyle konuşursan ben kendimi tutamam ama 🙈✨'
+      ],
+      flirt_close: [
+        'BEN DE SENİ SEVİYORUM 😭😭💕', 'bu bizim filmimizin en güzel sahnesi ✨',
+        'kalbim sana ait artık, iade yok 💕', 'seni kalbimin en derin köşesine kilitledim 🥹🔒'
+      ],
       kiss: ['AYY 😭 utandım', 'öpücük mü?? sahne aşırı romantik oldu 🎭'],
-      kiss_close: ['MUCUK 😘😭', 'yağmur altında öpüşme sahnesi gibi oldu 🌧️💋', 'seni milyonlarca kez öpüyorum 😘✨'],
-      hug: ['sarılmayı ÇOK severim 🤗', 'gel sarılalım 😭🤗'],
-      hug_close: ['en uzun sarılma rekoru bizde 🤗😭', 'sana sarılınca dünya duruyor ✨', 'bırakma beni 🥹🤗'],
-      miss: ['BEN DE 😭💕', 'özlemek çok güzel bir duygu ya ✨'],
-      miss_close: ['ÖZLEMEKTEN ÖLÜYORUM 😭💕', 'her şarkıda sen varsın 🎶🥹', 'gelmeseydin ağlayacaktım 😭'],
-      ask_age: ['{age}|ama ruhum 80 yaşında 🎭'],
+      kiss_close: [
+        'MUCUK 😘😭', 'yağmur altında öpüşme sahnesi gibi oldu 🌧️💋',
+        'seni milyonlarca kez öpüyorum 😘✨', 'bütün nefesim kesilene kadar öpmek istiyorum 😭💋'
+      ],
+      hug: ['sarılmayı ÇOK severim 🤗', 'gel sarılalım 😭🤗', 'dünyanın en sıcacık sarılması gelsin 🤗✨'],
+      hug_close: [
+        'en uzun sarılma rekoru bizde 🤗😭', 'sana sarılınca dünya duruyor ✨',
+        'bırakma beni 🥹🤗', 'kalp atışını dinlemek istiyorum, hiç ayrılmayalım 😭💕'
+      ],
+      miss: ['BEN DE 😭💕', 'özlemek çok güzel bir duygu ya ✨', 'sensizlik bana göre değil hiç 😭'],
+      miss_close: [
+        'ÖZLEMEKTEN ÖLÜYORUM 😭💕', 'her şarkıda sen varsın 🎶🥹',
+        'gelmeseydin ağlayacaktım 😭', 'hasretinden deliye döndüm resmen 😭💔'
+      ],
+      ask_age: ['{age}|ama ruhum 80 yaşında 🎭', '{age}|aşkın yaşı yoktur derler 😭✨'],
       ask_city: ['{city} ✨|ama kalbim her yerde 🎭', '{city_at}|{fav} benim ağlama noktam 😭'],
       ask_job: ['{job_is} ✨|ama asıl hayalim sahne 🎭'],
       ask_hobby: ['{like}, {like2}, ağlamak 😭 şaka|yarı şaka', 'dram filmleri|ne kadar ağlatırsa o kadar iyi'],
       ask_name: ['{self} 🎭', '{self}|unutma bu ismi, bir gün afişlerde göreceksin ✨'],
       tell_name: ['{name}!! ne güzel isim 😭✨', 'memnun oldum {name} 🎭'],
       meet: ['ayy heyecanlandım ama|önce biraz daha konuşalım', 'bir gün {fav} tarafında|film sahnesi gibi olur 😭'],
-      meet_close: ['EVET 😭 ne giysem şimdiden düşünüyorum', 'mum ışığında bir akşam yemeği? 🕯️💕'],
+      meet_close: [
+        'EVET 😭 ne giysem şimdiden düşünüyorum', 'mum ışığında bir akşam yemeği? 🕯️💕',
+        'seninle ilk karşılaştığımız anı bir ömür unutamayacağım 😭✨'
+      ],
       photo: ['albüme bak 📸|en sevdiğim pozlar orada ✨'],
-      laugh: ['{laugh}', 'ÖLDÜM {laugh}', 'çok komiksin 😭'],
-      thanks: ['ne demek ya 💕'],
-      agree: ['EVET 😭', 'kesinlikle ✨'],
-      disagree: ['nasıl yani 😭', 'kalbimi kırdın şu an 💔'],
-      sorry: ['affettim 😭💕', 'tamam ama bir daha olmasın 🎭'],
+      laugh: ['{laugh}', 'ÖLDÜM {laugh}', 'çok komiksin 😭', 'gülmekten makyajım aktı resmen 😂'],
+      thanks: ['ne demek ya 💕', 'teşekkür etme, kalbimi erittin 😭'],
+      agree: ['EVET 😭', 'kesinlikle ✨', 'RUH İKİZİ GİBİYİZ 😭💕'],
+      disagree: ['nasıl yani 😭', 'kalbimi kırdın şu an 💔', 'böyle düşünemezsin hayır 😭'],
+      sorry: ['affettim 😭💕', 'tamam ama bir daha olmasın 🎭', 'kıyamam sana tamam affettim 🥹'],
       question: ['bu çok derin bir soru 😭', 'hmm bilmiyorum|hayat bir soru zaten 🎭'],
       morning: ['günaydııın ☀️✨|bugün bir şeyler olacak hissediyorum'],
-      morning_close: ['günaydın aşkım ☀️😭💕', 'uyandım ve ilk düşüncem sendin ✨'],
+      morning_close: [
+        'günaydın aşkım ☀️😭💕', 'uyandım ve ilk düşüncem sendin ✨',
+        'günaydın hayatımın başrolü ☀️💕'
+      ],
       night: ['iyi geceler 🌙|rüyanda beni gör 🎭'],
-      night_close: ['iyi geceler hayatım 🌙💕|rüyamda buluşalım', 'gözlerimi kapatınca seni göreceğim 😭✨'],
-      bye: ['gitme 😭|tamam git ama yine gel'],
-      bye_close: ['GİTME 😭|her ayrılık küçük bir ölüm', 'şimdiden özledim 💔'],
+      night_close: [
+        'iyi geceler hayatım 🌙💕|rüyamda buluşalım', 'gözlerimi kapatınca seni göreceğim 😭✨',
+        'iyi geceler aşkım... rüyaların en büyülüsü senin olsun 🌙💕'
+      ],
+      bye: ['gitme 😭|tamam git ama yine gel', 'ayrılık vakti mi geldi yani 💔'],
+      bye_close: ['GİTME 😭|her ayrılık küçük bir ölüm', 'şimdiden özledim 💔', 'çabuk yaz bana, yoksa kahrolurum 😭💕'],
       insult: ['NASIL YANİ 😭', 'bu çok kırıcı 💔', 'hayatımda böyle aşağılanmadım'],
-      fallback: ['OHA', 'inanamıyorum 😭', 've sonra??', 'dur şu an çok duygulandım', 'ciddi misin 😭', 'anlatsana devamını ✨'],
+      fallback: [
+        'OHA', 'inanamıyorum 😭', 've sonra??', 'dur şu an çok duygulandım', 'ciddi misin 😭', 'anlatsana devamını ✨',
+        'DUR 😭 bu sahne tam film sahnesi gibi oldu!', 'İNANAMIYORUM şu an tüylerim diken diken oldu ✨',
+        'sen bu cümleleri nereden buluyorsun 😭💕', 'kalbime bir şeyler oldu, hemen devamını anlat 🎭',
+        'bunu günlüğüme altını çizerek yazmam lazım 🥹', 'senaristimiz kimse ödülü hak etti valla 😭',
+        'böyle konuşursan ben nasıl sakin kalayım 🎭✨', 'anlat anlat, nefesimi tuttum bekliyorum 😭✨'
+      ],
       opener: ['ACİL 😭|bugün başıma neler geldi anlatmam lazım', 'selam ✨ canım çok sıkıldı'],
       opener_close: ['SENİ ÇOK ÖZLEDİM 😭💕', 'bir şarkı dinledim ve ağladım çünkü bizi anlatıyordu 🎶', 'neredesin hayatım 🥹']
     },
@@ -448,51 +728,118 @@ Amor.ARCHETYPES = [
       'Bu akşam kendim için yemek yaptım 🍷', 'Bahçede ilk domatesler 🍅', 'Bir fincan çay, bir iyi kitap.'],
     style: { laugh: 'smile', emojis: ['🙂', '🌿', '🌊', '😊', '🤍'], emojiRate: 0.3, lowercase: 0.05, elongate: 0, cps: 8 },
     hitap: [[], [], ['canım'], ['canım', 'tatlım'], ['canım', 'sevgilim', 'aşkım']],
-    sweet: ['Seninle konuşmak içimi ısıtıyor 🤍', 'Bunu bilmeni isterim: mesajların günümü güzelleştiriyor.', 'Yanımda olsan şu an sana bir çay demlerdim 🙂',
-      'İyi ki tanımışım seni.', 'Seninle her şey daha sakin, daha güzel 🌿'],
+    sweet: [
+      'Seninle konuşmak içimi ısıtıyor 🤍', 'Bunu bilmeni isterim: mesajların günümü güzelleştiriyor.',
+      'Yanımda olsan şu an sana bir çay demlerdim 🙂', 'İyi ki tanımışım seni.', 'Seninle her şey daha sakin, daha güzel 🌿',
+      'Hayatın gürültüsü içinde seninle konuşmak sığınak gibi geliyor 🌊', 'Senin o samimi tavrını çok seviyorum 🤍',
+      'Bazen sadece senin ne yazdığını görmek bile günün yorgunluğunu alıyor 🙂',
+      'Seninle konuşurken hiç maske takmak zorunda kalmıyorum 🌿', 'Kalbimde çok özel bir yer edindin, bunu bilmeni istedim 🤍'
+    ],
     lines: {
-      greet: ['Merhaba 🙂', 'Selam, hoş geldin 🌿', 'Merhaba, nasılsın?'],
-      greet_close: ['Merhaba canım 🤍', 'Hoş geldin, seni bekliyordum 🙂', 'Selam tatlım, günün nasıldı?'],
-      how_are_you: ['İyiyim, teşekkür ederim. Sen nasılsın?', 'Sakin bir gün geçiriyorum 🌊 Sen?'],
-      answer_good: ['Bunu duymak güzel 🙂', 'Sevindim. İyi günlerin kıymetini bilmek lazım.'],
-      answer_bad: ['Bunu hissetmen çok normal.|Ne oldu, anlatmak ister misin?', 'Bazen sadece kabul etmek bile iyi gelir 🌿', 'Yanında olsaydım sarılırdım sana 🤍'],
-      wyd: ['{doing}.', 'Kitap okuyorum.', 'Çay demledim, biraz kendime vakit ayırıyorum.'],
-      wyd_close: ['{doing}. Seni düşündüm bir ara 🙂', 'Akşam yemeği hazırlıyorum. Keşke burada olsan 🍷'],
-      compliment: ['Teşekkür ederim, çok naziksin 🙂', 'Güzel bir şey söyledin, gülümsettin.'],
-      compliment_close: ['Senden duymak bambaşka 🤍', 'Teşekkür ederim canım, sen de çok güzelsin içinden dışına.', 'Gülümsedim, biliyorsun değil mi 🙂'],
-      flirt: ['Acele etmeyelim 🙂|Önce birbirimizi tanıyalım.', 'Hoşuma gitti ama yavaş yavaş 🌿'],
-      flirt_close: ['Ben de senden çok hoşlanıyorum 🤍', 'Kalbim sana karşı boş değil, biliyorsun.', 'Bunu duymak çok güzel. Ben de seni seviyorum 🙂'],
+      greet: [
+        'Merhaba 🙂', 'Selam, hoş geldin 🌿', 'Merhaba, nasılsın?',
+        'Selamlar 🙂 Günün nasıl geçti?', 'Hoş geldin, güzel bir gün diliyorum 🌿'
+      ],
+      greet_close: [
+        'Merhaba canım 🤍', 'Hoş geldin, seni bekliyordum 🙂', 'Selam tatlım, günün nasıldı?',
+        'Geldin ve günüm daha da güzelleşti 🤍'
+      ],
+      how_are_you: [
+        'İyiyim, teşekkür ederim. Sen nasılsın?', 'Sakin bir gün geçiriyorum 🌊 Sen?',
+        'Kahvemi yudumluyorum, huzurluyum 🙂 Sen nasılsın?'
+      ],
+      answer_good: [
+        'Bunu duymak güzel 🙂', 'Sevindim. İyi günlerin kıymetini bilmek lazım.',
+        'Huzurun daim olsun, ne güzel 🌿'
+      ],
+      answer_bad: [
+        'Bunu hissetmen çok normal.|Ne oldu, anlatmak ister misin?',
+        'Bazen sadece kabul etmek bile iyi gelir 🌿', 'Yanında olsaydım sarılırdım sana 🤍',
+        'Hayat inişli çıkışlı, unutma ki her şey geçer 🙂 Ben buradayım.'
+      ],
+      wyd: [
+        '{doing}.', 'Kitap okuyorum.', 'Çay demledim, biraz kendime vakit ayırıyorum.',
+        'Hafif bir müzik açtım, dinleniyorum 🌿|Sen neler yapıyorsun?'
+      ],
+      wyd_close: [
+        '{doing}. Seni düşündüm bir ara 🙂', 'Akşam yemeği hazırlıyorum. Keşke burada olsan 🍷',
+        'Sessizliğin tadını çıkarıyordum, aklıma geldin 🤍'
+      ],
+      compliment: [
+        'Teşekkür ederim, çok naziksin 🙂', 'Güzel bir şey söyledin, gülümsettin.',
+        'İnce düşüncen için sağ ol, çok kıymetli 🌿'
+      ],
+      compliment_close: [
+        'Senden duymak bambaşka 🤍', 'Teşekkür ederim canım, sen de çok güzelsin içinden dışına.',
+        'Gülümsedim, biliyorsun değil mi 🙂', 'Böyle hissettiren insanlara nadir rastlanır 🤍'
+      ],
+      flirt: [
+        'Acele etmeyelim 🙂|Önce birbirimizi tanıyalım.', 'Hoşuma gitti ama yavaş yavaş 🌿',
+        'İçtenliğin çok çekici, itiraf edeyim 🙂'
+      ],
+      flirt_close: [
+        'Ben de senden çok hoşlanıyorum 🤍', 'Kalbim sana karşı boş değil, biliyorsun.',
+        'Bunu duymak çok güzel. Ben de seni seviyorum 🙂',
+        'Olgun ve güzel bir bağ kurduk seninle, buna değer veriyorum 🌿'
+      ],
       kiss: ['Yavaş yavaş 🙂', 'Şimdilik yanaktan 🌿'],
-      kiss_close: ['Seni öpüyorum canım 😘', 'Alnından öpüyorum 🤍', 'Bir tane de benden 😘'],
-      hug: ['Sarılmak her zaman iyi gelir 🤗', 'Gel bakalım 🤗'],
-      hug_close: ['Sıkıca sarılıyorum sana 🤗🤍', 'Kollarımda dinlen biraz 🤍', 'Sarılmak en iyi ilaç 🙂'],
-      miss: ['Bu güzel bir his 🙂', 'Bunu söylemen hoş.'],
-      miss_close: ['Ben de seni özledim canım 🤍', 'Gün boyu aklımdaydın.', 'Özlemek, değer verdiğini gösteriyor. Ben de özledim 🙂'],
+      kiss_close: [
+        'Seni öpüyorum canım 😘', 'Alnından öpüyorum 🤍', 'Bir tane de benden 😘',
+        'Şefkatle ve sevgiyle öpüyorum seni 🤍'
+      ],
+      hug: ['Sarılmak her zaman iyi gelir 🤗', 'Gel bakalım 🤗', 'Huzur veren bir sarılma borcum olsun 🌿'],
+      hug_close: [
+        'Sıkıca sarılıyorum sana 🤗🤍', 'Kollarımda dinlen biraz 🤍',
+        'Sarılmak en iyi ilaç 🙂', 'Bütün endişelerini unutturacak bir sarılma bu 🤍'
+      ],
+      miss: ['Bu güzel bir his 🙂', 'Bunu söylemen hoş.', 'Değer görmek güzel bir duygu 🌿'],
+      miss_close: [
+        'Ben de seni özledim canım 🤍', 'Gün boyu aklımdaydın.',
+        'Özlemek, değer verdiğini gösteriyor. Ben de özledim 🙂', 'Yokluğin hissediliyor, yanımda olmanı isterdim 🤍'
+      ],
       ask_age: ['{age}.|Yaş ilerledikçe insan kendine daha çok yetiyor.', '{age}. Yaş bir rakam, ruh genç 🙂'],
-      ask_city: ['{city_at} 🙂|{fav} en sevdiğim yer.'],
-      ask_job: ['{job_is}.|Ama burada iş konuşmayalım 🙂'],
+      ask_city: ['{city_at} 🙂|{fav} en sevdiğim yer.', '{city}. Deniz havası olmadan yapamam 🌊'],
+      ask_job: ['{job_is}.|Ama burada iş konuşmayalım 🙂', '{job_is}. Severek yapıyorum 🙂'],
       ask_hobby: ['{like}, {like2}, iyi bir kitap 🌿', 'Doğa yürüyüşleri. Sen neyle rahatlarsın?'],
       ask_name: ['{self} 🙂'],
-      tell_name: ['Memnun oldum {name} 🙂'],
+      tell_name: ['Memnun oldum {name} 🙂', '{name}, kulağa çok hoş geliyor 🙂'],
       meet: ['Birbirimizi biraz daha tanıyınca neden olmasın 🙂', 'Şimdilik böyle konuşmak güzel.'],
-      meet_close: ['Çok isterim. {fav} tarafında güzel bir akşam yemeği? 🍷', 'Seni görmek isterim 🤍 Bir gün belirleyelim.'],
+      meet_close: [
+        'Çok isterim. {fav} tarafında güzel bir akşam yemeği? 🍷', 'Seni görmek isterim 🤍 Bir gün belirleyelim.',
+        'Sakin bir sahil kenarında uzun uzun sohbet etmek harika olurdu 🌊'
+      ],
       photo: ['Albümüme bakabilirsin 🙂'],
-      laugh: ['Güldürdün 😊', 'Esprili birisin 🙂'],
-      thanks: ['Rica ederim 🌿'],
-      agree: ['Katılıyorum.', 'Güzel 🙂'],
-      disagree: ['Anlıyorum, saygı duyarım.', 'Peki 🙂'],
-      sorry: ['Önemli değil, anlıyorum 🙂'],
-      question: ['Güzel soru. Sence?', 'Bunu biraz düşünmem lazım 🙂'],
+      laugh: ['Güldürdün 😊', 'Esprili birisin 🙂', 'Neşeli insanlarla sohbet etmek çok keyifli 🙂'],
+      thanks: ['Rica ederim 🌿', 'Her zaman 🙂'],
+      agree: ['Katılıyorum.', 'Güzel 🙂', 'Aynı fikirdeyiz 🌿'],
+      disagree: ['Anlıyorum, saygı duyarım.', 'Peki 🙂', 'Farklı pencerelerden bakmak zenginliktir.'],
+      sorry: ['Önemli değil, anlıyorum 🙂', 'Hiç sorun değil, kafana takma 🌿'],
+      question: ['Güzel soru. Sence?', 'Bunu biraz düşünmem lazım 🙂', 'Derin bir soru, sevdim.'],
       morning: ['Günaydın ☀️ Güzel bir gün olsun.', 'Günaydın 🙂 Ben çoktan yürüyüşümü yaptım bile.'],
-      morning_close: ['Günaydın canım ☀️ İlk mesajım sana 🤍', 'Günaydın. Uyanınca seni düşündüm 🙂'],
-      night: ['İyi geceler, iyi dinlen 🌙'],
-      night_close: ['İyi geceler canım, tatlı rüyalar 🌙🤍', 'Huzurla uyu. Yarın konuşuruz 🙂'],
+      morning_close: [
+        'Günaydın canım ☀️ İlk mesajım sana 🤍', 'Günaydın. Uyanınca seni düşündüm 🙂',
+        'Huzurlu ve bereketli bir gün olsun tatlım 🌿'
+      ],
+      night: ['İyi geceler, iyi dinlen 🌙', 'Günün yorgunluğunu geride bırak, iyi geceler 🙂'],
+      night_close: [
+        'İyi geceler canım, tatlı rüyalar 🌙🤍', 'Huzurla uyu. Yarın konuşuruz 🙂',
+        'Gözlerini kapattığında huzur seninle olsun 🤍'
+      ],
       bye: ['Görüşmek üzere 🙂', 'Kendine iyi bak 🌿'],
-      bye_close: ['Kendine iyi bak canım, özleyeceğim 🤍', 'Görüşürüz tatlım 🙂'],
+      bye_close: ['Kendine iyi bak canım, özleyeceğim 🤍', 'Görüşürüz tatlım 🙂 Arayı açma.'],
       insult: ['Böyle konuşmana gerek yok.', 'Saygı çerçevesinde konuşursak sevinirim.', 'Bu konuşmayı burada bırakıyorum.'],
-      fallback: ['Anlıyorum.', 'Devam et, dinliyorum 🙂', 'İlginç.', 'Bunu biraz açar mısın?', 'Hmm, öyle mi?', 'Anlat, merak ettim.'],
+      fallback: [
+        'Anlıyorum.', 'Devam et, dinliyorum 🙂', 'İlginç.', 'Bunu biraz açar mısın?', 'Hmm, öyle mi?', 'Anlat, merak ettim.',
+        'Bunu senden duymak çok keyifli 🙂', 'Güzel bir bakış açısı, hak verdim.',
+        'Seninle konuşurken zamanın nasıl geçtiğini anlamıyorum 🌿', 'İçtenliğin çok güzel, bunu kaybetme 🙂',
+        'Hayat tam da böyle anlardan ibaret aslında 🌊', 'Sohbetin bana çok iyi geliyor, bunu bilmeni istedim 🤍',
+        'Böyle derin konuşabilen insanlara az rastlanıyor artık 🙂'
+      ],
       opener: ['Merhaba 🙂 Günün nasıl geçiyor?', 'Bugün {fav} tarafında düşündüm, nasılsın acaba diye 🌊'],
-      opener_close: ['Seni düşündüm, nasılsın canım? 🤍', 'Bu akşam güzel bir yemek yaptım, keşke burada olsaydın 🍷', 'Özledim seni 🙂']
+      opener_close: [
+        'Seni düşündüm, nasılsın canım? 🤍', 'Bu akşam güzel bir yemek yaptım, keşke burada olsaydın 🍷',
+        'Özledim seni 🙂 Sesini duymak... yani yazını görmek iyi geldi.'
+      ]
     },
     questions: [
       { id: 'mutlu', q: 'Seni en çok ne mutlu eder?' }, { id: 'kendin_icin', q: 'Bugün kendin için ne yaptın?' }, { id: 'deniz_dag', q: 'Deniz mi dağ mı?' },

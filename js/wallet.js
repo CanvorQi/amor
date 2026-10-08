@@ -22,7 +22,9 @@ Amor.Wallet = (() => {
     const s = S();
     if (!s.wallet) s.wallet = { coins: Amor.START_COINS, earned: 0, spent: 0, recharged: 0, history: [] };
     if (!s.inventory) s.inventory = { gifts: {}, frames: {}, bgs: {} };
+    if (!s.inventory.bubbles) s.inventory.bubbles = {};
     if (!s.equipped) s.equipped = { frame: null, bg: 'mor-gece' };
+    if (!s.equipped.bubble) s.equipped.bubble = 'klasik';
     if (!s.giftsReceived) s.giftsReceived = {};
     if (!s.relations) s.relations = {};
     if (!s.visitors) s.visitors = [];
@@ -243,6 +245,7 @@ Amor.Wallet = (() => {
   function owns(kind, id) {
     if (kind === 'frames' && id === 'vip') return hasPerk('frame');
     if (kind === 'bgs' && id === 'mor-gece') return true;
+    if (kind === 'bubbles' && id === 'klasik') return true;
     return (st().inventory[kind][id] || 0) > Date.now();
   }
   const expiresIn = (kind, id) => Math.ceil(((st().inventory[kind][id] || 0) - Date.now()) / DAY);
@@ -264,6 +267,19 @@ Amor.Wallet = (() => {
     const id = st().equipped.bg;
     const bg = id && owns('bgs', id) ? Amor.BACKGROUNDS.find(b => b.id === id) : null;
     return bg || Amor.BACKGROUNDS[0];
+  }
+  function activeBubble() {
+    const id = st().equipped.bubble;
+    const b = id && owns('bubbles', id) ? Amor.BUBBLES.find(x => x.id === id) : null;
+    return b || Amor.BUBBLES[0];
+  }
+  // Sohbet teması: mağazadan seçilen; varsayılandaysa kalp düzeyinin teması
+  function chatTheme(lv) {
+    const t = [...Amor.LEVEL_THEMES].reverse().find(x => lv >= x.lv) || {};
+    let bg = activeBg(), bubble = activeBubble();
+    if (bg === Amor.BACKGROUNDS[0] && t.bg) bg = Amor.BACKGROUNDS.find(b => b.id === t.bg);
+    if (bubble === Amor.BUBBLES[0] && t.bubble) bubble = Amor.BUBBLES.find(b => b.id === t.bubble);
+    return { bg, bubble };
   }
 
   /* ---------- Ziyaretçiler ---------- */
@@ -318,7 +334,7 @@ Amor.Wallet = (() => {
     recharge, monthlyTiers, claimTier,
     checkinState, doCheckin, track, taskProgress, claimTask, achievementProgress, claimAchievement, claimableCount,
     vipBonusAvailable, claimVipBonus, spinsLeft, spin,
-    addGift, bag, owns, expiresIn, buyItem, equip, activeFrame, activeBg,
+    addGift, bag, owns, expiresIn, buyItem, equip, activeFrame, activeBg, activeBubble, chatTheme,
     addVisitor, giftById, unitPrice, sendGift, receivedCount,
     onChange: null
   };

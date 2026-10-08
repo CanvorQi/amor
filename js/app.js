@@ -202,7 +202,7 @@
       <div class="row" data-id="${c.id}" role="button" tabindex="0">
         ${avatar(c, 80)}
         <div class="info">
-          <div class="name">${esc(c.display)} <span class="verified">💜</span></div>
+          <div class="name">${esc(c.display)}</div>
           <div class="chips">
             <span class="chip sex">♀</span>
             <span class="chip flag">🇹🇷</span>
@@ -394,14 +394,17 @@
   /* ---------- Arama geçmişi ---------- */
   function callsHtml() {
     const list = A.Call ? A.Call.calls() : [];
-    if (!list.length) return '<div class="empty"><span class="big">📞</span>Henüz arama yok.<br>Sohbette 📞 ya da 📹 ile arayabilirsin.</div>';
-    return `<div class="list">${list.map(e => {
+    const hint = '<p class="call-hint">💬 Açmıyor mu? Önce mesajla <b>"arayabilir miyim?"</b> diye sor. "Olur" derse 10 dakika içinde araman kesin açılır, <b>"beni ara"</b> dersen o seni arar.</p>';
+    if (!list.length) return `<div class="empty"><span class="big">📞</span>Henüz arama yok.<br>Sohbette 📞 ya da 📹 ile arayabilirsin.</div>${hint}`;
+    return `${hint}<div class="list">${list.map(e => {
       const c = A.byId(e.id);
       const bad = e.dir === 'in' && e.status !== 'done';
+      const ok = A.Call.permitLeft(c);
       return `<div class="call-row" data-chat="${c.id}">${avatar(c, 64, { dot: false })}
         <div class="info"><div class="name">${esc(c.display)}</div>
           <div class="st ${bad ? 'bad' : ''}">${e.dir === 'in' ? '↙' : '↗'} ${esc(A.Call.label(e))}</div>
-          <small>${fmtTime(e.ts)}</small></div>
+          ${ok ? `<small class="call-ok">${ok.type === 'video' ? '📹' : '📞'} Aramanı bekliyor · ${ok.min} dk</small>` : `<small>${fmtTime(e.ts)}</small>`}</div>
+        <button class="call-btn ask" data-ask="${c.id}" aria-label="Mesajla aramak için izin iste">💬</button>
         <button class="call-btn" data-call="voice" data-id="${c.id}" aria-label="Sesli ara">${A.Call.ICON.phone}</button>
         <button class="call-btn" data-call="video" data-id="${c.id}" aria-label="Görüntülü ara">${A.Call.ICON.video}</button></div>`;
     }).join('')}</div>`;
@@ -416,8 +419,12 @@
     if (sort) sort.onclick = () => { ui.contactAsc = !ui.contactAsc; redraw(); };
     root.querySelectorAll('[data-chat]').forEach(r => r.onclick = e => {
       const call = e.target.closest('[data-call]');
+      const ask = e.target.closest('[data-ask]');
       if (call) A.Call.start(A.byId(call.dataset.id), call.dataset.call);
-      else location.hash = `#/chat/${r.dataset.chat}`;
+      else if (ask) {
+        location.hash = `#/chat/${ask.dataset.ask}`;
+        setTimeout(() => sendUser(A.byId(ask.dataset.ask), pickRaw(ASK_CALL)), 300);
+      } else location.hash = `#/chat/${r.dataset.chat}`;
     });
     root.querySelectorAll('[data-f]').forEach(b => b.onclick = () => {
       ui.msgFilter = b.dataset.f;
@@ -633,7 +640,7 @@
     const quick = [...A.QUICK_REPLIES].sort(() => Math.random() - 0.5).slice(0, 6);
 
     const chatHtml = `
-      <div class="chat" style="background:${A.Wallet.activeBg().css}">
+      <div class="chat">
         <div class="chat-head">
           <a class="icon-btn" href="#/messages" aria-label="Geri">${ICON.arrowLeft}</a>
           <a class="who" href="#/p/${c.id}">
@@ -683,6 +690,7 @@
       view.innerHTML = chatHtml;
     }
 
+    applyChatTheme(lv);
     drawMessages(c);
 
     const input = $('#msgInput');
@@ -711,6 +719,15 @@
     if (ui.route.extra === 'gift') { history.replaceState(null, '', `#/chat/${c.id}`); ui.route.extra = null; openGifts(); }
   }
 
+  // Arka plan + baloncuk: mağazadan seçilen ya da kalp düzeyiyle açılan
+  function applyChatTheme(lv) {
+    const el = $('.chat');
+    if (!el) return;
+    const t = A.Wallet.chatTheme(lv.lv);
+    el.className = `chat ${t.bg.cls || ''} bub-${t.bubble.id}`;
+    el.style.background = t.bg.css || '';
+  }
+
   // Yakınlık çubuğu: seviye adı, puan (°C) ve sonraki seviyeye ilerleme
   function lvbarInner(lv) {
     const pct = lv.next ? Math.round((lv.pts - lv.prev) / (lv.next - lv.prev) * 100) : 100;
@@ -725,9 +742,11 @@
     const tasks = [
       ['💬', `Mesajlaş · ${MSG_COST} ♥`, 'Her sohbet yakınlığı artırır; onu merak etmek daha çok', true],
       ['🎁', 'Hediye gönder', 'Değerine göre: 10 ♥ ≈ +2°C, 1.000 ♥ ≈ +12°C, 10.000 ♥ ≈ +34°C', true],
-      ['📞', `Sesli ara · Lv.${M.voice}`, 'Konuştuğun her dakika +1°C (aramada en fazla 10)', lv.lv >= M.voice],
-      ['📹', `Görüntülü ara · Lv.${M.video}`, 'Yakınlaşınca kamerayı açmayı kabul eder', lv.lv >= M.video],
-      ['📲', 'Seni arasın · Lv.3', 'Keyfi yerindeyse arada bir kendisi arar', lv.lv >= 3]
+      ['📞', `Sesli ara · Lv.${M.voice}`, 'Konuştuğun her dakika +1°C (aramada en fazla 10). Mesajla "arayabilir miyim?" diye sorarsan Lv.' + (M.voice - 1) + "'de de olur", lv.lv >= M.voice - 1],
+      ['📹', `Görüntülü ara · Lv.${M.video}`, 'Yakınlaşınca kamerayı açmayı kabul eder. "Görüntülü arayayım mı?" diye sorarsan Lv.' + (M.video - 1) + "'de de olur", lv.lv >= M.video - 1],
+      ['📲', 'Seni arasın · Lv.3', 'Keyfi yerindeyse arada bir kendisi arar', lv.lv >= 3],
+      ['💖', 'Kalp teması · Lv.4', 'Kalpli baloncuklar ve uçan kalpler arka planı', lv.lv >= 4],
+      ['💎', 'Mücevher kalp · Lv.5', 'Sohbete mücevher kalp arka planı gelir', lv.lv >= 5]
     ];
     A.Eco.sheet(`
       <div class="sheet-grip"></div>
@@ -880,6 +899,8 @@
   }
 
   const MSG_COST = 40; // her mesaj bu kadar coin harcar
+  const ASK_CALL = ['Müsaitsen arayabilir miyim? 📞', 'Seni arayayım mı? 🙈', 'Sesini duymak istiyorum, arayabilir miyim?'];
+  const pickRaw = a => a[Math.floor(Math.random() * a.length)];
   function sendUser(c, text) {
     if (!A.Wallet.spend(MSG_COST, `Mesaj · ${c.name}`)) {
       if (confirm(`Mesaj göndermek için ${MSG_COST} ♥ gerekli. Coin yüklemek ister misin?`)) location.hash = '#/recharge';
@@ -1049,6 +1070,7 @@
     if (bar) bar.innerHTML = lvbarInner(lv);
     const heart = $('.couple .heart small');
     if (heart) heart.textContent = `LV ${lv.lv}`;
+    applyChatTheme(lv);
   }
 
   /* ---------- Ruh hali listesi ---------- */
@@ -1330,7 +1352,7 @@
         </form>
         ${list.length ? '<button class="btn ghost block" data-mode="login" style="margin-top:10px">Mevcut hesaba giriş yap</button>' : ''}`;
     }
-    view.innerHTML = `<div class="auth"><div class="auth-logo">am<span class="logo-o">o</span>r</div><div class="auth-card card">${body}</div></div>`;
+    view.innerHTML = `<div class="auth"><div class="auth-logo">amor</div><div class="auth-card card">${body}</div></div>`;
 
     const enter = () => { location.hash = '#/home'; location.reload(); };
     view.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { auth.mode = b.dataset.mode; auth.error = ''; auth.pick = null; renderAuth(); });

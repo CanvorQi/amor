@@ -5,13 +5,13 @@
  * arka planda güncellenir (stale-while-revalidate). Fotoğraflar ilk görüldüklerinde saklanır.
  * Yeni sürüm yayınlarken VERSION'ı artır, eski önbellek silinir.
  */
-const VERSION = 'amor-v29';
+const VERSION = 'amor-v35';
 const CORE = [
   './', './index.html', './manifest.json', './css/style.css',
   './js/store.js', './js/data/photos.js', './js/data/pools.js', './js/data/archetypes.js', './js/data/intents.js', './js/data/topics.js', './js/data/traits.js',
-  './js/data/shop.js', './js/data/questions.js', './js/data/memory-data.js', './js/data/custom-characters.js',
+  './js/data/shop.js', './js/data/questions.js', './js/data/memory-data.js', './js/data/reflect.js','./js/data/custom-characters.js',
   './js/data/custom-dialog.js', './js/schedule.js', './js/mood.js',
-  './js/memory.js', './js/interest.js', './js/engine.js', './js/generator.js', './js/wallet.js', './js/shop.js', './js/games.js', './js/app.js', './js/call.js',
+  './js/memory.js', './js/interest.js', './js/nlu.js', './js/reflect.js','./js/engine.js', './js/generator.js', './js/wallet.js', './js/shop.js', './js/games.js', './js/app.js', './js/call.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'
 ];
 const IMG_CACHE = 'amor-img';
